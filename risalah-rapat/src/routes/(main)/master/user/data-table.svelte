@@ -7,6 +7,7 @@
   import { ArrowUpDown } from "lucide-svelte";
   import { Input } from "$lib/components/ui/input";
   import DataTableActions from "./data-table-actions.svelte";
+  import AddUser from "./add-user.svelte";
 
   type User = {
     no: number;
@@ -144,7 +145,8 @@
 </script>
 
 <div>
-  <div class="flex items-center py-4 justify-end">
+  <div class="flex items-center py-4 justify-between">
+    <AddUser />
     <Input
       class="max-w-sm"
       placeholder="Cari di sini..."

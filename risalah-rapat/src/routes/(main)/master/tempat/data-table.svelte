@@ -7,6 +7,7 @@
   import { ArrowUpDown } from "lucide-svelte";
   import { Input } from "$lib/components/ui/input";
   import EditPlace from "./edit-place.svelte";
+  import AddPlace from './add-place.svelte';
 
   type Tempat = {
     no: number;
@@ -105,7 +106,8 @@
 </script>
 
 <div>
-  <div class="flex items-center py-4 justify-end">
+  <div class="flex items-center py-4 justify-between">
+    <AddPlace />
     <Input
       class="max-w-sm"
       placeholder="Cari di sini..."

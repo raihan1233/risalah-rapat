@@ -7,6 +7,7 @@
   import { ArrowUpDown } from "lucide-svelte";
   import { Input } from "$lib/components/ui/input";
   import EditTemplate from "./edit-template.svelte";
+  import AddTemplate from './add-template.svelte';
 
   type Template = {
     no: number;
@@ -118,7 +119,8 @@
 </script>
 
 <div>
-  <div class="flex items-center py-4 justify-end">
+  <div class="flex items-center py-4 justify-between">
+    <AddTemplate />
     <Input
       class="max-w-sm"
       placeholder="Cari di sini..."
