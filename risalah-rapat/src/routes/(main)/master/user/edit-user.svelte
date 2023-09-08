@@ -6,11 +6,12 @@
   import { Separator } from "$lib/components/ui/separator";
   import * as RadioGroup from "$lib/components/ui/radio-group";
   import Swal from 'sweetalert2';
+  import { Pencil } from "lucide-svelte";
 
   const saveData = () => {
 		Swal.fire({
 			icon: 'success',
-			title: 'Data berhasil ditambahkan',
+			title: 'Data berhasil disimpan',
 			showConfirmButton: false,
 			timer: 1500
 		});
@@ -18,8 +19,8 @@
 </script>
 
 <Dialog.Root>
-  <Dialog.Trigger class={buttonVariants({ variant: "default" })}>
-    Edit
+  <Dialog.Trigger class={buttonVariants({ variant: "default", className: "bg-sky-500 hover:bg-sky-700" })}>
+    <Pencil class="h-4 w-4" />
   </Dialog.Trigger>
   <Dialog.Content class="overflow-y-scroll max-h-screen sm:max-w-[425px]">
     <Dialog.Header>

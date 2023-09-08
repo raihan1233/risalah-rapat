@@ -82,11 +82,6 @@
     table.column({
       accessor: "status",
       header: "Status",
-      plugins: {
-        filter: {
-          exclude: true
-        }
-      }
     }),
     table.column({
       accessor: ({ tempat }) => tempat,

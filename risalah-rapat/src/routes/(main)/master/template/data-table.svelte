@@ -95,11 +95,6 @@
     table.column({
       accessor: "status",
       header: "Status",
-      plugins: {
-        filter: {
-          exclude: true
-        }
-      }
     }),
     table.column({
       accessor: ({ nama_template }) => nama_template,

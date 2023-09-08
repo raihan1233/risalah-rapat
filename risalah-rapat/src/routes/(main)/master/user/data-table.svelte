@@ -6,7 +6,7 @@
   import { Button } from "$lib/components/ui/button";
   import { ArrowUpDown } from "lucide-svelte";
   import { Input } from "$lib/components/ui/input";
-  import EditUser from './edit-user.svelte';
+  import DataTableActions from "./data-table-actions.svelte";
 
   type User = {
     no: number;
@@ -121,17 +121,12 @@
     table.column({
       accessor: "status",
       header: "Status",
-      plugins: {
-        filter: {
-          exclude: true
-        }
-      }
     }),
     table.column({
       accessor: ({ nama_lengkap }) => nama_lengkap,
       header: "Aksi",
       cell: (item) => {
-        return createRender(EditUser, { id: item.no });
+        return createRender(DataTableActions, { id: item.no });
       },
       plugins: {
         sort: {
