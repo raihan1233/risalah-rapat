@@ -7,87 +7,106 @@
 	import { ArrowUpDown } from 'lucide-svelte';
 	import { Input } from '$lib/components/ui/input';
 
-	type Home = {
+	type DaftarRapat = {
 		no: number;
-		waktu: string;
+		waktuMulai: string;
+		waktuSelesai: string;
 		notulen: string;
 		perihal: string;
 		tempat: string;
 		tipe: string;
-		status: 'Approve';
+		status: 'Belum Approve';
 	};
-	const data: Home[] = [
+	const data: DaftarRapat[] = [
 		{
 			no: 1,
-			waktu: '2023-09-08 09:00 AM',
-			notulen: 'meeting minutes for project discussion',
-			perihal: 'project update',
-			tempat: 'conference Room A',
-			tipe: 'internal',
-			status: 'Approve'
+			waktuMulai: '2023-09-08 09:00 AM',
+			waktuSelesai: '2023-09-08 10:30 AM',
+			notulen: 'John Doe',
+			perihal: 'Project Review',
+			tempat: 'Conference Room A',
+			tipe: 'Meeting',
+			status: 'Belum Approve'
 		},
 		{
 			no: 2,
-			waktu: '2023-09-10 02:30 PM',
-			notulen: 'discussion on marketing strategy',
-			perihal: 'marketing Meeting',
-			tempat: 'zoom Meeting',
-			tipe: 'external',
-			status: 'Approve'
+			waktuMulai: '2023-09-09 02:00 PM',
+			waktuSelesai: '2023-09-09 03:30 PM',
+			notulen: 'Jane Smith',
+			perihal: 'Budget Presentation',
+			tempat: 'Boardroom',
+			tipe: 'Presentation',
+			status: 'Belum Approve'
 		},
 		{
 			no: 3,
-			waktu: '2023-09-12 11:15 AM',
-			notulen: 'agenda for team building event',
-			perihal: 'team Building Planning',
-			tempat: 'cafeteria',
-			tipe: 'internal',
-			status: 'Approve'
+			waktuMulai: '2023-09-10 10:30 AM',
+			waktuSelesai: '2023-09-10 12:00 PM',
+			notulen: 'Mike Johnson',
+			perihal: 'Team Building',
+			tempat: 'Outdoor Park',
+			tipe: 'Event',
+			status: 'Belum Approve'
 		},
 		{
 			no: 4,
-			waktu: '2023-09-14 03:45 PM',
-			notulen: 'review of financial reports',
-			perihal: 'financial Review',
-			tempat: 'boardroom',
-			tipe: 'internal',
-			status: 'Approve'
+			waktuMulai: '2023-09-11 03:00 PM',
+			waktuSelesai: '2023-09-11 04:30 PM',
+			notulen: 'Emily Davis',
+			perihal: 'Training Session',
+			tempat: 'Training Room B',
+			tipe: 'Training',
+			status: 'Belum Approve'
 		},
 		{
 			no: 5,
-			waktu: '2023-09-16 10:30 AM',
-			notulen: 'agenda for product launch',
-			perihal: 'product Launch Meeting',
-			tempat: 'conference Room B',
-			tipe: 'internal',
-			status: 'Approve'
+			waktuMulai: '2023-09-12 11:00 AM',
+			waktuSelesai: '2023-09-12 12:30 PM',
+			notulen: 'David Wilson',
+			perihal: 'Project Kickoff',
+			tempat: 'Conference Room C',
+			tipe: 'Meeting',
+			status: 'Belum Approve'
 		},
 		{
 			no: 6,
-			waktu: '2023-09-18 01:00 PM',
-			notulen: 'discussion on quarterly goals',
-			perihal: 'quarterly Goals Meeting',
-			tempat: 'zoom Meeting',
-			tipe: 'internal',
-			status: 'Approve'
+			waktuMulai: '2023-09-13 09:30 AM',
+			waktuSelesai: '2023-09-13 11:00 AM',
+			notulen: 'Sarah Brown',
+			perihal: 'Product Demo',
+			tempat: 'Demo Area',
+			tipe: 'Presentation',
+			status: 'Belum Approve'
 		},
 		{
 			no: 7,
-			waktu: '2023-09-20 04:15 PM',
-			notulen: 'review of project timelines',
-			perihal: 'project Timeline Review',
-			tempat: 'boardroom',
-			tipe: 'internal',
-			status: 'Approve'
+			waktuMulai: '2023-09-14 10:00 AM',
+			waktuSelesai: '2023-09-14 11:30 AM',
+			notulen: 'Michael Lee',
+			perihal: 'Quarterly Review',
+			tempat: 'Boardroom',
+			tipe: 'Meeting',
+			status: 'Belum Approve'
 		},
 		{
 			no: 8,
-			waktu: '2023-09-22 10:00 AM',
-			notulen: 'planning for annual conference',
-			perihal: 'conference Planning',
-			tempat: 'conference Room A',
-			tipe: 'internal',
-			status: 'Approve'
+			waktuMulai: '2023-09-15 02:30 PM',
+			waktuSelesai: '2023-09-15 04:00 PM',
+			notulen: 'Laura Miller',
+			perihal: 'Training Workshop',
+			tempat: 'Training Room A',
+			tipe: 'Training',
+			status: 'Belum Approve'
+		},
+		{
+			no: 9,
+			waktuMulai: '2023-09-16 01:00 PM',
+			waktuSelesai: '2023-09-16 02:30 PM',
+			notulen: 'Chris Anderson',
+			perihal: 'Marketing Strategy',
+			tempat: 'Conference Room D',
+			tipe: 'Meeting',
+			status: 'Belum Approve'
 		}
 	];
 	const table = createTable(readable(data), {
@@ -109,16 +128,20 @@
 			}
 		}),
 		table.column({
-			accessor: 'waktu',
-			header: 'Waktu'
+			accessor: 'waktuMulai',
+			header: 'Waktu Mulai'
+		}),
+		table.column({
+			accessor: 'waktuSelesai',
+			header: 'Waktu Selesai'
 		}),
 		table.column({
 			accessor: 'notulen',
-			header: 'Notulen',
+			header: 'Notulen'
 		}),
 		table.column({
 			accessor: 'perihal',
-			header: 'Perihal',
+			header: 'Perihal'
 		}),
 		table.column({
 			accessor: 'tempat',
@@ -126,11 +149,11 @@
 		}),
 		table.column({
 			accessor: 'tipe',
-			header: 'Tipe',
+			header: 'Tipe'
 		}),
 		table.column({
 			accessor: 'status',
-			header: 'Status',
+			header: 'Status'
 		})
 	]);
 
@@ -143,7 +166,12 @@
 
 <div class="container mx-auto">
 	<div class="flex items-center py-4 justify-end">
-		<Input class="w-full sm:max-w-xs" placeholder="Cari di sini..." type="text" bind:value={$filterValue} />
+		<Input
+			class="w-full sm:max-w-xs"
+			placeholder="Cari di sini..."
+			type="text"
+			bind:value={$filterValue}
+		/>
 	</div>
 	<div class="rounded-md border overflow-x-auto">
 		<Table.Root {...$tableAttrs}>
