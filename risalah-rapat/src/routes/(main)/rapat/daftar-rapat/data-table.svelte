@@ -17,6 +17,7 @@
 		tipe: string;
 		status: 'Belum Approve';
 	};
+
 	const data: DaftarRapat[] = [
 		{
 			no: 1,
@@ -164,7 +165,7 @@
 	const { filterValue } = pluginStates.filter;
 </script>
 
-<div class="container mx-auto">
+<div>
 	<div class="flex items-center py-4 justify-end">
 		<Input
 			class="w-full sm:max-w-xs"
@@ -173,7 +174,7 @@
 			bind:value={$filterValue}
 		/>
 	</div>
-	<div class="rounded-md border overflow-x-auto">
+	<div class="rounded-md border">
 		<Table.Root {...$tableAttrs}>
 			<Table.Header>
 				{#each $headerRows as headerRow}

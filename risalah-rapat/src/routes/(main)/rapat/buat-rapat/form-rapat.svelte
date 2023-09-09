@@ -5,12 +5,6 @@
 			.string()
 			.min(2, "Perihal minimal harus 2 karakter.")
 			.max(50, "Perihal tidak boleh lebih dari 50 karakter."),
-		// waktu_mulai: z
-		// 	.string({ required_error: "Mohon pilih waktu mulai" })
-		// 	.datetime(),
-		// waktu_selesai: z
-		// 	.string({ required_error: "Mohon pilih waktu selesai" })
-		// 	.datetime(),
 		tempat: z
 		.enum(["one", "two", "three"], {
 			invalid_type_error: "Pilih tempat",
