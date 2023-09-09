@@ -6,6 +6,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import { ArrowUpDown } from 'lucide-svelte';
 	import { Input } from '$lib/components/ui/input';
+	import DataTableActions from './data-table-actions.svelte';
 
 	type Home = {
 		no: number;
@@ -131,7 +132,19 @@
 		table.column({
 			accessor: 'status',
 			header: 'Status',
-		})
+		}),
+		table.column({
+      accessor: ({ notulen }) => notulen,
+      header: "Aksi",
+      cell: (item) => {
+        return createRender(DataTableActions, { id: item.no });
+      },
+      plugins: {
+        sort: {
+          disable: true
+        }
+      }
+    }),
 	]);
 
 	const { headerRows, pageRows, tableAttrs, tableBodyAttrs, pluginStates } =
