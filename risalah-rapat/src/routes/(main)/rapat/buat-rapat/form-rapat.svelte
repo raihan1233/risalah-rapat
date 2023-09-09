@@ -1,36 +1,44 @@
 <script lang="ts" context="module">
 	import { z } from "zod";
-	export const profileFormSchema = z.object({
-		username: z
+	export const formSchema = z.object({
+		perihal: z
 			.string()
-			.min(2, "Username must be at least 2 characters.")
-			.max(30, "Username must not be longer than 30 characters"),
-		email: z
-			.string({ required_error: "Please select an email to display" })
-			.email(),
-		bio: z.string().min(4).max(160).default("I own a computer."),
-		website: z
-			.string()
-			.url({ message: "Please enter a valid URL." })
-			.default("https://shadcn-svelte.com")
+			.min(2, "Perihal minimal harus 2 karakter.")
+			.max(50, "Perihal tidak boleh lebih dari 50 karakter."),
+		// waktu_mulai: z
+		// 	.string({ required_error: "Mohon pilih waktu mulai" })
+		// 	.datetime(),
+		// waktu_selesai: z
+		// 	.string({ required_error: "Mohon pilih waktu selesai" })
+		// 	.datetime(),
+		tempat: z
+		.enum(["one", "two", "three"], {
+			invalid_type_error: "Pilih tempat",
+			required_error: "Mohon pilih tempat."
+		}),
+		template: z
+			.enum(["one", "two", "three"], {
+			invalid_type_error: "Pilih template",
+			required_error: "Mohon pilih template."
+		}),
 	});
-	export type ProfileFormSchema = typeof profileFormSchema;
+	export type FormSchema = typeof formSchema;
 </script>
 
 <script lang="ts">
 	import * as Form from "$lib/components/ui/form";
 	import type { SuperValidated } from "sveltekit-superforms";
 
-	export let data: SuperValidated<ProfileFormSchema>;
+	export let data: SuperValidated<FormSchema>;
 </script>
+
 
 <Form.Root
 	form={data}
-	schema={profileFormSchema}
+	schema={formSchema}
 	let:config
 	method="POST"
 	class="space-y-8"
-	debug={true}
 >
 	<Form.Item>
 		<Form.Field {config} name="perihal">
@@ -41,11 +49,11 @@
 	</Form.Item>
 
 	<Form.Item>
-		<Form.Field {config} name="waktu-mulai">
+		<Form.Field {config} name="waktu_mulai">
 			<Form.Label>Waktu Mulai</Form.Label>
 				<Form.Input placeholder="Masukkan tanggal dan waktu mulai" 
 					type="datetime-local"
-					name="waktu selesai"
+					name="waktu_mulai"
 					class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
 			<Form.Validation />
 		</Form.Field>
@@ -130,5 +138,5 @@
 		</Form.Field>
 	</Form.Item>
 
-	<Form.Button>Update profile</Form.Button>
+	<Form.Button>Simpan</Form.Button>
 </Form.Root>
