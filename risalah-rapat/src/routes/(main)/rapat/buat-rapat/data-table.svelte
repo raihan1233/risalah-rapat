@@ -7,25 +7,24 @@
   import { ArrowUpDown } from "lucide-svelte";
   import { Input } from "$lib/components/ui/input";
   import DataTableActions from "./data-table-actions.svelte";
+  import SelectRole from "./select-role.svelte";
+  import SelectUser from "./select-user.svelte";
 
   type Checker = {
     no: number;
     user: string;
     jabatan: string;
-    role: string;
   };
   const data: Checker[] = [
     {
 			no: 1,
 			user: 'User 1',
 			jabatan: 'Manager',
-      role: 'Admin'
 		},
 		{
 			no: 2,
 			user: 'User 2',
 			jabatan: 'Manager',
-      role: 'Admin'
 		},
   ];
 
@@ -51,14 +50,20 @@
     table.column({
       accessor: "user",
       header: "User",
+      cell: (item) => {
+        return createRender(SelectUser, { id: item.no });
+      },
     }),
     table.column({
       accessor: "jabatan",
       header: "Jabatan",
     }),
     table.column({
-      accessor: "role",
+      accessor: ({ user }) => user,
       header: "Role",
+      cell: (item) => {
+        return createRender(SelectRole, { id: item.no });
+      },
     }),
     table.column({
       accessor: ({ user }) => user,
@@ -79,6 +84,7 @@
 
     const { hasNextPage, hasPreviousPage, pageIndex } = pluginStates.page;
     const { filterValue } = pluginStates.filter;
+
 </script>
 
 <div>
