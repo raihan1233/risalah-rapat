@@ -17,40 +17,42 @@
   }
 </script>
 
-<div class="container mx-auto py-10 space-y-8">
-	<Card.Root>
-		<Card.Header>
-			<div class="flex items-center justify-between">
-				<h2 class="text-3xl font-bold tracking-tight">Daftar Rapat</h2>
-				<div class="flex items-center">
-					<button
-						class={isToggleActive
-							? 'bg-sky-500 w-10 h-6 rounded-full p-1'
-							: 'w-10 h-6 bg-gray-300 rounded-full p-1'}
-						on:click={toggleVisibility}
-					>
-						<span
-							class="bg-white w-4 h-4 rounded-full block shadow-md transform transition-transform"
-							class:translate-x-full={isToggleActive}
-						/>
-					</button>
+<div class="w-11/12 mx-auto overflow-x-hidden">
+	<div class="py-10 space-y-8">
+		<Card.Root>
+			<Card.Header>
+				<div class="flex items-center justify-between">
+					<h2 class="text-3xl font-bold tracking-tight">Daftar Rapat</h2>
+					<div class="flex items-center">
+						<button
+							class={isToggleActive
+								? 'bg-sky-500 w-10 h-6 rounded-full p-1'
+								: 'w-10 h-6 bg-gray-300 rounded-full p-1'}
+							on:click={toggleVisibility}
+						>
+							<span
+								class="bg-white w-4 h-4 rounded-full block shadow-md transform transition-transform"
+								class:translate-x-full={isToggleActive}
+							/>
+						</button>
+					</div>
 				</div>
-			</div>
-		</Card.Header>
-		<Card.Content>
-			<div>
-				{#if isToggleActive}
-					<FormRapat on:search={handleSearch}/>
-				{/if}
-			</div>
-		</Card.Content>
-	</Card.Root>
-
-	<Card.Root>
-		<div class="space-y-4">
+			</Card.Header>
 			<Card.Content>
-				<DataTable searchData={searchData} />
+				<div>
+					{#if isToggleActive}
+						<FormRapat on:search={handleSearch}/>
+					{/if}
+				</div>
 			</Card.Content>
-		</div>
-	</Card.Root>
+		</Card.Root>
+	
+		<Card.Root>
+			<div class="space-y-4">
+				<Card.Content>
+					<DataTable searchData={searchData} />
+				</Card.Content>
+			</div>
+		</Card.Root>
+	</div>
 </div>

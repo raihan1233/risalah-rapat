@@ -5,6 +5,7 @@
 	import * as Card from '$lib/components/ui/card';
 	import { Button } from "$lib/components/ui/button";
 	import { Save, FileOutput, Send, XCircle } from "lucide-svelte"
+	import Tabs from './tabs.svelte';
 
 	export let data: PageData;
 
@@ -20,7 +21,7 @@
 	<Card.Root>
 		<Card.Header>
 			<div class="flex items-center justify-between">
-				<h2 class="text-3xl font-bold tracking-tight">Buat Rapat</h2>
+				<h2 class="text-3xl font-bold tracking-tight">Detail Rapat</h2>
 				<div class="flex items-center">
 					<button
 						class={isSwitchOn
@@ -46,12 +47,13 @@
 	</Card.Root>
 
 	<Card.Root>
-		<div class="space-y-4">
-			<Card.Header>
+		<div class="space-y-4 pt-4">
+
+			<!-- <Card.Header>
 				<h2 class="text-3xl font-bold tracking-tight">Checker</h2>
-			</Card.Header>
+			</Card.Header> --> 
 			<Card.Content>
-				<DataTable />
+				<Tabs />
 			</Card.Content>
 		</div>
 	</Card.Root>
