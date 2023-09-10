@@ -17,8 +17,8 @@
   }
 </script>
 
-<div class="w-11/12 mx-auto overflow-x-hidden">
-	<div class="py-10 space-y-8">
+<div class="overflow-x-hidden">
+	<div class="py-10 space-y-8 container mx-auto ">
 		<Card.Root>
 			<Card.Header>
 				<div class="flex items-center justify-between">

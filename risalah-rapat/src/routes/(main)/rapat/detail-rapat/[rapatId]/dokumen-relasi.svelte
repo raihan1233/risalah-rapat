@@ -31,10 +31,10 @@
 					<Form.Label for="unggah-lampiran">Unggah Lampiran</Form.Label>
 					<Form.Input id="unggah-lampiran" type="file" class="cursor-pointer" />
 				</Form.Field>
-			</Form.Item>
+			</Form.Item> 
 			<Form.Item>
 				<Form.Field
-					name="unggah-template"
+					name="nama-template"
 					class="grid w-full max-w-sm items-center gap-x-1.5 space-y-4"
 				>
 					<Form.Label for="nama-lampiran">Nama Lampiran</Form.Label>

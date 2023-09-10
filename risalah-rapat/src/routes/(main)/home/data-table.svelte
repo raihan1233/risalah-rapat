@@ -154,7 +154,7 @@
 	const { filterValue } = pluginStates.filter;
 </script>
 
-<div class="container mx-auto">
+<div>
 	<div class="flex items-center py-4 justify-end">
 		<Input class="w-full sm:max-w-xs" placeholder="Cari di sini..." type="text" bind:value={$filterValue} />
 	</div>

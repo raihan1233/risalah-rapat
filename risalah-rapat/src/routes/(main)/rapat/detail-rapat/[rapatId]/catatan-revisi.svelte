@@ -7,25 +7,38 @@
 	import { ArrowUpDown } from 'lucide-svelte';
 	import { Input } from '$lib/components/ui/input';
 	import DataTableActions from './data-table-actions.svelte';
-	import SelectRole from "./select-role.svelte";
-  import SelectUser from "./select-user.svelte";
 
-	type Checker = {
-		no: number;
-		user: string;
+	type CatatanRevisi = {
+		nama_lengkap: string;
 		jabatan: string;
+		konten: string;
+    waktu: string;
 	};
-	const data: Checker[] = [
-		{
-			no: 1,
-			user: 'User 1',
-			jabatan: 'Manager',
-		},
-		{
-			no: 2,
-			user: 'User 2',
-			jabatan: 'Manager',
-		}
+	const data: CatatanRevisi[] = [
+	{
+      nama_lengkap: "John Doe",
+      jabatan: "Manager",
+      konten: "Revisi agenda untuk team building",
+      waktu: "2023-09-10 09:00 AM",
+  },
+  {
+    nama_lengkap: "Alice Smith",
+    jabatan: "Manager",
+    konten: "Revisi diskusi strategi marketing",
+    waktu: "2023-09-07 14:30 PM",
+  },
+  {
+    nama_lengkap: "Bob Johnson",
+    jabatan: "Manager",
+    konten: "Revisi laporan finansial",
+    waktu: "2023-09-03 10:30 AM",
+  },
+  {
+    nama_lengkap: "Sarah Brown",
+    jabatan: "Manager",
+    konten: "Revisi agenda untuk peluncuran produk",
+    waktu: "2023-09-01 11:45 AM",
+  },
 	];
 
 	const table = createTable(readable(data), {
@@ -38,44 +51,26 @@
 
 	const columns = table.createColumns([
 		table.column({
-			accessor: 'no',
-			header: 'No',
-			plugins: {
-				filter: {
-					exclude: true
-				}
-			}
+			accessor: 'nama_lengkap',
+			header: 'Nama Lengkap'
 		}),
-		table.column({
-      accessor: "user",
-      header: "User",
-      cell: (item) => {
-        return createRender(SelectUser, { id: item.no });
-      },
-    }),
 		table.column({
 			accessor: 'jabatan',
 			header: 'Jabatan'
 		}),
 		table.column({
-      accessor: ({ user }) => user,
-      header: "Role",
-      cell: (item) => {
-        return createRender(SelectRole, { id: item.no });
-      },
-    }),
-		table.column({
-			accessor: ({ user }) => user,
-			header: 'Aksi',
-			cell: (item) => {
-				return createRender(DataTableActions, { id: item.no });
-			},
-			plugins: {
+			accessor: 'konten',
+			header: 'Konten'
+		}),
+    table.column({
+			accessor: 'waktu',
+			header: 'Waktu',
+      plugins: {
 				sort: {
 					disable: true
 				}
 			}
-		})
+		}),
 	]);
 
 	const { headerRows, pageRows, tableAttrs, tableBodyAttrs, pluginStates } =
@@ -87,7 +82,7 @@
 
 <div>
 	<div class="flex items-center py-4 justify-between">
-		<Button variant="outline">Tambah</Button>
+		<Button variant="outline">Revisi</Button>
 		<Input class="max-w-sm" placeholder="Cari di sini..." type="text" bind:value={$filterValue} />
 	</div>
 	<div class="rounded-md border">
@@ -99,7 +94,7 @@
 							{#each headerRow.cells as cell (cell.id)}
 								<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
 									<Table.Head {...attrs}>
-										{#if cell.id === 'Aksi'}
+										{#if cell.id === 'waktu'}
 											<Render of={cell.render()} />
 										{:else}
 											<Button variant="ghost" on:click={props.sort.toggle}>
