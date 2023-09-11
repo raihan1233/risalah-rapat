@@ -9,6 +9,7 @@
 
 	import Swal from 'sweetalert2';
 	import KonfirmasiRevisi from './konfirmasi-revisi.svelte';
+	import KonfirmasiBatal from './konfirmasi-batal.svelte';
 
   const sendData = () => {
 		Swal.fire({
@@ -92,9 +93,6 @@
 			Kirim
 		</Button>
 		<KonfirmasiRevisi />
-		<Button class="bg-red-500 hover:bg-red-700" href="/home">
-			<XCircle class="mr-2 h-4 w-4" />
-			Batalkan
-		</Button>
+		<KonfirmasiBatal />
 	</div>
 </div>
