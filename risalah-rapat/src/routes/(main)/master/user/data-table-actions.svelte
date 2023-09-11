@@ -5,5 +5,5 @@
 
 <div class="flex space-x-4">
   <EditUser />
-  <DeleteUser />
+  <!-- <DeleteUser /> -->
 </div>

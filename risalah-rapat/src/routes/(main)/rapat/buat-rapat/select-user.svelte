@@ -1,20 +1,16 @@
-<script>
-  import MultiSelect from 'svelte-multiselect'
-
-  const users = [`User 1`, `User 2`, `User 3`, `User 4`, `User 5`]
-
-  const filter_func = (op, searchText) => {
-    if (!searchText)
-        return true;
-    const [label, lang, searchStr] = [op.label, op.lang, searchText].map((s) => s.toLowerCase());
-    return label.includes(searchStr) || lang.includes(searchStr);
-  };
+<script lang="ts">
+  import * as Select from "$lib/components/ui/select";
 </script>
 
-<MultiSelect 
-  options={users} 
-  id="confetti-select"
-  maxSelect={2}
-  placeholder="Pilih 2 user"
-  filterFunc={filter_func} 
-  />
+<Select.Root>
+  <Select.Trigger class="w-[180px]">
+    <Select.Value placeholder="Pilih user" />
+  </Select.Trigger>
+  <Select.Content>
+    <Select.Item value="user-1">User 1</Select.Item>
+    <Select.Item value="user-2">User 2</Select.Item>
+    <Select.Item value="user-3">User 3</Select.Item>
+    <Select.Item value="user-4">User 4</Select.Item>
+    <Select.Item value="user-5">User 5</Select.Item>
+  </Select.Content>
+</Select.Root>

@@ -81,8 +81,7 @@
 </script>
 
 <div>
-	<div class="flex items-center py-4 justify-between">
-		<Button variant="outline">Revisi</Button>
+	<div class="flex items-center py-4 justify-end">
 		<Input class="max-w-sm" placeholder="Cari di sini..." type="text" bind:value={$filterValue} />
 	</div>
 	<div class="rounded-md border">
