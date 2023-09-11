@@ -9,20 +9,20 @@ kendala
 	7. tombol hapus pada tabs checker masih blm menghapus baris 
 	8. tambah pada tabs chcker masih blm menambah baris 	
 	9. pada button di halaman buat rapat & detail rapat masih blm menampilkan pop up
-	10. blm ada icon eye untuk field password
+	10. blm ada icon eye untuk field password -> done
 
 revisi
-	bg -> sama portal
-	logo -> yg ada tagline
+	bg -> sama portal -> done
+	logo -> yg ada tagline -> done
 	field tempat -> input teks + select2
-	login -> username aja jgn email
-	buat rapat -> hapus toggle
-	nama -<  setelah user
-	lihat output pdf -> jadi lihat pdf
+	login -> username aja jgn email -> done
+	buat rapat -> hapus toggle -> done
+	nama ->  setelah user
+	lihat output pdf -> jadi lihat pdf -> done
 	icon toggle -> diganti icon-filter
 
-	buat rapat -> buat risalah
-	daftar rapat -> daftar risalah
+	buat rapat -> buat risalah -> done
+	daftar rapat -> daftar risalah -> done
 	
 	SLA -> waktu dokumen diterima sampai dikirim (durasi)
 	status -> jika belum approve berwarna abu, jika sudah approve/ publish berwarna hijau dan ada waktu dan tgl serta jam (durasi dihitung dari waktu kerja user terkait buat menggunakan log), jika blm warna abu dan blm approve
@@ -37,14 +37,13 @@ revisi
 	
 	template  risalah rapat -> tambahkan kolum variabel agenda
 	
-	modul buat risalah -> tambahkan dokumen relasi (dibuat tabs)  
+	modul buat risalah -> tambahkan dokumen relasi (dibuat tabs)  -> done
 	
 	modul buat risalah & detail risalah -> detail tracker no 1 dibuat default nama user drafter -> jabatan otomatis -> tanpa aksi
 	
 	modul detail risalah -> detail tracker ditambahkan informasi waktu approve (berupa kolom baru)
 	
-	modul buat risalah & detail risalah -> saaat drafter mengirim risalah rapat, tracker yg memiliki role chcker dan approver akan menerima detail daftar risalah tersebut dengan status blm approve
-	dengan catatan tracker setelah drafter dapat mengubah isi risalah tersebut(tombol simpan, lihat pdf, kirim, revisi, batal), selain tracker itu hanya dapat meilhat(hanya ada tombol kembali)
+	modul buat risalah & detail risalah -> saaat drafter mengirim risalah rapat, tracker yg memiliki role checker dan approver akan menerima detail daftar risalah tersebut dengan status blm approve, dengan catatan tracker setelah drafter dapat mengubah isi risalah tersebut(tombol simpan, lihat pdf, kirim, revisi, batal), selain tracker itu hanya dapat meilhat(hanya ada tombol kembali)
 	
 	jika terjadi revisi tracker/approver yang sudah kirim tetap bisa melihat detail notulen
 	
