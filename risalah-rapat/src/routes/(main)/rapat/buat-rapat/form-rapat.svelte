@@ -28,13 +28,67 @@
 	import type { SuperValidated } from 'sveltekit-superforms';
 
 	export let data: SuperValidated<FormSchema>;
+
+	import { onMount } from 'svelte';
+
+	let selectedTemplate;
+
+	let saveData = {
+		dateStart: '',
+		dateEnd: '',
+		tempat: '',
+		template: '',
+		perihal: '',
+		download: '',
+		updateTemp: ''
+	};
+
+	let templateOptions = [
+			{ value: 'first.pdf', label: 'Template One', downloadLink: '/files/template1.pdf' },
+			{ value: 'second.pdf', label: 'Template Two', downloadLink: '/files/template2.pdf' },
+			{ value: 'three.pdf', label: 'Template Three', downloadLink: '/files/template3.pdf' }
+		];; //store template option fetched from API
+
+	const updateDownloadLink = () => {
+        // console.log('update download link');
+        if (saveData.template) {
+			// saveData.download = selectedTemplate.downloadLink;
+			const selectedOption = templateOptions.find((option) => option.value === saveData.template);
+			if (selectedOption) {
+				saveData.download = selectedOption.downloadLink;
+			} else {
+				saveData.download = ''; //no matching template found
+			}
+            // console.log('Download link set:', saveData.download);
+		} else {
+			saveData.download = ''; //no template selected and hide the link
+            // console.log('no template selected');
+		}
+	};
+
+	
+	// update the download link whenever the template value changes
+	$: {
+        // selectedTemplate = templateOptions.find((option) => option.value === saveData.template)
+        updateDownloadLink()
+    };
+
+	const handleSubmit = () => {
+		console.log(saveData);
+		// showAddButton();
+	};
+
+	// onMount(async () => {
+		
+	// });
 </script>
 
-<Form.Root form={data} schema={formSchema} let:config method="POST" class="space-y-8">
+<Form.Root form={data} schema={formSchema} let:config class="space-y-8">
 	<Form.Item>
 		<Form.Field {config} name="perihal">
 			<Form.Label>Perihal</Form.Label>
-			<Form.Input placeholder="Perihal pemindahan jadwal rapat" />
+			<Form.Input 			bind:value={saveData.perihal}
+			on:input={(e) => (saveData.perihal = e.target.value)} placeholder="Perihal pemindahan jadwal rapat" />
 			<Form.Validation />
 		</Form.Field>
 	</Form.Item>
@@ -46,6 +100,8 @@
 				placeholder="Masukkan tanggal dan waktu mulai"
 				type="datetime-local"
 				name="waktu_mulai"
+				bind:value={saveData.dateStart}
+				on:input={(e) => (saveData.dateStart = e.target.value)}
 				class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 			/>
 			<Form.Validation />
@@ -58,6 +114,8 @@
 			<Form.Input
 				placeholder="Masukkan tanggal dan waktu selesai"
 				id="waktu-selesai"
+				bind:value={saveData.dateEnd}
+				on:input={(e) => (saveData.dateEnd = e.target.value)}
 				type="datetime-local"
 				name="waktu selesai"
 				class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -69,7 +127,8 @@
 	<Form.Item>
 		<Form.Field {config} name="tempat">
 			<Form.Label>Tempat</Form.Label>
-			<Form.Select>
+			<Form.Select bind:value={saveData.tempat}
+			on:input={(e) => (saveData.tempat = e.target.value)}>
 				<Form.SelectTrigger placeholder="Pilih tempat" />
 				<Form.SelectContent>
 					<Form.SelectItem value="one" label="one">one</Form.SelectItem>
@@ -84,7 +143,7 @@
 	<Form.Item>
 		<Form.Field {config} name="template">
 			<Form.Label>Template</Form.Label>
-			<Form.Select>
+			<Form.Select bind:value={saveData.template}>
 				<Form.SelectTrigger placeholder="Pilih template" />
 				<Form.SelectContent>
 					<Form.SelectItem value="one" label="one">one</Form.SelectItem>
@@ -99,7 +158,13 @@
 	<Form.Item>
 		<Form.Field {config} name="download">
 			<Form.Label>Download</Form.Label>
+			{#if saveData.download}
+			<a href={saveData.download} id="downloadLink" class="form-control" download="filename.pdf">
+				{saveData.template}
+			</a>
+		{:else}
 			<p>No template selected</p>
+		{/if}
 			<!-- {#if saveData.download}
 			<a href={saveData.download} class="form-control" download="filename.pdf">
 				{saveData.template}
@@ -118,7 +183,8 @@
 			class="grid w-full max-w-sm items-center gap-x-1.5 space-y-4"
 		>
 			<Form.Label for="unggah-template">Unggah Template</Form.Label>
-			<Form.Input id="unggah-template" type="file" class="cursor-pointer" />
+			<Form.Input 			bind:value={saveData.updateTemp}
+			on:input={(e) => (saveData.updateTemp = e.target.value)} id="unggah-template" type="file" class="cursor-pointer" />
 		</Form.Field>
 	</Form.Item>
 </Form.Root>

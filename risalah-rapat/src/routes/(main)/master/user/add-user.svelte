@@ -44,6 +44,10 @@
         <Input id="password" placeholder="Masukkan password" type="password" />
       </div>
       <div class="space-y-4">
+        <Label for="konfirmasi-password">Konfirmasi Password</Label>
+        <Input id="konfirmasi-password" placeholder="Masukkan ulang password" type="password" />
+      </div>
+      <div class="space-y-4">
         <Label>Role</Label>
         <RadioGroup.Root value="user" class="flex space-x-4">
           <div class="flex items-center space-x-2">
