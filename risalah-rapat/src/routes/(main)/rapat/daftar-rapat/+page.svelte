@@ -22,7 +22,7 @@
 		<Card.Root>
 			<Card.Header>
 				<div class="flex items-center justify-between">
-					<h2 class="text-3xl font-bold tracking-tight">Daftar Rapat</h2>
+					<h2 class="text-3xl font-bold tracking-tight">Daftar Risalah</h2>
 					<div class="flex items-center">
 						<button
 							class={isToggleActive

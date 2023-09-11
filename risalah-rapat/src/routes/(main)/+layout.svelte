@@ -117,14 +117,14 @@
 								<a
 									href="/rapat/buat-rapat"
 									class="flex items-center w-full p-2 text-gray-300 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-									>Buat Rapat</a
+									>Buat Risalah</a
 								>
 							</li>
 							<li>
 								<a
 									href="/rapat/daftar-rapat"
 									class="flex items-center w-full p-2 text-gray-300 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-									>Daftar Rapat</a
+									>Daftar Risalah</a
 								>
 							</li>
 						</ul>

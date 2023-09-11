@@ -5,6 +5,7 @@
 	import * as Card from '$lib/components/ui/card';
 	import { Button } from "$lib/components/ui/button";
 	import { Save, FileOutput, Send, XCircle } from "lucide-svelte"
+	import Tabs from './tabs.svelte';
 
 	import Swal from 'sweetalert2';
 	import BatalButton from './batal-button.svelte';
@@ -41,7 +42,7 @@
 	<Card.Root>
 		<Card.Header>
 			<div class="flex items-center justify-between">
-				<h2 class="text-3xl font-bold tracking-tight">Buat Rapat</h2>
+				<h2 class="text-3xl font-bold tracking-tight">Buat Risalah</h2>
 				<div class="flex items-center">
 					<button
 						class={isSwitchOn
@@ -66,7 +67,7 @@
 		</Card.Content>
 	</Card.Root>
 
-	<Card.Root>
+	<!-- <Card.Root>
 		<div class="space-y-4">
 			<Card.Header>
 				<h2 class="text-3xl font-bold tracking-tight">Checker</h2>
@@ -75,7 +76,16 @@
 				<DataTable />
 			</Card.Content>
 		</div>
+	</Card.Root> -->
+
+<Card.Root>
+		<div class="space-y-4 pt-4">
+			<Card.Content>
+				<Tabs />
+			</Card.Content>
+		</div>
 	</Card.Root>
+
 	<div class="flex space-x-4">
 		<Button class="bg-sky-500 hover:bg-sky-700" on:click={saveDraft}>
 			<Save class="mr-2 h-4 w-4" />
