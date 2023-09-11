@@ -6,6 +6,7 @@
   import { Separator } from "$lib/components/ui/separator";
   import * as RadioGroup from "$lib/components/ui/radio-group";
   import Swal from 'sweetalert2';
+  import { Eye, EyeOff } from "lucide-svelte";
 
   const saveData = () => {
 		Swal.fire({
@@ -15,6 +16,18 @@
 			timer: 1500
 		});
 	};
+
+  let showPassword = false;
+
+  function togglePasswordVisibility() {
+    showPassword = !showPassword;
+  }
+
+  let showConfirmPassword = false;
+
+  function toggleConfirmPasswordVisibility() {
+    showConfirmPassword = !showConfirmPassword;
+  }
 </script>
 
 <Dialog.Root>
@@ -41,11 +54,33 @@
       </div>
       <div class="space-y-4">
         <Label for="password">Password</Label>
-        <Input id="password" placeholder="Masukkan password" type="password" />
+        <div class="relative w-full">
+          <Input id="password" placeholder="Masukkan password" type={showPassword ? 'text' : 'password'} />
+          <div class="absolute inset-y-0 right-0 flex items-center p-3 focus:outline-none" on:click={togglePasswordVisibility}>
+							{#if showPassword}
+								<!-- Eye icon open -->
+									<Eye class="h-4 w-4 cursor-pointer" />
+							{:else}
+							<!-- Eye icon closed -->
+									<EyeOff class="h-4 w-4 cursor-pointer" />
+							{/if}
+					</div>
+        </div>
       </div>
-      <div class="space-y-4">
+      <div class="space-y-4 ">
         <Label for="konfirmasi-password">Konfirmasi Password</Label>
-        <Input id="konfirmasi-password" placeholder="Masukkan ulang password" type="password" />
+        <div class="relative w-full">
+          <Input id="konfirmasi-password" placeholder="Masukkan ulang password" type={showConfirmPassword ? 'text' : 'password'}  />
+          <div class="absolute inset-y-0 right-0 flex items-center p-3 focus:outline-none" on:click={toggleConfirmPasswordVisibility}>
+							{#if showConfirmPassword}
+								<!-- Eye icon open -->
+									<Eye class="h-4 w-4 cursor-pointer" />
+							{:else}
+							<!-- Eye icon closed -->
+									<EyeOff class="h-4 w-4 cursor-pointer" />
+							{/if}
+					</div>
+        </div>
       </div>
       <div class="space-y-4">
         <Label>Role</Label>

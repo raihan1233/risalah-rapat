@@ -7,6 +7,8 @@
 	import { ArrowUpDown } from 'lucide-svelte';
 	import { Input } from '$lib/components/ui/input';
 	import DataTableActions from './data-table-actions.svelte';
+	import SelectUser from "./select-user.svelte";
+	import SelectRole from './select-role.svelte';
 
 	type Checker = {
 		no: number;
@@ -49,7 +51,10 @@
 		}),
 		table.column({
 			accessor: 'user',
-			header: 'User'
+			header: 'User',
+			cell: (item) => {
+        return createRender(SelectUser, { id: item.no });
+      },
 		}),
 		table.column({
 			accessor: 'jabatan',
@@ -57,7 +62,10 @@
 		}),
 		table.column({
 			accessor: 'role',
-			header: 'Role'
+			header: 'Role',
+			cell: (item) => {
+        return createRender(SelectRole, { id: item.no });
+      },
 		}),
 		table.column({
 			accessor: ({ user }) => user,

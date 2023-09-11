@@ -5,6 +5,7 @@
 	import { Label } from '$lib/components/ui/label';
 	import { Input } from '$lib/components//ui/input';
 	import Swal from 'sweetalert2';
+	import { Eye, EyeOff } from "lucide-svelte";
 
 	let inputData = {
 		passLama: '',
@@ -46,6 +47,24 @@
 			console.log(inputData);
 		}
 	};
+
+	let showOldPassword = false;
+
+  function toggleOldPasswordVisibility() {
+    showOldPassword = !showOldPassword;
+  }
+
+	let showNewPassword = false;
+
+  function toggleNewPasswordVisibility() {
+    showNewPassword = !showNewPassword;
+  }
+
+	let showConfirmNewPassword = false;
+
+  function toggleConfirmNewPasswordVisibility() {
+    showConfirmNewPassword = !showConfirmNewPassword;
+  }
 </script>
 
 <div class="p-5">
@@ -56,30 +75,63 @@
 		<Card.Content class="grid gap-4">
 			<div class="grid gap-2">
 				<Label for="passwordLama">Password Lama</Label>
-				<Input
-					id="passwordLama"
-					type="password"
-					placeholder="masukkan password lama"
-					bind:value={inputData.passLama}
-				/>
+				<div class="relative w-full">
+						<Input
+						id="passwordLama"
+						type={showOldPassword ? 'text' : 'password'}
+						placeholder="masukkan password lama"
+						bind:value={inputData.passLama}
+					/>
+					<div class="absolute inset-y-0 right-0 flex items-center p-3 focus:outline-none" on:click={toggleOldPasswordVisibility}>
+							{#if showOldPassword}
+								<!-- Eye icon open -->
+									<Eye class="h-4 w-4 cursor-pointer" />
+							{:else}
+							<!-- Eye icon closed -->
+									<EyeOff class="h-4 w-4 cursor-pointer" />
+							{/if}
+					</div>
+				</div>
 			</div>
 			<div class="grid gap-2">
 				<Label for="passwordBaru">Password Baru</Label>
-				<Input
-					id="passwordBaru"
-					type="password"
-					placeholder="masukkan password baru"
-					bind:value={inputData.passBaru}
-				/>
+				<div class="relative w-full">
+					<Input
+						id="passwordBaru"
+						type={showNewPassword ? 'text' : 'password'}
+						placeholder="masukkan password baru"
+						bind:value={inputData.passBaru}
+					/>
+					<div class="absolute inset-y-0 right-0 flex items-center p-3 focus:outline-none" on:click={toggleNewPasswordVisibility}>
+							{#if showNewPassword}
+								<!-- Eye icon open -->
+									<Eye class="h-4 w-4 cursor-pointer" />
+							{:else}
+							<!-- Eye icon closed -->
+									<EyeOff class="h-4 w-4 cursor-pointer" />
+							{/if}
+					</div>
+				</div>
 			</div>
 			<div class="grid gap-2">
 				<Label for="konfirmasiPasswordBaru">Konfirmasi Password Baru</Label>
-				<Input
-					id="konfirmasiPasswordBaru"
-					type="password"
-					placeholder="konfirmasi password baru"
-					bind:value={inputData.konfBaru}
-				/>
+				<div class="relative w-full">
+					<Input
+						id="konfirmasiPasswordBaru"
+						type={showConfirmNewPassword ? 'text' : 'password'}
+						placeholder="konfirmasi password baru"
+						bind:value={inputData.konfBaru}
+					/>
+					<div class="absolute inset-y-0 right-0 flex items-center p-3 focus:outline-none" on:click={toggleConfirmNewPasswordVisibility}>
+								{#if showConfirmNewPassword}
+									<!-- Eye icon open -->
+										<Eye class="h-4 w-4 cursor-pointer" />
+								{:else}
+								<!-- Eye icon closed -->
+										<EyeOff class="h-4 w-4 cursor-pointer" />
+								{/if}
+					</div>
+				</div>
 			</div>
 		</Card.Content>
 		<Card.Footer>
