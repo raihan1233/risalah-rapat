@@ -6,6 +6,7 @@
 	import { Label } from '$lib/components/ui/label';
     import DataTable from './data-table.svelte';
 	import DokumenRelasi from './dokumen-relasi.svelte';
+	import RelationDataTable from './relation-data-table.svelte';
 </script>
 
 <Tabs.Root value="Checker">
@@ -32,6 +33,7 @@
 			</Card.Header>
 			<Card.Content class="space-y-2">
 				<DokumenRelasi />
+				<RelationDataTable />
 			</Card.Content>
 		</Card.Root>
 	</Tabs.Content>

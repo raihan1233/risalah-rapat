@@ -36,6 +36,11 @@
 	function toggleSwitch() {
 		isSwitchOn = !isSwitchOn;
 	}
+
+	function openPDF() {
+     let urlPDF = 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf';
+      window.open(urlPDF, '_blank');
+    }
 </script>
 
 <div class="container mx-auto py-10 space-y-8">
@@ -91,7 +96,7 @@
 			<Save class="mr-2 h-4 w-4" />
 			Simpan Draft
 		</Button>
-		<Button class="bg-cyan-500 hover:bg-cyan-700">
+		<Button class="bg-cyan-500 hover:bg-cyan-700" on:click={openPDF}>
 			<FileOutput class="mr-2 h-4 w-4" />
 			Lihat Output PDF
 		</Button>

@@ -13,7 +13,7 @@
 }
 
   export let status;
-  const badgeColor = getBadgeColor(status);
+  $: badgeColor = getBadgeColor(status); 
 </script>
 
 <Badge class={badgeColor}>{status}</Badge>

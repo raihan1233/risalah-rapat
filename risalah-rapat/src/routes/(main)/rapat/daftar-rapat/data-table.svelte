@@ -7,6 +7,7 @@
 	import { ArrowUpDown } from 'lucide-svelte';
 	import { Input } from '$lib/components/ui/input';
 	import DataTableActions from './data-table-actions.svelte';
+	import Badge from './badge.svelte';
 
 	type DaftarRapat = {
 		no: number;
@@ -16,7 +17,7 @@
 		perihal: string;
 		tempat: string;
 		tipe: string;
-		status: 'Belum Approve';
+		status: 'Belum Approve' | 'Approve' | 'Terkirim';
 	};
 
 	const data: DaftarRapat[] = [
@@ -28,7 +29,7 @@
 			perihal: 'Project Review',
 			tempat: 'Conference Room A',
 			tipe: 'Meeting',
-			status: 'Belum Approve'
+			status: 'Approve'
 		},
 		{
 			no: 2,
@@ -38,7 +39,7 @@
 			perihal: 'Budget Presentation',
 			tempat: 'Boardroom',
 			tipe: 'Presentation',
-			status: 'Belum Approve'
+			status: 'Approve'
 		},
 		{
 			no: 3,
@@ -155,7 +156,10 @@
 		}),
 		table.column({
 			accessor: 'status',
-			header: 'Status'
+			header: 'Status',
+			cell: (item) => {
+      return createRender(Badge, { status: item.status });
+    },
 		}),
 		table.column({
 			accessor: ({ notulen }) => notulen,

@@ -4,9 +4,10 @@
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
-    import DataTable from './data-table.svelte';
+  import DataTable from './data-table.svelte';
 	import DokumenRelasi from './dokumen-relasi.svelte';
 	import CatatanRevisi from './catatan-revisi.svelte';
+	import RelationDataTable from './relation-data-table.svelte';
 </script>
 
 <Tabs.Root value="Dokumen Relasi">
@@ -22,6 +23,7 @@
 			</Card.Header>
 			<Card.Content class="space-y-2">
 				<DokumenRelasi />
+				<RelationDataTable />
 			</Card.Content>
 		</Card.Root>
 	</Tabs.Content>
