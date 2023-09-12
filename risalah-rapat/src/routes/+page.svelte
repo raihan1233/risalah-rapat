@@ -5,38 +5,38 @@
 	import { Input } from '$lib/components/ui/input';
 	import '../app.postcss';
 	import Swal from 'sweetalert2';
-  import { Eye, EyeOff } from "lucide-svelte";
+  	import { Eye, EyeOff } from "lucide-svelte";
 
 	const data = [
 		{
-			email: 'admin@gmail.com',
+			username: 'admin',
 			password: 'admin'
 		}
 	];
 
 	const popupSuccess = () => {
-		Swal.fire(`selamat datang ${inputData.email} !`, 'tunggu beberapa saat', 'success');
+		Swal.fire(`selamat datang ${inputData.username} !`, 'tunggu beberapa saat', 'success');
 	};
 
 	const popupError = () => {
 		Swal.fire({
 			icon: 'error',
 			title: 'Gagal masuk',
-			text: 'Email atau password salah, silahkan coba lagi!'
+			text: 'Username atau password salah, silahkan coba lagi!'
 		});
 		return;
 	};
 
 	let inputData = {
-		email: '',
+		username: '',
 		password: ''
 	};
 
 	const handleSubmit = () => {
-		if (!inputData.email || inputData.password) {
+		if (!inputData.username || inputData.password) {
 			popupError();
 		}
-		if (inputData.email === data[0].email && inputData.password === data[0].password) {
+		if (inputData.username === data[0].username && inputData.password === data[0].password) {
 			popupSuccess();
 			setTimeout(() => {
 				window.location.href = '/home';
@@ -51,7 +51,7 @@
   }
 </script>
 
-<div class="background">
+<div class="min-h-screen bg-gray-800">
 	<div class="w-1/2 mx-auto pt-20">
 		<Card.Root>
 			<Card.Header class="space-y-1">
@@ -59,8 +59,8 @@
 			</Card.Header>
 			<Card.Content class="grid gap-4">
 				<div class="grid gap-2">
-					<Label for="email">Email</Label>
-					<Input id="email" type="email" placeholder="m@gmail.com" bind:value={inputData.email} />
+					<Label for="username">Username</Label>
+					<Input id="username" type="text" placeholder="e.g: username12" bind:value={inputData.username} />
 				</div>
 				<div class="grid gap-2">
 					<Label for="password">Password</Label>
@@ -84,12 +84,3 @@
 		</Card.Root>
 	</div>
 </div>
-
-<style>
-	.background {
-		background-image: url('/background.jpg');
-		background-size: cover;
-		background-repeat: no-repeat;
-		min-height: 100vh;
-	}
-</style>
