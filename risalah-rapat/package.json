@@ -29,6 +29,7 @@
 	"dependencies": {
 		"bits-ui": "^0.5.7",
 		"clsx": "^2.0.0",
+		"flatpickr": "^4.6.13",
 		"formsnap": "^0.0.9",
 		"lucide-svelte": "^0.275.0-beta.0",
 		"svelte-multiselect": "^10.1.0",
