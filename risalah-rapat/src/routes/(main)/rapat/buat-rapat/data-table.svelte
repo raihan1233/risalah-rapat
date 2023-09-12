@@ -1,22 +1,23 @@
 <script lang="ts">
-	import { createTable, Render, Subscribe, createRender } from 'svelte-headless-table';
-	import { readable } from 'svelte/store';
-	import * as Table from '$lib/components/ui/table';
-	import { addPagination, addSortBy, addTableFilter } from 'svelte-headless-table/plugins';
-	import { Button } from '$lib/components/ui/button';
-	import { ArrowUpDown } from 'lucide-svelte';
-	import { Input } from '$lib/components/ui/input';
-	import DataTableActions from './data-table-actions.svelte';
-	import SelectRole from "./select-role.svelte";
+  import { createTable, Render, Subscribe, createRender } from "svelte-headless-table";
+  import { readable } from "svelte/store";
+  import * as Table from "$lib/components/ui/table";
+  import { addPagination, addSortBy, addTableFilter } from "svelte-headless-table/plugins";
+  import { Button } from "$lib/components/ui/button";
+  import { ArrowUpDown } from "lucide-svelte";
+  import { Input } from "$lib/components/ui/input";
+  import DataTableActions from "./data-table-actions.svelte";
+  import SelectRole from "./select-role.svelte";
   import SelectUser from "./select-user.svelte";
 
-	type Checker = {
-		no: number;
-		user: string;
-		jabatan: string;
-	};
-	const data: Checker[] = [
-		{
+  type Checker = {
+    no: number;
+    user: string;
+    jabatan: string;
+	role: string;
+  };
+  const data: Checker[] = [
+    {
 			no: 1,
 			user: 'User 1',
 			jabatan: 'Manager',
@@ -25,6 +26,7 @@
 			no: 2,
 			user: 'User 2',
 			jabatan: 'Manager',
+			// role: 'Admin'
 		}
 	];
 
@@ -36,53 +38,56 @@
 		})
 	});
 
-	const columns = table.createColumns([
-		table.column({
-			accessor: 'no',
-			header: 'No',
-			plugins: {
-				filter: {
-					exclude: true
-				}
-			}
-		}),
-		table.column({
+  const columns = table.createColumns([
+    table.column({
+      accessor: "no",
+      header: "No",
+      plugins: {
+        filter: {
+          exclude: true
+        }
+      }
+    }),
+    table.column({
       accessor: "user",
       header: "User",
       cell: (item) => {
         return createRender(SelectUser, { id: item.no });
       },
     }),
-		table.column({
-			accessor: 'jabatan',
-			header: 'Jabatan'
-		}),
-		table.column({
+    table.column({
+      accessor: "jabatan",
+      header: "Jabatan",
+    }),
+    table.column({
       accessor: ({ user }) => user,
       header: "Role",
       cell: (item) => {
         return createRender(SelectRole, { id: item.no });
       },
     }),
-		table.column({
-			accessor: ({ user }) => user,
-			header: 'Aksi',
-			cell: (item) => {
-				return createRender(DataTableActions, { id: item.no });
-			},
-			plugins: {
-				sort: {
-					disable: true
-				}
-			}
-		})
-	]);
+    table.column({
+      accessor: ({ user }) => user,
+      header: "Aksi",
+      cell: (item) => {
+        return createRender(DataTableActions, { id: item.no });
+      },
+      plugins: {
+        sort: {
+          disable: true
+        }
+      }
+    }),
+  ]);
 
 	const { headerRows, pageRows, tableAttrs, tableBodyAttrs, pluginStates } =
 		table.createViewModel(columns);
 
 	const { hasNextPage, hasPreviousPage, pageIndex } = pluginStates.page;
 	const { filterValue } = pluginStates.filter;
+    const { hasNextPage, hasPreviousPage, pageIndex } = pluginStates.page;
+    const { filterValue } = pluginStates.filter;
+
 </script>
 
 <div>
