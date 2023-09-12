@@ -8,34 +8,36 @@
 	import * as Form from '$lib/components/ui/form';
 	import type { SuperValidated } from 'sveltekit-superforms';
 
+		import { onMount } from 'svelte';
+		import flatpickr from 'flatpickr';
+    import 'flatpickr/dist/flatpickr.css';
+		import 'flatpickr/dist/themes/light.css';
+
+   onMount(() => {
+		flatpickr('#inputDate', {
+			mode: "range",
+			allowInput: true,
+			clickOpens: true,
+			time_24hr: true,
+			enableTime: true, // Enable time selection
+			dateFormat: 'Y-m-d H:i', // Format for both date and time
+        theme: 'light'
+		});
+	});
+
 	export let data: SuperValidated<FormSchema>;;
 
 </script>
 
 <Form.Root form={data} schema={formSchema} let:config class="space-y-8">
 	<Form.Item>
-		<Form.Field {config} name="waktu_mulai">
-			<Form.Label>Waktu Mulai</Form.Label>
-			<Form.Input
-				placeholder="Masukkan tanggal dan waktu mulai"
-				type="datetime-local"
-				id="waktu_mulai"
-				name="waktu mulai"
-				class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-			/>
-		</Form.Field>
-	</Form.Item>
-
-	<Form.Item>
-		<Form.Field {config} name="waktu_selesai">
-			<Form.Label>Waktu Selesai</Form.Label>
-			<Form.Input
-				placeholder="Masukkan tanggal dan waktu selesai"
-				id="waktu_selesai"
-				type="datetime-local"
-				name="waktu selesai"
-				class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-			/>
+		<Form.Field {config} name="periode-waktu">
+			<Form.Label for="inputDate">Periode Waktu</Form.Label>
+				<Form.Input
+				 	id="inputDate"
+					placeholder="Masukkan periode waktu"
+				/>
+			<Form.Validation />
 		</Form.Field>
 	</Form.Item>
 
