@@ -97,6 +97,15 @@
         theme: 'light'
 		});
 	});
+
+	import Svelecte from 'svelecte';
+
+  let options = [{value: 1, label: 'Agenda 1'}, {value: 2, label: 'Agenda 2'}, {value: 3, label: 'Agenda 3'}];
+
+  let labelAsValue = false;
+
+  let selection = [];
+  let value = [];
 </script>
 
 <Form.Root form={data} schema={formSchema} let:config class="space-y-8">
@@ -104,7 +113,7 @@
 		<Form.Field {config} name="perihal">
 			<Form.Label>Perihal</Form.Label>
 			<Form.Input 			bind:value={saveData.perihal}
-			on:input={(e) => (saveData.perihal = e.target.value)} placeholder="Perihal pemindahan jadwal rapat" />
+			on:input={(e) => (saveData.perihal = e.target.value)} placeholder="Perihal pemindahan jadwal risalah" />
 			<Form.Validation />
 		</Form.Field>
 	</Form.Item>
@@ -152,6 +161,20 @@
 	</Form.Item>
 
 	<Form.Item>
+		<Form.Field {config} name="agenda">
+			<Form.Label>Agenda</Form.Label>
+				<Svelecte {options} {labelAsValue}
+					bind:readSelection={selection}
+					bind:value={value}
+					multiple
+					highlightFirstItem={false}
+					placeholder="Pilih agenda"
+				></Svelecte>
+			<Form.Validation />
+		</Form.Field>
+	</Form.Item>
+
+	<Form.Item>
 		<Form.Field {config} name="download">
 			<Form.Label>Download</Form.Label>
 			{#if saveData.download}
@@ -184,3 +207,13 @@
 		</Form.Field>
 	</Form.Item>
 </Form.Root>
+
+<style>
+
+  :global(.svelecte-control) {
+    --sv-border-color: #e2e8f0 !important;
+		--sv-active-border: 1px solid #e2e8f0 !important;
+		--sv-height: 40px !important;
+  }
+	
+</style>

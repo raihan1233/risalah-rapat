@@ -51,7 +51,7 @@
 	<Form.Item>
 		<Form.Field {config} name="perihal">
 			<Form.Label>Perihal</Form.Label>
-			<Form.Input placeholder="Perihal pemindahan jadwal rapat" />
+			<Form.Input placeholder="Perihal pemindahan jadwal risalah" />
 			<Form.Validation />
 		</Form.Field>
 	</Form.Item>
