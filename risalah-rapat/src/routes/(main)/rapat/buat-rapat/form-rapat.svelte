@@ -67,20 +67,36 @@
 		});
 	});
 
+<<<<<<< HEAD
 	const handleSubmit = () => {
 		console.log(saveData);
 		// Perform form submission or other actions here
 	};
+=======
+	import Svelecte from 'svelecte';
+
+  let options = [{value: 1, label: 'Agenda 1'}, {value: 2, label: 'Agenda 2'}, {value: 3, label: 'Agenda 3'}];
+
+  let labelAsValue = false;
+
+  let selection = [];
+  let value = [];
+>>>>>>> 2da30b969250147e54ec99c16a1f6bfc0f5887ca
 </script>
 
 <Form.Root let:config class="space-y-8">
 	<Form.Item>
 		<Form.Field {config} name="perihal">
 			<Form.Label>Perihal</Form.Label>
+<<<<<<< HEAD
 			<Form.Input
 				bind:value={saveData.perihal}
 				placeholder="Perihal pemindahan jadwal rapat"
 			/>
+=======
+			<Form.Input 			bind:value={saveData.perihal}
+			on:input={(e) => (saveData.perihal = e.target.value)} placeholder="Perihal pemindahan jadwal risalah" />
+>>>>>>> 2da30b969250147e54ec99c16a1f6bfc0f5887ca
 			<Form.Validation />
 		</Form.Field>
 	</Form.Item>
@@ -132,6 +148,20 @@
 	</Form.Item>
 
 	<Form.Item>
+		<Form.Field {config} name="agenda">
+			<Form.Label>Agenda</Form.Label>
+				<Svelecte {options} {labelAsValue}
+					bind:readSelection={selection}
+					bind:value={value}
+					multiple
+					highlightFirstItem={false}
+					placeholder="Pilih agenda"
+				></Svelecte>
+			<Form.Validation />
+		</Form.Field>
+	</Form.Item>
+
+	<Form.Item>
 		<Form.Field {config} name="download">
 			<Form.Label>Download</Form.Label>
 			{#if saveData.download}
@@ -164,3 +194,13 @@
 		<button type="button" class="btn" on:click={handleSubmit}>Submit</button>
 	</div>
 </Form.Root>
+
+<style>
+
+  :global(.svelecte-control) {
+    --sv-border-color: #e2e8f0 !important;
+		--sv-active-border: 1px solid #e2e8f0 !important;
+		--sv-height: 40px !important;
+  }
+	
+</style>
