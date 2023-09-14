@@ -88,8 +88,6 @@
 				bind:value={saveData.perihal}
 				placeholder="Perihal pemindahan jadwal rapat"
 			/>
-			<Form.Input 			bind:value={saveData.perihal}
-			on:input={(e) => (saveData.perihal = e.target.value)} placeholder="Perihal pemindahan jadwal risalah" />
 			<Form.Validation />
 		</Form.Field>
 	</Form.Item>
