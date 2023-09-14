@@ -13,57 +13,42 @@
 	const data = [
 		{
 			'No_Urut': 1,
-			'Pilih_User': 'Team Meeting',
-			'Nama_Jabatan': 'Ruang Rapat Awu Lantai 3',
-			'Role': 'Mas Bagus'
+			'Pilih_User': 'Mas Bagus',
+			'Nama_Jabatan': 'Manager IT',
+			'Role': 'Checker'
 		},
 		{
 			'No_Urut': 2,
-			'Pilih_User': 'Team Meeting',
-			'Nama_Jabatan': 'Ruang Rapat Awu Lantai 3',
-			'Role': 'Mas Bagus'
+			'Pilih_User': 'Mas Wahyu',
+			'Nama_Jabatan': 'Pegawai IT',
+			'Role': 'Approver'
 		},
-		{
-			'No_Urut': 3,
-			'Pilih_User': 'Team Meeting',
-			'Nama_Jabatan': 'Ruang Rapat Awu Lantai 3',
-			'Role': 'Mas Bagus'
-		},
-		{
-			'No_Urut': 4,
-			'Pilih_User': 'Team Meeting',
-			'Nama_Jabatan': 'Ruang Rapat Awu Lantai 3',
-			'Role': 'Mas Bagus'
-		},
-		{
-			'No_Urut': 5,
-			'Pilih_User': 'Team Meeting',
-			'Nama_Jabatan': 'Ruang Rapat Awu Lantai 3',
-			'Role': 'Mas Bagus'
-		}
+		// Add more data as needed
 	];
 
 	// Define the select options for "Pilih User"
-	const selectUserOptions = [
-		'Mas Bagus',
-		'Mas Wahyu',
-		'Mas Fahri',
-	];
+	const selectUserOptions = data.map(user => user.Pilih_User);
 
-	// define the select options for "pilih role"
+	// Define the select options for "Pilih Role"
 	const selectRoleOptions = [
 		'Checker',
 		'Approver',
 		'Tembusan',
 	];
 
+	let table; // Declare table variable
+
+	const handleUserSelectionChange = (event, rowIndex) => {
+		const selectedValue = event.target.value;
+		const namaJabatan = data.find(user => user.Pilih_User === selectedValue)?.Nama_Jabatan || '';
+		table.cell(rowIndex, 2).data(namaJabatan).draw();
+	};
+
 	onMount(async () => {
-		// const response = await fetch('https://jsonplaceholder.typicode.com/users');
-		// const userData = await response.json();
 		const userData = data;
 		tableData = userData.map((user) => [
 			user.No_Urut,
-			`<select class='block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6 px-3 m-1'>
+			`<select class='block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6 m-1.5' onchange="handleUserSelectionChange(event, this.parentNode.parentNode.rowIndex)">
 				${selectUserOptions.map(option => `
 					<option ${option === user.Pilih_User ? 'selected' : ''}>${option}</option>
 				`).join('')}
@@ -76,12 +61,17 @@
 			</select>`,
 		]);
 
-		// initialize datatables
+		// Initialize datatables and add event listener for select input changes
 		table = new DataTable('#myTable', {
 			data: tableData,
 			columns: [
 				{ title: 'No Urut' },
-				{ title: 'Pilih User' },
+				{ title: 'Pilih User', createdCell: function (cell, cellData, rowData, rowIndex, colIndex) {
+					cell.innerHTML = cellData; // Set the select input HTML
+					cell.querySelector('select').addEventListener('change', (event) => {
+						handleUserSelectionChange(event, rowIndex);
+					});
+				}},
 				{ title: 'Nama Jabatan' },
 				{ title: 'Role' },
 				{ title: 'Aksi' }

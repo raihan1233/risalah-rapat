@@ -66,13 +66,10 @@
 			theme: 'light'
 		});
 	});
-
-<<<<<<< HEAD
 	const handleSubmit = () => {
 		console.log(saveData);
 		// Perform form submission or other actions here
 	};
-=======
 	import Svelecte from 'svelecte';
 
   let options = [{value: 1, label: 'Agenda 1'}, {value: 2, label: 'Agenda 2'}, {value: 3, label: 'Agenda 3'}];
@@ -81,22 +78,18 @@
 
   let selection = [];
   let value = [];
->>>>>>> 2da30b969250147e54ec99c16a1f6bfc0f5887ca
 </script>
 
 <Form.Root let:config class="space-y-8">
 	<Form.Item>
 		<Form.Field {config} name="perihal">
 			<Form.Label>Perihal</Form.Label>
-<<<<<<< HEAD
 			<Form.Input
 				bind:value={saveData.perihal}
 				placeholder="Perihal pemindahan jadwal rapat"
 			/>
-=======
 			<Form.Input 			bind:value={saveData.perihal}
 			on:input={(e) => (saveData.perihal = e.target.value)} placeholder="Perihal pemindahan jadwal risalah" />
->>>>>>> 2da30b969250147e54ec99c16a1f6bfc0f5887ca
 			<Form.Validation />
 		</Form.Field>
 	</Form.Item>

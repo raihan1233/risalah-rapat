@@ -33,7 +33,7 @@
 		"flatpickr": "^4.6.13",
 		"formsnap": "^0.0.9",
 		"lucide-svelte": "^0.275.0-beta.0",
-		"svelecte": "^3.17.1",
+		"svelecte": "^3.17.2",
 		"sveltekit-superforms": "^1.6.1",
 		"sweetalert2": "^11.7.27",
 		"tailwind-merge": "^1.14.0",
