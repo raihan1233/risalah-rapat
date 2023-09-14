@@ -8,6 +8,18 @@
   import { Input } from "$lib/components/ui/input";
   import DataTableActions from "./data-table-actions.svelte";
   import AddUser from "./add-user.svelte";
+	import EditUser from "./edit-user.svelte";
+
+  
+  function updateData(updatedUserData) {
+  // Find the index of the user data you want to update
+  const index = data.findIndex(user => user.no === updatedUserData.no);
+
+  // If the user is found, update the data array
+  if (index !== -1) {
+    data[index] = updatedUserData;
+  }
+}
 
   type User = {
     no: number;
@@ -127,7 +139,7 @@
       accessor: ({ nama_lengkap }) => nama_lengkap,
       header: "Aksi",
       cell: (item) => {
-        return createRender(DataTableActions, { id: item.no });
+        return createRender(EditUser, { user: item, updateData });
       },
       plugins: {
         sort: {

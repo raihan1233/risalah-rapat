@@ -1,5 +1,5 @@
-<script lang="ts">
-  import * as Select from "$lib/components/ui/select";
+<script>
+	import * as Select from '$lib/components/ui/select';
 </script>
 
 <Select.Root>

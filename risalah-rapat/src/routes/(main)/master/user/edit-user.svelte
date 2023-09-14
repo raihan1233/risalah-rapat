@@ -8,7 +8,16 @@
   import Swal from 'sweetalert2';
   import { Pencil } from "lucide-svelte";
 
+  export let user; // Receive the user data from data-table.page
+  export let updateData; // Receive the updateData function from data-table.page
+
   const saveData = () => {
+    user.nama_lengkap = "New Name"; // Update with the new name
+    user.status = "Aktif";
+
+    updateData(user);
+    console.log("update user data: ", user);
+    
 		Swal.fire({
 			icon: 'success',
 			title: 'Data berhasil disimpan',

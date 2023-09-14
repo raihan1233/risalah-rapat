@@ -1,172 +1,103 @@
-<script lang="ts">
-	import { createTable, Render, Subscribe, createRender } from 'svelte-headless-table';
-	import { readable, writable } from 'svelte/store';
-	import * as Table from '$lib/components/ui/table';
-	import { addPagination, addSortBy, addTableFilter } from 'svelte-headless-table/plugins';
-	import { Button } from '$lib/components/ui/button';
-	import { ArrowUpDown } from 'lucide-svelte';
-	import { Input } from '$lib/components/ui/input';
-	import DataTableActions from './data-table-actions.svelte';
-	import SelectRole from './select-role.svelte';
-	import SelectUser from './select-user.svelte';
+<script>
+	import { onMount } from 'svelte';
+	import DataTable from 'datatables.net-dt';
+	import 'datatables.net-dt/css/jquery.dataTables.css';
 
-	type Checker = {
-		no: Number;
-		user: string;
-		jabatan: string;
-		role: string;
+	// Isi tabel dengan data (contoh data statis)
+	let tableData = [];
+
+	const redirectPage = () => {
+		window.location.href = 'rapat/daftar-rapat';
 	};
 
-	const data: Checker[] = [
+	const data = [
 		{
-			no: 1,
-			user: 'User 1',
-			jabatan: 'Manager',
-			role: 'Admin'
+			'No_Urut': 1,
+			'Pilih_User': 'Team Meeting',
+			'Nama_Jabatan': 'Ruang Rapat Awu Lantai 3',
+			'Role': 'Mas Bagus'
 		},
 		{
-			no: 2,
-			user: 'User 2',
-			jabatan: 'Manager',
-			role: 'Admin'
+			'No_Urut': 2,
+			'Pilih_User': 'Team Meeting',
+			'Nama_Jabatan': 'Ruang Rapat Awu Lantai 3',
+			'Role': 'Mas Bagus'
+		},
+		{
+			'No_Urut': 3,
+			'Pilih_User': 'Team Meeting',
+			'Nama_Jabatan': 'Ruang Rapat Awu Lantai 3',
+			'Role': 'Mas Bagus'
+		},
+		{
+			'No_Urut': 4,
+			'Pilih_User': 'Team Meeting',
+			'Nama_Jabatan': 'Ruang Rapat Awu Lantai 3',
+			'Role': 'Mas Bagus'
+		},
+		{
+			'No_Urut': 5,
+			'Pilih_User': 'Team Meeting',
+			'Nama_Jabatan': 'Ruang Rapat Awu Lantai 3',
+			'Role': 'Mas Bagus'
 		}
 	];
 
-	let nextNo = data.length + 1;
+	// Define the select options for "Pilih User"
+	const selectUserOptions = [
+		'Mas Bagus',
+		'Mas Wahyu',
+		'Mas Fahri',
+	];
 
-	// Create a writable store to manage the table data
-	const tableData = writable<Checker[]>(data);
+	// define the select options for "pilih role"
+	const selectRoleOptions = [
+		'Checker',
+		'Approver',
+		'Tembusan',
+	];
 
-	// Function to add a new row to the table data
-	function addNewRow() {
-		const newRow: Checker = {
-			no: nextNo, // Automatically increment the 'no' field
-			user: 'New User', // You can set default values here
-			jabatan: 'New Jabatan', // You can set default values here
-			role: 'New Role' // You can set default values here
-		};
-		nextNo++;
-		tableData.update((data) => [...data, newRow]);
-		console.log(tableData);
+	onMount(async () => {
+		// const response = await fetch('https://jsonplaceholder.typicode.com/users');
+		// const userData = await response.json();
+		const userData = data;
+		tableData = userData.map((user) => [
+			user.No_Urut,
+			`<select class='block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6 px-3 m-1'>
+				${selectUserOptions.map(option => `
+					<option ${option === user.Pilih_User ? 'selected' : ''}>${option}</option>
+				`).join('')}
+			</select>`,
+			user.Nama_Jabatan,
+			`<select class='block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6 px-3 m-1'>
+				${selectRoleOptions.map(option => `
+					<option ${option === user.Role ? 'selected' : ''}>${option}</option>
+				`).join('')}
+			</select>`,
+		]);
 
-		console.log(newRow);
-	}
-
-	const table = createTable(tableData, {
-		page: addPagination(),
-		sort: addSortBy(),
-		filter: addTableFilter({
-			fn: ({ filterValue, value }) => value.toLowerCase().includes(filterValue.toLowerCase())
-		})
+		// initialize datatables
+		table = new DataTable('#myTable', {
+			data: tableData,
+			columns: [
+				{ title: 'No Urut' },
+				{ title: 'Pilih User' },
+				{ title: 'Nama Jabatan' },
+				{ title: 'Role' },
+				{ title: 'Aksi' }
+			],
+			columnDefs: [
+				{
+					targets: 4,
+					render: function (data, type, row) {
+						return `<button type="button" class="btn btn-success" on:click={redirectPage} >Details</button>`;
+					}
+				}
+			]
+		});
 	});
-
-	const columns = table.createColumns([
-		table.column({
-			accessor: 'no',
-			header: 'No',
-			plugins: {
-				filter: {
-					exclude: true
-				}
-			}
-		}),
-		table.column({
-			accessor: 'user',
-			header: 'User',
-			cell: (item) => {
-				return createRender(SelectUser, { id: item.no });
-			}
-		}),
-		table.column({
-			accessor: 'jabatan',
-			header: 'Jabatan'
-		}),
-		table.column({
-			accessor: ({ user }) => user,
-			header: 'Role',
-			cell: (item) => {
-				return createRender(SelectRole, { id: item.no });
-			}
-		}),
-		table.column({
-			accessor: ({ user }) => user,
-			header: 'Aksi',
-			cell: (item) => {
-				return createRender(DataTableActions, { id: item.no });
-			},
-			plugins: {
-				sort: {
-					disable: true
-				}
-			}
-		})
-	]);
-
-	const { headerRows, pageRows, tableAttrs, tableBodyAttrs, pluginStates } =
-		table.createViewModel(columns);
-
-	const { hasNextPage, hasPreviousPage, pageIndex } = pluginStates.page;
-	const { filterValue } = pluginStates.filter;
 </script>
 
-<div>
-	<div class="flex items-center py-4 justify-between">
-		<Button variant="outline" on:click={addNewRow}>Tambah</Button>
-		<Input class="max-w-sm" placeholder="Cari di sini..." type="text" bind:value={$filterValue} />
-	</div>
-	<div class="rounded-md border">
-		<Table.Root {...$tableAttrs}>
-			<Table.Header>
-				{#each $headerRows as headerRow}
-					<Subscribe rowAttrs={headerRow.attrs()}>
-						<Table.Row>
-							{#each headerRow.cells as cell (cell.id)}
-								<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
-									<Table.Head {...attrs}>
-										{#if cell.id === 'Aksi'}
-											<Render of={cell.render()} />
-										{:else}
-											<Button variant="ghost" on:click={props.sort.toggle}>
-												<Render of={cell.render()} />
-												<ArrowUpDown class={'ml-2 h-4 w-4'} />
-											</Button>
-										{/if}
-									</Table.Head>
-								</Subscribe>
-							{/each}
-						</Table.Row>
-					</Subscribe>
-				{/each}
-			</Table.Header>
-			<Table.Body {...$tableBodyAttrs}>
-				{#each $pageRows as row (row.id)}
-					<Subscribe rowAttrs={row.attrs()} let:rowAttrs>
-						<Table.Row {...rowAttrs}>
-							{#each row.cells as cell (cell.id)}
-								<Subscribe attrs={cell.attrs()} let:attrs>
-									<Table.Cell {...attrs}>
-										<Render of={cell.render()} />
-									</Table.Cell>
-								</Subscribe>
-							{/each}
-						</Table.Row>
-					</Subscribe>
-				{/each}
-			</Table.Body>
-		</Table.Root>
-	</div>
-	<div class="flex items-center justify-end space-x-2 py-4">
-		<Button
-			variant="outline"
-			size="sm"
-			on:click={() => ($pageIndex = $pageIndex - 1)}
-			disabled={!$hasPreviousPage}>Previous</Button
-		>
-		<Button
-			variant="outline"
-			size="sm"
-			disabled={!$hasNextPage}
-			on:click={() => ($pageIndex = $pageIndex + 1)}>Next</Button
-		>
-	</div>
-</div>
+<table id="myTable" class="display cell-border">
+	<tbody />
+</table>
