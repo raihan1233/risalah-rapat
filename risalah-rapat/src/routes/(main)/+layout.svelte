@@ -195,13 +195,6 @@
 									>Master User</a
 								>
 							</li>
-							<li>
-								<a
-									href="/master/agenda"
-									class="flex items-center w-full p-2 text-gray-300 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-									>Master Agenda</a
-								>
-							</li>
 						</ul>
 					</li>
 				</ul>
