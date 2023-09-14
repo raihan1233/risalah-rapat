@@ -70,14 +70,9 @@
 		console.log(saveData);
 		// Perform form submission or other actions here
 	};
-	import Svelecte from 'svelecte';
+		import Tags from "svelte-tags-input";
 
-  let options = [{value: 1, label: 'Agenda 1'}, {value: 2, label: 'Agenda 2'}, {value: 3, label: 'Agenda 3'}];
-
-  let labelAsValue = false;
-
-  let selection = [];
-  let value = [];
+	let tags = [];
 </script>
 
 <Form.Root let:config class="space-y-8">
@@ -141,13 +136,9 @@
 	<Form.Item>
 		<Form.Field {config} name="agenda">
 			<Form.Label>Agenda</Form.Label>
-				<Svelecte {options} {labelAsValue}
-					bind:readSelection={selection}
-					bind:value={value}
-					multiple
-					highlightFirstItem={false}
-					placeholder="Pilih agenda"
-				></Svelecte>
+				<div class="agenda-input">
+					<Tags bind:tags={tags} addKeys={[13]} removeKeys={[8]} placeholder={"Masukkan agenda"} />
+				</div>
 			<Form.Validation />
 		</Form.Field>
 	</Form.Item>
@@ -186,12 +177,15 @@
 	</div>
 </Form.Root>
 
-<style>
+<style>	
+.agenda-input :global(.svelte-tags-input-layout){
+	border: 1px solid #e2e8f0 !important;
+	border-radius: 6px;
+	height: 40px !important;
+}
 
-  :global(.svelecte-control) {
-    --sv-border-color: #e2e8f0 !important;
-		--sv-active-border: 1px solid #e2e8f0 !important;
-		--sv-height: 40px !important;
-  }
-	
+.agenda-input :global(.svelte-tags-input-tag) {
+	background:#0ea5e9 !important;
+}
+
 </style>
