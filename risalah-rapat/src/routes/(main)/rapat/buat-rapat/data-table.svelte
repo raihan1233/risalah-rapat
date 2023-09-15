@@ -69,6 +69,16 @@
 		}
 	};
 
+	const moveRowDown = (index) => {
+		if (index < tableData.length - 1) {
+			const currentRow = tableData[index];
+			const nextRow = tableData[index + 1];
+			tableData[index] = nextRow;
+			tableData[index + 1] = currentRow;
+			updateButtonVisibility();
+		}
+	};
+
 	const handleUserSelectionChange = (event, rowIndex) => {
 		const selectedValue = event.target.value;
 		const namaJabatan = data.find((user) => user.Pilih_User === selectedValue)?.Nama_Jabatan || '';
@@ -79,9 +89,9 @@
 		if (index === 0) {
 			return [''];
 		} else if (index === tableData.length - 1) {
-			return ['Delete', 'Down'];
-		} else if (index === 1) {
 			return ['Delete', 'Up'];
+		} else if (index === 1) {
+			return ['Delete', 'Down'];
 		} else {
 			return ['Delete', 'Up', 'Down'];
 		}
@@ -163,7 +173,10 @@
 								</button>
 							{/if}
 							{#if aksiOption === 'Down'}
-								<button class="bg-sky-500 hover:bg-sky-700 text-white py-1 px-2 rounded">
+								<button
+									class="bg-sky-500 hover:bg-sky-700 text-white py-1 px-2 rounded"
+									on:click={() => moveRowDown(index)}
+								>
 									<ArrowDownCircle class="w-5 h-5 mr-2" />
 									Down
 								</button>
