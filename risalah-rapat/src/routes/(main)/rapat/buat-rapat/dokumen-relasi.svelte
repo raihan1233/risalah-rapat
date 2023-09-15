@@ -5,6 +5,7 @@
 	import Swal from 'sweetalert2';
 	import { Input } from "$lib/components/ui/input";
   import { Label } from "$lib/components/ui/label";
+	import { PlusCircle } from 'lucide-svelte';
 
 	const saveData = () => {
 		Swal.fire({
@@ -17,7 +18,10 @@
 </script>
 
 <Dialog.Root>
-	<Dialog.Trigger class={buttonVariants({ variant: 'outline' })}>Tambah</Dialog.Trigger>
+	<Dialog.Trigger class={buttonVariants({ variant: 'defalut', className: "bg-sky-500 hover:bg-sky-700 text-white" })}>
+		<PlusCircle class="w-5 h-5 mr-2" />
+		Tambah
+	</Dialog.Trigger>
 	<Dialog.Content class="sm:max-w-[425px]">
 		<Dialog.Header>
 			<Dialog.Title>Tambah Dokumen Relasi</Dialog.Title>

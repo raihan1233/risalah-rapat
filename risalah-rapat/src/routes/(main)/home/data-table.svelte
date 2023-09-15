@@ -1,23 +1,22 @@
 <script lang="ts">
 	import { createTable, Render, Subscribe, createRender } from 'svelte-headless-table';
 	import { readable } from 'svelte/store';
-	import * as Table from '$lib/components/ui/table';
+	// import * as Table from '$lib/components/ui/table';
 	import { addPagination, addSortBy, addTableFilter } from 'svelte-headless-table/plugins';
 	import { Button } from '$lib/components/ui/button';
 	import { ArrowUpDown } from 'lucide-svelte';
 	import { Input } from '$lib/components/ui/input';
 	import DataTableActions from './data-table-actions.svelte';
+  import { Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell, TableSearch } from 'flowbite-svelte';
+	import { Badge } from "$lib/components/ui/badge";
 
-	type Home = {
-		no: number;
-		waktu: string;
-		notulen: string;
-		perihal: string;
-		tempat: string;
-		tipe: string;
-		status: 'Approve';
-	};
-	const data: Home[] = [
+	import { goto } from '$app/navigation';
+
+	const directToDetailRapat = () => {
+		goto(`/rapat/detail-rapat/`);
+	}
+
+	const data = [
 		{
 			no: 1,
 			waktu: '2023-09-08 09:00 AM',
@@ -34,7 +33,7 @@
 			perihal: 'marketing Meeting',
 			tempat: 'zoom Meeting',
 			tipe: 'external',
-			status: 'Approve'
+			status: 'Terkirim'
 		},
 		{
 			no: 3,
@@ -43,7 +42,7 @@
 			perihal: 'team Building Planning',
 			tempat: 'cafeteria',
 			tipe: 'internal',
-			status: 'Approve'
+			status: 'Belum Approve'
 		},
 		{
 			no: 4,
@@ -52,7 +51,7 @@
 			perihal: 'financial Review',
 			tempat: 'boardroom',
 			tipe: 'internal',
-			status: 'Approve'
+			status: 'Terkirim'
 		},
 		{
 			no: 5,
@@ -61,7 +60,7 @@
 			perihal: 'product Launch Meeting',
 			tempat: 'conference Room B',
 			tipe: 'internal',
-			status: 'Approve'
+			status: 'Belum Approve'
 		},
 		{
 			no: 6,
@@ -70,7 +69,7 @@
 			perihal: 'quarterly Goals Meeting',
 			tempat: 'zoom Meeting',
 			tipe: 'internal',
-			status: 'Approve'
+			status: 'Belum Approve'
 		},
 		{
 			no: 7,
@@ -79,7 +78,7 @@
 			perihal: 'project Timeline Review',
 			tempat: 'boardroom',
 			tipe: 'internal',
-			status: 'Approve'
+			status: 'Belum Approve'
 		},
 		{
 			no: 8,
@@ -91,126 +90,67 @@
 			status: 'Approve'
 		}
 	];
-	const table = createTable(readable(data), {
-		page: addPagination(),
-		sort: addSortBy(),
-		filter: addTableFilter({
-			fn: ({ filterValue, value }) => value.toLowerCase().includes(filterValue.toLowerCase())
-		})
-	});
 
-	const columns = table.createColumns([
-		table.column({
-			accessor: 'no',
-			header: 'No',
-			plugins: {
-				filter: {
-					exclude: true
-				}
-			}
-		}),
-		table.column({
-			accessor: 'waktu',
-			header: 'Waktu'
-		}),
-		table.column({
-			accessor: 'notulen',
-			header: 'Notulen',
-		}),
-		table.column({
-			accessor: 'perihal',
-			header: 'Perihal',
-		}),
-		table.column({
-			accessor: 'tempat',
-			header: 'Tempat'
-		}),
-		table.column({
-			accessor: 'tipe',
-			header: 'Tipe',
-		}),
-		table.column({
-			accessor: 'status',
-			header: 'Status',
-		}),
-		table.column({
-      accessor: ({ notulen }) => notulen,
-      header: "Aksi",
-      cell: (item) => {
-        return createRender(DataTableActions, { id: item.no });
-      },
-      plugins: {
-        sort: {
-          disable: true
-        }
-      }
-    }),
-	]);
+	  function getBadgeColor(status) {
+    switch (status) {
+      case 'Approve':
+        return 'bg-emerald-500 hover:bg-emerald-700';
+      case 'Terkirim':
+        return 'bg-sky-500 hover:bg-sky-700';
+      default:
+        return 'bg-gray-500 hover:bg-gray-700';
+    }
+  }
 
-	const { headerRows, pageRows, tableAttrs, tableBodyAttrs, pluginStates } =
-		table.createViewModel(columns);
+	  const formattedData = data.map(row => ({
+    ...row,
+    badgeColor: getBadgeColor(row.status) 
+  }));
+	</script>
 
-	const { hasNextPage, hasPreviousPage, pageIndex } = pluginStates.page;
-	const { filterValue } = pluginStates.filter;
-</script>
 
-<div>
-	<div class="flex items-center py-4 justify-end">
-		<Input class="w-full sm:max-w-xs" placeholder="Cari di sini..." type="text" bind:value={$filterValue} />
-	</div>
-	<div class="rounded-md border overflow-x-auto">
-		<Table.Root {...$tableAttrs}>
-			<Table.Header>
-				{#each $headerRows as headerRow}
-					<Subscribe rowAttrs={headerRow.attrs()}>
-						<Table.Row>
-							{#each headerRow.cells as cell (cell.id)}
-								<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
-									<Table.Head {...attrs}>
-										{#if cell.id === 'Aksi'}
-											<Render of={cell.render()} />
-										{:else}
-											<Button variant="ghost" on:click={props.sort.toggle}>
-												<Render of={cell.render()} />
-												<ArrowUpDown class={'ml-2 h-4 w-4'} />
-											</Button>
-										{/if}
-									</Table.Head>
-								</Subscribe>
-							{/each}
-						</Table.Row>
-					</Subscribe>
-				{/each}
-			</Table.Header>
-			<Table.Body {...$tableBodyAttrs}>
-				{#each $pageRows as row (row.id)}
-					<Subscribe rowAttrs={row.attrs()} let:rowAttrs>
-						<Table.Row {...rowAttrs}>
-							{#each row.cells as cell (cell.id)}
-								<Subscribe attrs={cell.attrs()} let:attrs>
-									<Table.Cell {...attrs}>
-										<Render of={cell.render()} />
-									</Table.Cell>
-								</Subscribe>
-							{/each}
-						</Table.Row>
-					</Subscribe>
-				{/each}
-			</Table.Body>
-		</Table.Root>
-	</div>
-	<div class="flex items-center justify-end space-x-2 py-4">
-		<Button
-			variant="outline"
-			size="sm"
-			on:click={() => ($pageIndex = $pageIndex - 1)}
-			disabled={!$hasPreviousPage}>Previous</Button
-		>
-		<Button
-			variant="outline"
-			size="sm"
-			disabled={!$hasNextPage}
-			on:click={() => ($pageIndex = $pageIndex + 1)}>Next</Button
-		>
-	</div>
-</div>
+	<Table shadow>
+		<TableHead class="text-sm">
+			<!-- <tr> -->
+				<TableHeadCell class="!p-4">No</TableHeadCell>
+				<TableHeadCell class="!p-4">Waktu</TableHeadCell>
+				<TableHeadCell class="!p-4">Notulen</TableHeadCell>
+				<TableHeadCell class="!p-4">Perihal</TableHeadCell>
+				<TableHeadCell class="!p-4">Tempat</TableHeadCell>
+				<TableHeadCell class="!p-4">Tipe</TableHeadCell>
+				<TableHeadCell class="!p-4">Status</TableHeadCell>
+				<TableHeadCell class="!p-4">Aksi</TableHeadCell>
+			<!-- </tr> -->
+		</TableHead>
+		<TableBody>
+			{#each data as row, index (row.no)}
+				<TableBodyRow>
+					<TableBodyCell class="!p-4">{row.no}</TableBodyCell>
+					<TableBodyCell class="!p-4">
+						{row.waktu}
+					</TableBodyCell>
+					<TableBodyCell class="!p-4">{row.notulen}</TableBodyCell>
+					<TableBodyCell class="!p-4">
+						{row.perihal}
+					</TableBodyCell>
+					<TableBodyCell class="!p-4">{row.tempat}</TableBodyCell>
+					<TableBodyCell class="!p-4">{row.tipe}</TableBodyCell>
+					<TableBodyCell class="!p-4">
+						 <Badge class={`w-full flex justify-center ${getBadgeColor(row.status)}`}>
+								{#if row.status === 'Terkirim' || row.status === 'Approve'}
+									{row.waktu}
+								{:else}
+									{row.status}
+								{/if}
+        			</Badge>
+					</TableBodyCell>
+					<TableBodyCell class="!p-4">
+							<Button
+									class="bg-emerald-500 hover:bg-emerald-700"
+									on:click={directToDetailRapat}>Detail</Button
+								>
+					</TableBodyCell>
+				</TableBodyRow>
+			{/each}
+		</TableBody>
+	</Table>
