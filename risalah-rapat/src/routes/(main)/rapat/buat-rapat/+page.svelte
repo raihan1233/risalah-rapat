@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { PageData } from './$types';
 	import FormRapat from './form-rapat.svelte';
 	import DataTable from './data-table.svelte';
 	import * as Card from '$lib/components/ui/card';
@@ -27,8 +26,6 @@
 			timer: 1500
 		});
 	};
-
-	export let data: PageData;
 	let isSwitchOn = true;
 
 	// Function to programmatically toggle the switch
@@ -48,7 +45,7 @@
 				<h2 class="text-3xl font-bold tracking-tight">Buat Risalah</h2>
 		</Card.Header>
 		<Card.Content>
-					<FormRapat data={data.form} />
+					<FormRapat />
 		</Card.Content>
 	</Card.Root>
 

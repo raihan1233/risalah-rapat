@@ -75,15 +75,6 @@
 	// 	}
 	// };
 
-	// const moveRowDown = (index) => {
-	// 	if (index < tableData.length - 1) {
-	// 		const currentRow = tableData[index];
-	// 		const nextRow = tableData[index + 1];
-	// 		tableData[index] = nextRow;
-	// 		tableData[index + 1] = currentRow;
-	// 		updateButtonVisibility();
-	// 	}
-	// };
 
 	const moveRowUp = (index) => {
     if (index === 1) {

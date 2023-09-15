@@ -1,34 +1,11 @@
-<script lang="ts" context="module">
-	import { z } from 'zod';
-	export const formSchema = z.object({
-		perihal: z
-			.string()
-			.min(2, 'Perihal minimal harus 2 karakter.')
-			.max(50, 'Perihal tidak boleh lebih dari 50 karakter.'),
-		// waktu_mulai: z
-		// 	.string({ required_error: "Mohon pilih waktu mulai" })
-		// 	.datetime(),
-		// waktu_selesai: z
-		// 	.string({ required_error: "Mohon pilih waktu selesai" })
-		// 	.datetime(),
-		tempat: z.enum(['one', 'two', 'three'], {
-			invalid_type_error: 'Pilih tempat',
-			required_error: 'Mohon pilih tempat.'
-		}),
-		template: z.enum(['one', 'two', 'three'], {
-			invalid_type_error: 'Pilih template',
-			required_error: 'Mohon pilih template.'
-		})
-	});
-	export type FormSchema = typeof formSchema;
-</script>
-
-<script lang="ts">
+<script>
 	import { onMount } from 'svelte';
-	import * as Form from '$lib/components/ui/form';
 	import flatpickr from 'flatpickr';
 	import 'flatpickr/dist/flatpickr.css';
 	import 'flatpickr/dist/themes/light.css';
+	import Tags from 'svelte-tags-input';
+
+	let tags = [];
 
 	let saveData = {
 		perihal: '',
@@ -37,7 +14,7 @@
 		template: '',
 		download: '',
 		updateTemp: ''
-	};	
+	};
 
 	let templateOptions = [
 		{ value: 'first.pdf', label: 'Template One', downloadLink: '/files/template1.pdf' },
@@ -46,7 +23,7 @@
 	]; // Store template options fetched from API
 
 	const updateDownloadLink = () => {
-		const selectedOption = templateOptions.find((option) => option.value === saveData.template);
+		const selectedOption = templateOptions.find((option) => option.label === saveData.template);
 		saveData.download = selectedOption ? selectedOption.downloadLink : '';
 	};
 
@@ -55,137 +32,131 @@
 		updateDownloadLink();
 	}
 
+	const handleTemplateChange = (event) => {
+		saveData.template = event.target.value;
+		updateDownloadLink();
+	};
+
 	onMount(() => {
-		flatpickr('#inputDate', {
+		flatpickr('#periode-rapat', {
 			mode: 'range',
 			allowInput: true,
 			clickOpens: true,
 			time_24hr: true,
-			enableTime: true, // Enable time selection
-			dateFormat: 'Y-m-d H:i', // Format for both date and time
+			enableTime: true,
+			dateFormat: 'Y-m-d H:i',
 			theme: 'light'
 		});
 	});
-	const handleSubmit = () => {
-		console.log(saveData);
-		// Perform form submission or other actions here
-	};
-		import Tags from "svelte-tags-input";
-
-	let tags = [];
 </script>
 
-<Form.Root let:config class="space-y-8">
-	<Form.Item>
-		<Form.Field {config} name="perihal">
-			<Form.Label>Perihal</Form.Label>
-			<Form.Input
-				bind:value={saveData.perihal}
-				placeholder="Perihal pemindahan jadwal rapat"
-			/>
-			<Form.Validation />
-		</Form.Field>
-	</Form.Item>
-
-	<Form.Item>
-		<Form.Field {config} name="periode-waktu">
-			<Form.Label for="inputDate">Periode Waktu</Form.Label>
-			<Form.Input
-				id="inputDate"
-				placeholder="Masukkan periode waktu"
-				bind:value={saveData.periode}
-			/>
-			<Form.Validation />
-		</Form.Field>
-	</Form.Item>
-
-	<Form.Item>
-		<Form.Field {config} name="tempat">
-			<Form.Label>Tempat</Form.Label>
-			<Form.Select
-				bind:value={saveData.tempat}
-			>
-				<Form.SelectTrigger placeholder="Pilih tempat" />
-				<Form.SelectContent>
-					<Form.SelectItem value="one" label="One">One</Form.SelectItem>
-					<Form.SelectItem value="two" label="Two">Two</Form.SelectItem>
-					<Form.SelectItem value="three" label="Three">Three</Form.SelectItem>
-				</Form.SelectContent>
-			</Form.Select>
-			<Form.Validation />
-		</Form.Field>
-	</Form.Item>
-
-	<Form.Item>
-		<Form.Field {config} name="template">
-			<Form.Label>Template</Form.Label>
-			<Form.Select bind:value={saveData.template}>
-				<Form.SelectTrigger placeholder="Pilih template" />
-				<Form.SelectContent>
-					{#each templateOptions as option (option.value)}
-						<Form.SelectItem value={option.value} label={option.label} key={option.value}>
-							{option.label}
-						</Form.SelectItem>
-					{/each}
-				</Form.SelectContent>
-			</Form.Select>
-			<Form.Validation />
-		</Form.Field>
-	</Form.Item>
-
-	<Form.Item>
-		<Form.Field {config} name="agenda">
-			<Form.Label>Agenda</Form.Label>
-				<div class="agenda-input">
-					<Tags bind:tags={tags} addKeys={[13]} removeKeys={[8]} placeholder={"Masukkan agenda"} />
+<form>
+	<div class="space-y-12">
+		<div class="border-b border-gray-900/10 pb-12">
+			<div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+				<div class="col-span-full">
+					<label for="perihal" class="block text-sm font-medium leading-6 text-gray-900">Perihal</label>
+					<div class="mt-2">
+						<input
+							bind:value={saveData.perihal}
+							placeholder="Perihal pemindahan jadwal rapat"
+							type="text"
+							name="perihal"
+							id="perihal"
+							class="block w-full rounded-md px-3 py-3 border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+						/>
+					</div>
 				</div>
-			<Form.Validation />
-		</Form.Field>
-	</Form.Item>
 
-	<Form.Item>
-		<Form.Field {config} name="download">
-			<Form.Label>Download</Form.Label>
-			{#if saveData.download}
-				<a href={saveData.download} id="downloadLink" class="form-control" download="{saveData.template}">
-					{saveData.template}
-				</a>
-			{:else}
-				<p>No template selected</p>
-			{/if}
-		</Form.Field>
-	</Form.Item>
+				<div class="col-span-full">
+					<label for="periode-rapat" class="block text-sm font-medium leading-6 text-gray-900">Periode Rapat</label>
+					<div class="mt-2">
+						<input
+							id="periode-rapat"
+							placeholder="Masukkan periode waktu"
+							bind:value={saveData.periode}
+							type="date"
+							name="periode-rapat"
+							class="block w-full rounded-md px-3 py-3 border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+						/>
+					</div>
+				</div>
 
-	<Form.Item>
-		<Form.Field
-			{config}
-			name="unggah-template"
-			class="grid w-full max-w-sm items-center gap-x-1.5 space-y-4"
-		>
-			<Form.Label for="unggah-template">Unggah Template</Form.Label>
-			<Form.Input
-				bind:value={saveData.updateTemp}
-				id="unggah-template"
-				type="file"
-				class="cursor-pointer"
-			/>
-		</Form.Field>
-	</Form.Item>
+				<div class="col-span-full">
+					<label for="pilih-tempat" class="block text-sm font-medium leading-6 text-gray-900">Pilih Tempat</label>
+					<div class="mt-2">
+						<select
+							id="pilih-tempat"
+							name="pilih-tempat"
+							class="block w-full rounded-md px-3 py-3 border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+						>
+							<option>Ruang Lambelu</option>
+							<option>Ruang IT</option>
+							<option>Ruang Lanala</option>
+						</select>
+					</div>
+				</div>
 
-	<div class="mt-8">
-		<button type="button" class="btn" on:click={handleSubmit}>Submit</button>
+				<div class="col-span-full">
+					<label for="pilih-template" class="block text-sm font-medium leading-6 text-gray-900">Pilih Template</label>
+					<div class="mt-2">
+						<select
+							id="pilih-template"
+							name="pilih-template"
+							class="block w-full rounded-md px-3 py-3 border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+							bind:value={saveData.template}
+							on:change={handleTemplateChange}
+						>
+							{#each templateOptions as option (option.value)}
+								<option value={option.label}>{option.label}</option>
+							{/each}
+						</select>
+					</div>
+				</div>
+
+				<div class="col-span-full">
+					<label for="agenda" class="block text-sm font-medium leading-6 text-gray-900">Agenda</label>
+					<div class="mt-2 agenda-input">
+						<Tags bind:tags addKeys={[13]} removeKeys={[8]} placeholder={'Masukkan agenda'} />
+					</div>
+				</div>
+
+				<div class="col-span-full">
+					<label for="download" class="block text-sm font-medium leading-6 text-gray-900">Download</label>
+					<div class="mt-2">
+						{#if saveData.download}
+							<a href={saveData.download} id="downloadLink" download={saveData.template}>{saveData.template}</a>
+						{:else}
+							<p>No template selected</p>
+						{/if}
+					</div>
+				</div>
+
+				<div class="col-span-full">
+					<label for="upload-template" class="block text-sm font-medium leading-6 text-gray-900">Upload Template</label>
+					<div class="mt-2">
+						<input
+							type="file"
+							name="upload-template"
+							bind:value={saveData.updateTemp}
+							id="upload-template"
+							class="block w-full rounded-md px-3 py-3 border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+						/>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
-</Form.Root>
+</form>
 
-<style>	
-.agenda-input :global(.svelte-tags-input-layout){
-	border: 1px solid #e2e8f0 !important;
-	border-radius: 6px;
-	height: 40px !important;
-}
+<style>
+	.agenda-input :global(.svelte-tags-input-layout) {
+		border: 1px solid #e2e8f0 !important;
+		border-radius: 6px;
+		height: 40px !important;
+	}
 
-.agenda-input :global(.svelte-tags-input-tag) {
-	background:#0ea5e9 !important;
-}
-
+	.agenda-input :global(.svelte-tags-input-tag) {
+		background: #0ea5e9 !important;
+	}
 </style>
