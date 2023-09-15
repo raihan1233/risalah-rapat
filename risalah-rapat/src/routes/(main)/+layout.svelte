@@ -95,7 +95,7 @@
 									d="m7 21 5-5 5 5"
 								/></svg
 							>
-							<span class="flex-1 ml-3 text-left whitespace-nowrap text-gray-400">Rapat</span>
+							<span class="flex-1 ml-3 text-left whitespace-nowrap text-gray-400">Risalah</span>
 							<svg
 								class="w-3 h-3"
 								aria-hidden="true"

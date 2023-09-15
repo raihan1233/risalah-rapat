@@ -28,19 +28,16 @@
 	const data = [
 		{
 			No_Urut: 1,
-			Pilih_User: 'Mas Bagus',
-			Nama_Jabatan: 'Manager IT',
+			Pilih_User: 'Mbak Rere',
+			Nama_Jabatan: 'Sekretaris',
 			Role: 'Checker'
 		}
 	];
 
-	const updateButtonVisibility = () => {
-		tableData = tableData.map((row, index) => ({
-			...row,
-			Aksi: getAksiOptions(index)
-		}));
-	};
-	updateButtonVisibility();
+	// Add the default values from the 'data' array to the first row
+	const defaultValues = data[0];
+	const firstRow = { No_Urut: 1, ...defaultValues };
+	tableData.push(firstRow);
 
 	const selectUserOptions = data.map((user) => user.Pilih_User);
 
@@ -63,6 +60,15 @@
 			return ['Delete', 'Up', 'Down'];
 		}
 	};
+
+	
+	const updateButtonVisibility = () => {
+		tableData = tableData.map((row, index) => ({
+			...row,
+			Aksi: getAksiOptions(index)
+		}));
+	};
+	updateButtonVisibility();
 
 	onMount(async () => {
 		// Initialize datatables and add event listener for select input changes
