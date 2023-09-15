@@ -111,8 +111,8 @@
 </script>
 
 <div class="container mx-auto p-6">
-	<button class="bg-sky-500 hover:bg-sky-700 text-white py-2 px-4 rounded" on:click={addRow}>
-		<PlusCircle class="w-5 h-5 mr-2" />
+	<button class="bg-sky-500 hover:bg-sky-700 text-white mb-4 py-3 px-6 rounded" on:click={addRow}>
+		<PlusCircle class="w-5 h-5 mr-2 inline" />
 		Tambah
 	</button>
 

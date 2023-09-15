@@ -51,11 +51,11 @@
   }
 </script>
 
-<div class="min-h-screen bg-gray-800">
+<div class="min-h-screen background">
 	<div class="w-1/2 mx-auto pt-20">
 		<Card.Root>
 			<Card.Header class="space-y-1">
-				<img src="/Logogram.png" alt="logo" class="w-16 mx-auto" />
+				<img src="/logo.png" alt="logo" class="w-1/4 mx-auto" />
 			</Card.Header>
 			<Card.Content class="grid gap-4">
 				<div class="grid gap-2">
@@ -84,3 +84,10 @@
 		</Card.Root>
 	</div>
 </div>
+
+<style>
+	.background {
+		background-image: url('/background.jpg');
+		background-repeat: no-repeat;
+	}
+</style>
