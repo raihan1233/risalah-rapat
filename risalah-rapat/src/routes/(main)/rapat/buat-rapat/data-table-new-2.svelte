@@ -35,10 +35,12 @@
 			Role: 'Checker'
 		},
 		{
+			No_Urut: 2,
 			Pilih_User: 'Mas Bagus',
 			Nama_Jabatan: 'Manajer TI'
 		},
 		{
+			No_Urut: 3,
 			Pilih_User: 'Mas Angga',
 			Nama_Jabatan: 'Vice President TI'
 		}
@@ -53,71 +55,31 @@
 
 	let userData = selectUserOptions[0]; // Default value
 
-	// const moveRowUp = (index) => {
-	// 	if (index === 1) {
-	// 		const currentRow = tableData[index];
-	// 		const nextRow = tableData[index + 1];
-	// 		tableData[index] = nextRow;
-	// 		tableData[index + 1] = currentRow;
-
-	// 		tableData.forEach((row, i) => {
-    //         row.No_Urut = i + 1;
-    //     });
-	// 		updateButtonVisibility();
-	// 	} else if (index >= 2) {
-	// 		const currentRow = tableData[index];
-	// 		const previousRow = tableData[index - 1];
-	// 		tableData[index] = previousRow;
-	// 		tableData[index - 1] = currentRow;
-
-	// 		tableData.forEach((row, i) => {
-    //         row.No_Urut = i + 1;
-    //     });
-	// 		updateButtonVisibility();
-	// 	}
-	// };
-
-
 	const moveRowUp = (index) => {
-    if (index === 1) {
-        // Swap the current row with the previous row
-        const currentRow = tableData[index];
-        const previousRow = tableData[index - 1];
-        tableData[index] = previousRow;
-        tableData[index - 1] = currentRow;
-    } else if (index >= 2) {
-        // Swap the current row with the previous row
-        const currentRow = tableData[index];
-        const previousRow = tableData[index - 1];
-        tableData[index] = previousRow;
-        tableData[index - 1] = currentRow;
-    }
+		if (index === 1) {
+			const currentRow = tableData[index];
+			const nextRow = tableData[index + 1];
+			tableData[index] = nextRow;
+			tableData[index + 1] = currentRow;
+			updateButtonVisibility();
+		} else if (index >= 2) {
+			const currentRow = tableData[index];
+			const previousRow = tableData[index - 1];
+			tableData[index] = previousRow;
+			tableData[index - 1] = currentRow;
+			updateButtonVisibility();
+		}
+	};
 
-    // Update the No Urut values based on the final order
-    tableData.forEach((row, i) => {
-        row.No_Urut = i + 1;
-    });
-
-    updateButtonVisibility();
-};
-
-const moveRowDown = (index) => {
-    if (index < tableData.length - 1) {
-        // Swap the current row with the next row
-        const currentRow = tableData[index];
-        const nextRow = tableData[index + 1];
-        tableData[index] = nextRow;
-        tableData[index + 1] = currentRow;
-
-        // Update the No Urut values based on the final order
-        tableData.forEach((row, i) => {
-            row.No_Urut = i + 1;
-        });
-
-        updateButtonVisibility();
-    }
-};
-
+	const moveRowDown = (index) => {
+		if (index < tableData.length - 1) {
+			const currentRow = tableData[index];
+			const nextRow = tableData[index + 1];
+			tableData[index] = nextRow;
+			tableData[index + 1] = currentRow;
+			updateButtonVisibility();
+		}
+	};
 
 	const handleUserSelectionChange = (event, rowIndex) => {
 		const selectedValue = event.target.value;
@@ -150,9 +112,8 @@ const moveRowDown = (index) => {
 	});
 </script>
 
-
 <div class="space-y-4">
-	<Button class="bg-sky-500 hover:bg-sky-700 text-white" on:click={addRow} variant="default">
+	<Button class="bg-sky-500 hover:bg-sky-700 text-white py-2 px-4 rounded" on:click={addRow}>
 		<PlusCircle class="w-5 h-5 mr-2" />
 		Tambah
 	</Button>

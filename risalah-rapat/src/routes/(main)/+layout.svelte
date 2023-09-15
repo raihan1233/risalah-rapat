@@ -1,6 +1,63 @@
-<script>
-	import '../../app.postcss';
-	import HeaderNav from './HeaderNav.svelte';
+<script lang="ts">
+  import { page } from '$app/stores';
+    import { onMount } from 'svelte';
+    import { sineIn } from 'svelte/easing';
+	import { Button } from "$lib/components/ui/button";
+	import { Menu } from "lucide-svelte";
+  import { Navbar, Drawer, CloseButton , Sidebar,
+    SidebarGroup,
+    SidebarItem,
+    SidebarWrapper, SidebarDropdownWrapper} from 'flowbite-svelte';
+
+  let drawerHidden: boolean = false;
+  const toggleDrawer = () => {
+    drawerHidden = !drawerHidden;
+  };
+
+  let spanClass = 'pl-2 self-center text-md text-gray-300 transition duration-75 rounded-lg hover:bg-gray-100';
+  // class="flex items-center w-full p-2 text-gray-300 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+let backdrop: boolean = false;
+  let activateClickOutside = true;
+  let breakPoint: number = 1024;
+  let width: number;
+  let transitionParams = {
+    x: -320,
+    duration: 200,
+    easing: sineIn
+  };
+  $: if (width >= breakPoint) {
+    drawerHidden = false;
+    activateClickOutside = false;
+  } else {
+    drawerHidden = true;
+    activateClickOutside = true;
+  }
+  onMount(() => {
+    if (width >= breakPoint) {
+      drawerHidden = false;
+      activateClickOutside = false;
+    } else {
+      drawerHidden = true;
+      activateClickOutside = true;
+    }
+  });
+
+const toggleSide = () => {
+  if (width < breakPoint) {
+    drawerHidden = !drawerHidden;
+  }
+};
+
+
+	let isOpen = false;
+
+	const toogleDropdown = () => {
+		isOpen = !isOpen;
+	};
+
+$: activeUrl = $page.url.pathname;
+
+  import '../../app.postcss';
 
 	let isOpenSidebar = false;
 	let isOpenRapat = false;
@@ -19,8 +76,111 @@
 	};
 </script>
 
-<div class="flex h-screen">
-	<div class="w-1/5 flex-shrink-0">
+<svelte:window bind:innerWidth={width} />
+
+<!-- <div class="container-fluid">
+	<div class="row"> -->
+		<nav class="sticky top-0 z-50 bg-gray-800 h-16 flex items-center justify-between w-full px-8">
+			<!-- <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+				<div class="relative flex h-16 items-center justify-between">
+					<div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start"> -->
+						<Button on:click={toggleDrawer} class="bg-transparent">
+							<Menu />
+						</Button>
+					<!-- </div> -->
+					<div
+						class="flex items-center pr-2 sm:ml-6 sm:pr-0"
+					>
+						<button
+							type="button"
+							class="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+						>
+							<span class="absolute -inset-1.5" />
+							<span class="sr-only">View notifications</span>
+							<svg
+								class="h-6 w-6"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke-width="1.5"
+								stroke="currentColor"
+								aria-hidden="true"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"
+								/>
+							</svg>
+						</button>
+
+						<!-- Profile dropdown -->
+						<div class="relative ml-3">
+							<div>
+								<button
+									type="button"
+									class="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+									id="user-menu-button"
+									aria-expanded={isOpen}
+									aria-haspopup="true"
+									on:click={toogleDropdown}
+								>
+									<span class="absolute -inset-1.5" />
+									<span class="sr-only">Open user menu</span>
+									<img
+										class="h-8 w-8 rounded-full"
+										src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+										alt=""
+									/>
+								</button>
+							</div>
+							{#if isOpen}
+								<div
+									class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+									role="menu"
+									aria-orientation="vertical"
+									aria-labelledby="user-menu-button"
+									tabindex="-1"
+								>
+									<!-- Active: "bg-gray-100", Not Active: "" -->
+									<a
+										href="/profile"
+										class="block px-4 py-2 text-sm text-gray-700"
+										role="menuitem"
+										tabindex="-1"
+										id="user-menu-item-0">Your Profile</a
+									>
+									<a
+										href="/"
+										class="block px-4 py-2 text-sm text-gray-700"
+										role="menuitem"
+										tabindex="-1"
+										id="user-menu-item-2">Sign out</a
+									>
+								</div>
+							{/if}
+						</div>
+					</div>
+				<!-- </div> -->
+			<!-- </div> -->
+		</nav>
+	<!-- </div>
+</div> -->
+
+<Drawer
+  transitionType="fly"
+  {backdrop}
+  {transitionParams}
+  bind:hidden={drawerHidden}
+  bind:activateClickOutside
+  width="w-64 bg-gray-800"
+  id="sidebar"
+>
+<div class=" flex items-center">
+  <CloseButton on:click={() => (drawerHidden = true)} class="mb-4 text-white lg:hidden" />
+</div>
+
+<!-- <div class="flex h-screen">
+	<div class="w-1/5 flex-shrink-0"> -->
 		<!-- <button
 			type="button"
 			class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
@@ -41,20 +201,16 @@
 			</svg>
 		</button> -->
 
-		<aside
+		<Sidebar
 			id="sidebar-multi-level-sidebar"
-			class="z-40 overflow-y-auto h-screen transition-transform translate-x-0 sm:translate-x-full bg-gray-800 dark:bg-gray-800"
-			class:open={isOpenSidebar}
+			class="w-54"
 			aria-label="Sidebar"
 		>
-			<div class="h-full px-3 py-4 overflow-y-auto bg-gray-800 dark:bg-gray-800">
-				<ul class="space-y-2 font-small mt-12">
-					<li>
-						<a
-							href="/home"
-							class="flex items-center p-2 text-gray-500 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-						>
-							<svg
+			<SidebarWrapper class="rounded px-3 py-4 overflow-y-auto bg-gray-800">
+				<SidebarGroup class="space-y-2 font-small mt-12">
+					<SidebarItem {spanClass} label="Home" href="/home" on:click={toggleSide} active={activeUrl === `/home`}>
+						<svelte:fragment slot="icon">
+              	<svg
 								xmlns="http://www.w3.org/2000/svg"
 								width="20"
 								height="20"
@@ -69,10 +225,9 @@
 									points="9 22 9 12 15 12 15 22"
 								/></svg
 							>
-							<span class="ml-3">Home</span>
-						</a>
-					</li>
-					<li>
+            </svelte:fragment>
+					</SidebarItem>
+					<!-- <SidebarItem {spanClass} label="Home" href="/home" on:click={toggleSide} active={activeUrl === `/home`}>
 						<button
 							type="button"
 							class="flex items-center w-full p-2 text-base text-gray-200 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-slate-600"
@@ -95,7 +250,7 @@
 									d="m7 21 5-5 5 5"
 								/></svg
 							>
-							<span class="flex-1 ml-3 text-left whitespace-nowrap text-gray-400">Risalah</span>
+							<span class="flex-1 ml-3 text-left whitespace-nowrap text-gray-400">Rapat</span>
 							<svg
 								class="w-3 h-3"
 								aria-hidden="true"
@@ -111,25 +266,31 @@
 									d="m1 1 4 4 4-4"
 								/>
 							</svg>
-						</button>
-						<ul id="dropdown-example" class="{isOpenRapat ? '' : 'hidden'} py-2 space-y-2">
-							<li>
-								<a
-									href="/rapat/buat-rapat"
-									class="flex items-center w-full p-2 text-gray-300 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-									>Buat Risalah</a
-								>
-							</li>
-							<li>
-								<a
-									href="/rapat/daftar-rapat"
-									class="flex items-center w-full p-2 text-gray-300 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-									>Daftar Risalah</a
-								>
-							</li>
-						</ul>
-					</li>
-					<li>
+						</button> -->
+						<SidebarDropdownWrapper id="dropdown-example" class="text-gray-300" label="Risalah">
+								<svelte:fragment slot="icon">
+									<svg
+								xmlns="http://www.w3.org/2000/svg"
+								width="20"
+								height="20"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="#6B7280"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								class="lucide lucide-presentation"
+								><path d="M2 3h20" /><path d="M21 3v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V3" /><path
+									d="m7 21 5-5 5 5"
+								/></svg>
+								</svelte:fragment>
+							<SidebarItem {spanClass} label="Buat Risalah" href="/rapat/buat-rapat" on:click={toggleSide} active={activeUrl === `/rapat/buat-rapat`}>
+							</SidebarItem>
+							<SidebarItem {spanClass} label="Daftar Risalah" href="/rapat/daftar-rapat" on:click={toggleSide} active={activeUrl === `/rapat/daftar-rapat`}>
+							</SidebarItem>
+						</SidebarDropdownWrapper>
+					<!-- </SidebarItem> -->
+					<!-- <SidebarItem>
 						<button
 							type="button"
 							class="flex items-center w-full p-2 text-base text-gray-200 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-slate-600"
@@ -172,50 +333,46 @@
 									d="m1 1 4 4 4-4"
 								/>
 							</svg>
-						</button>
-						<ul id="dropdown-example" class="{isOpenMaster ? '' : 'hidden'} py-2 space-y-2">
-							<li>
-								<a
-									href="/master/tempat"
-									class="flex items-center w-full p-2 text-gray-300 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-									>Master Tempat</a
-								>
-							</li>
-							<li>
-								<a
-									href="/master/template"
-									class="flex items-center w-full p-2 text-gray-300 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-									>Master Template</a
-								>
-							</li>
-							<li>
-								<a
-									href="/master/user"
-									class="flex items-center w-full p-2 text-gray-300 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-									>Master User</a
-								>
-							</li>
-						</ul>
-					</li>
-				</ul>
-			</div>
-		</aside>
-	</div>
+						</button> -->
+						<SidebarDropdownWrapper id="dropdown-example" class="text-gray-300" label="Master">
+							<svelte:fragment slot="icon">
+								<svg
+								xmlns="http://www.w3.org/2000/svg"
+								width="20"
+								height="20"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="#6B7280"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								class="lucide lucide-layout-template"
+								><rect width="18" height="7" x="3" y="3" rx="1" /><rect
+									width="9"
+									height="7"
+									x="3"
+									y="14"
+									rx="1"
+								/><rect width="5" height="7" x="16" y="14" rx="1" /></svg
+							>
+							</svelte:fragment>
+							<SidebarItem {spanClass} label="Master Tempat" href="/master/tempat" on:click={toggleSide} active={activeUrl === `/master/tempat`}>
+							</SidebarItem>
+							<SidebarItem {spanClass} label="Master Template" href="/master/template" on:click={toggleSide} active={activeUrl === `/master/template`}>
+							</SidebarItem>
+							<SidebarItem {spanClass} label="Master User" href="/master/user" on:click={toggleSide} active={activeUrl === `/master/user`}>
+							</SidebarItem>
+						</SidebarDropdownWrapper>
+					<!-- </SidebarItem> -->
+				</SidebarGroup>
+			</SidebarWrapper>
+		</Sidebar>
+	<!-- </div>
+</div> -->
+</Drawer>
 
-	<div class="flex-1">
-		<HeaderNav />
-		<main class="m-4">
+	<div class="flex w-full">
+		<main class="lg:ml-72 w-full px-8">
 			<slot />
 		</main>
 	</div>
-</div>
-
-<style>
-	@media (min-width: 640px) {
-		/* Media query for screens larger than 640px (adjust as needed) */
-		#sidebar-multi-level-sidebar {
-			/* Ensure the sidebar is always visible on larger screens */
-			transform: translateX(0);
-		}
-	}
-</style>
