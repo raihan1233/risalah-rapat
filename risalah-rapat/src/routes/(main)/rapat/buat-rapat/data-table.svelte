@@ -1,37 +1,26 @@
 <script>
-	import { onMount, createEventDispatcher } from 'svelte';
-	import DataTable from 'datatables.net-dt';
-	import 'datatables.net-dt/css/jquery.dataTables.css';
-	import { Button } from '$lib/components/ui/button';
-	import { PlusCircle } from 'lucide-svelte';
-	import { ArrowUpCircle, ArrowDownCircle, Trash2 } from 'lucide-svelte';
+	import { onMount } from 'svelte';
+	import { createEventDispatcher } from 'svelte';
+	import { PlusCircle, ArrowUpCircle, ArrowDownCircle, Trash2 } from 'lucide-svelte';
 
 	const dispatch = createEventDispatcher();
 
-	let tableData = [
-		{
-			No_Urut: 1,
-			Pilih_User: 'Mas Bagus',
-			Nama_Jabatan: 'Manager IT',
-			Role: 'Checker'
-		}
-	];
+	const selectRoleOptions = ['Checker', 'Approver', 'Tembusan'];
+	let tableData = [];
 
 	const removeRow = (index) => {
-		tableData = tableData.filter((_, i) => i !== index);
-		// update the 'no' field of remaining rows
-		tableData.forEach((row, i) => {
-			row.no = i + 1;
-		});
-		// add a new empty row if the table is completely empty
-		if (tableData.length === 0) {
-			tableData.push({ no: '', user: '', jabatan: '', role: '' });
-		}
+		tableData.splice(index, 1);
+		updateButtonVisibility();
 	};
 
 	const addRow = () => {
 		const nextNo = tableData.length + 1;
-		const newRow = { no: nextNo, user: userData, jabatan: 'New Jabatan', role: 'New Role' };
+		const newRow = {
+			No_Urut: nextNo,
+			Pilih_User: '',
+			Nama_Jabatan: 'New Jabatan',
+			Role: 'New Role'
+		};
 		tableData = [...tableData, newRow];
 		updateButtonVisibility();
 	};
@@ -43,158 +32,112 @@
 			Nama_Jabatan: 'Manager IT',
 			Role: 'Checker'
 		}
-		// {
-		// 	No_Urut: 2,
-		// 	Pilih_User: 'Mas Fahri',
-		// 	Nama_Jabatan: 'Dev IT',
-		// 	Role: 'Checker'
-		// },
-		// {
-		// 	No_Urut: 3,
-		// 	Pilih_User: 'Mas Fauzi',
-		// 	Nama_Jabatan: 'Dev IT',
-		// 	Role: 'Checker'
-		// }
-
-		// Add more data as needed
 	];
 
 	const updateButtonVisibility = () => {
 		tableData = tableData.map((row, index) => ({
 			...row,
-			showButtons: index >= 2,
-			isFirstRow: index === 0,
-			isSecondRow: index === 1,
-			isLastRow: index === tableData.length - 1
+			Aksi: getAksiOptions(index)
 		}));
 	};
 	updateButtonVisibility();
 
-	// Define the select options for "Pilih User"
 	const selectUserOptions = data.map((user) => user.Pilih_User);
 
-	let userData = `<select class='block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6 m-1.5' onchange="handleUserSelectionChange(event, this.parentNode.parentNode.rowIndex)">
-					${selectUserOptions
-						.map(
-							(option, index) => `
-						<option ${option == data[index].Pilih_User ? 'selected' : ''}>${option}</option>
-					`
-						)
-						.join('')}
-				</select>`;
-
-	// Define the select options for "Pilih Role"
-	const selectRoleOptions = ['Checker', 'Approver', 'Tembusan'];
-
-	let table; // Declare table variable
+	let userData = selectUserOptions[0]; // Default value
 
 	const handleUserSelectionChange = (event, rowIndex) => {
 		const selectedValue = event.target.value;
 		const namaJabatan = data.find((user) => user.Pilih_User === selectedValue)?.Nama_Jabatan || '';
-		table.cell(rowIndex, 2).data(namaJabatan).draw();
+		tableData[rowIndex].Nama_Jabatan = namaJabatan;
+	};
+
+	const getAksiOptions = (index) => {
+		if (index === 0) {
+			return [''];
+		} else if (index === tableData.length - 1) {
+			return ['Delete', 'Down'];
+		} else if (index === 1) {
+			return ['Delete', 'Up'];
+		} else {
+			return ['Delete', 'Up', 'Down'];
+		}
 	};
 
 	onMount(async () => {
-		const userData = data;
-		tableData = userData.map((user) => [
-			user.No_Urut,
-			`<select class='block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6 m-1.5' onchange="handleUserSelectionChange(event, this.parentNode.parentNode.rowIndex)">
-					${selectUserOptions
-						.map(
-							(option) => `
-						<option ${option === user.Pilih_User ? 'selected' : ''}>${option}</option>
-					`
-						)
-						.join('')}
-				</select>`,
-			user.Nama_Jabatan,
-			`<select class='block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6 px-3 m-1'>
-					${selectRoleOptions
-						.map(
-							(option) => `
-						<option ${option === user.Role ? 'selected' : ''}>${option}</option>
-					`
-						)
-						.join('')}
-				</select>`
-		]);
-
 		// Initialize datatables and add event listener for select input changes
-		table = new DataTable('#myTable', {
-			data: tableData,
-			columns: [
-				{ title: 'No Urut' },
-				{
-					title: 'Pilih User',
-					createdCell: function (cell, cellData, rowData, rowIndex, colIndex) {
-						cell.innerHTML = cellData; // Set the select input HTML
-						cell.querySelector('select').addEventListener('change', (event) => {
-							handleUserSelectionChange(event, rowIndex);
-						});
-					}
-				},
-				{ title: 'Nama Jabatan' },
-				{ title: 'Role' },
-				{ title: 'Aksi' }
-			],
-			columnDefs: [
-				{
-					targets: 4,
-					render: function (data, type, row) {
-						return `<button type="button" class="btn btn-success" on:click={redirectPage} >Details</button>`;
-					}
-				}
-			]
-		});
 	});
 </script>
 
-<Button class="bg-sky-500 hover:bg-sky-700" on:click={addRow}>
-	<PlusCircle class="mr-2 h-4 w-4" />
-	Tambah
-</Button>
-<table id="myTable" class="display cell-border">
-	<tbody>
-		{#each tableData as row, index (row.no)}
+<div class="container mx-auto p-6">
+	<button class="bg-sky-500 hover:bg-sky-700 text-white py-2 px-4 rounded" on:click={addRow}>
+		<PlusCircle class="w-5 h-5 mr-2" />
+		Tambah
+	</button>
+
+	<table class="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+		<thead class="bg-gray-200 text-gray-700">
 			<tr>
-				<th scope="row">{row.no}</th>
-				<td>{@html row.user}</td>
-				<td>{row.jabatan}</td>
-				<td>{row.role}</td>
-				<td>
-					{#if row.isFirstRow}
-						<p class="visibility-hidden" />
-					{:else}
-						<Button class="bg-red-500 hover:bg-red-700" on:click={() => removeRow(index)}>
-							<Trash2 class="mr-2 h-4 w-4" />
-							Delete
-						</Button>
-						{#if row.isSecondRow}
-							<Button class="bg-emerald-500 hover:bg-emerald-700">
-								<ArrowUpCircle class="mr-2 h-4 w-4" />
-								Up
-							</Button>
-						{/if}
-						{#if row.showButtons}
-							{#if row.isLastRow}
-								<Button class="bg-sky-500 hover:bg-sky-700">
-									<ArrowDownCircle class="mr-2 h-4 w-4" />
-									Down
-								</Button>
-							{:else}
-								<Button class="bg-sky-500 hover:bg-sky-700">
-									<ArrowDownCircle class="mr-2 h-4 w-4" />
-									Down
-								</Button>
-								<Button class="bg-emerald-500 hover:bg-emerald-700">
-									<ArrowUpCircle class="mr-2 h-4 w-4" />
-									Up
-								</Button>
-							{/if}
-						{/if}
-					{/if}
-				</td>
+				<th class="w-1/12 px-4 py-2 text-left">No Urut</th>
+				<th class="w-3/12 px-4 py-2 text-left">Pilih User</th>
+				<th class="w-3/12 px-4 py-2 text-left">Nama Jabatan</th>
+				<th class="w-3/12 px-4 py-2 text-left">Role</th>
+				<th class="w-2/12 px-4 py-2 text-left">Aksi</th>
 			</tr>
-		{/each}
-	</tbody>
-</table>
+		</thead>
+		<tbody>
+			{#each tableData as row, index (row.No_Urut)}
+				<tr>
+					<td class="border-t-2 border-gray-200 px-4 py-2">{row.No_Urut}</td>
+					<td class="border-t-2 border-gray-200 px-4 py-2">
+						<select
+							class="w-full p-1.5 text-gray-900 border-0 rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6 m-1.5"
+							bind:value={row.Pilih_User}
+							on:change={() => handleUserSelectionChange(event, index)}
+						>
+							{#each selectUserOptions as option}
+								<option value={option}>{option}</option>
+							{/each}
+						</select>
+					</td>
+					<td class="border-t-2 border-gray-200 px-4 py-2">{row.Nama_Jabatan}</td>
+					<td class="border-t-2 border-gray-200 px-4 py-2">
+						<select
+							class="w-full p-1.5 text-gray-900 border-0 rounded-md py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6 px-3 m-1"
+							bind:value={row.Role}
+						>
+							{#each selectRoleOptions as option}
+								<option value={option}>{option}</option>
+							{/each}
+						</select>
+					</td>
+					<td class="border-t-2 border-gray-200 px-4 py-2">
+						{#each row.Aksi as aksiOption}
+							{#if aksiOption === 'Delete'}
+								<button
+									class="bg-red-500 hover:bg-red-700 text-white py-1 px-2 rounded"
+									on:click={() => removeRow(index)}
+								>
+									<Trash2 class="w-5 h-5 mr-2" />
+									Delete
+								</button>
+							{/if}
+							{#if aksiOption === 'Up'}
+								<button class="bg-emerald-500 hover:bg-emerald-700 text-white py-1 px-2 rounded">
+									<ArrowUpCircle class="w-5 h-5 mr-2" />
+									Up
+								</button>
+							{/if}
+							{#if aksiOption === 'Down'}
+								<button class="bg-sky-500 hover:bg-sky-700 text-white py-1 px-2 rounded">
+									<ArrowDownCircle class="w-5 h-5 mr-2" />
+									Down
+								</button>
+							{/if}
+						{/each}
+					</td>
+				</tr>
+			{/each}
+		</tbody>
+	</table>
+</div>
