@@ -31,6 +31,16 @@
 			Pilih_User: 'Mbak Rere',
 			Nama_Jabatan: 'Sekretaris',
 			Role: 'Checker'
+		},
+		{
+			No_Urut: 2,
+			Pilih_User: 'Mas Bagus',
+			Nama_Jabatan: 'Manajer TI',
+		},
+		{
+			No_Urut: 3,
+			Pilih_User: 'Mas Angga',
+			Nama_Jabatan: 'Vice President TI',
 		}
 	];
 
