@@ -35,12 +35,12 @@
 		{
 			No_Urut: 2,
 			Pilih_User: 'Mas Bagus',
-			Nama_Jabatan: 'Manajer TI',
+			Nama_Jabatan: 'Manajer TI'
 		},
 		{
 			No_Urut: 3,
 			Pilih_User: 'Mas Angga',
-			Nama_Jabatan: 'Vice President TI',
+			Nama_Jabatan: 'Vice President TI'
 		}
 	];
 
@@ -52,6 +52,22 @@
 	const selectUserOptions = data.map((user) => user.Pilih_User);
 
 	let userData = selectUserOptions[0]; // Default value
+
+	const moveRowUp = (index) => {
+		if (index === 1) {
+			const currentRow = tableData[index];
+			const nextRow = tableData[index + 1];
+			tableData[index] = nextRow;
+			tableData[index + 1] = currentRow;
+			updateButtonVisibility();
+		} else if (index >= 2) {
+			const currentRow = tableData[index];
+			const previousRow = tableData[index - 1];
+			tableData[index] = previousRow;
+			tableData[index - 1] = currentRow;
+			updateButtonVisibility();
+		}
+	};
 
 	const handleUserSelectionChange = (event, rowIndex) => {
 		const selectedValue = event.target.value;
@@ -71,7 +87,6 @@
 		}
 	};
 
-	
 	const updateButtonVisibility = () => {
 		tableData = tableData.map((row, index) => ({
 			...row,
@@ -139,7 +154,10 @@
 								</button>
 							{/if}
 							{#if aksiOption === 'Up'}
-								<button class="bg-emerald-500 hover:bg-emerald-700 text-white py-1 px-2 rounded">
+								<button
+									class="bg-emerald-500 hover:bg-emerald-700 text-white py-1 px-2 rounded"
+									on:click={() => moveRowUp(index)}
+								>
 									<ArrowUpCircle class="w-5 h-5 mr-2" />
 									Up
 								</button>
