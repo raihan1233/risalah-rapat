@@ -78,11 +78,23 @@
 		}
   ];
 
+    let searchTerm = '';
+  	$: filteredItems = data.filter((item) => {
+        const lowerSearchTerm = searchTerm.toLowerCase();
+        return Object.values(item).some((value) =>
+            typeof value === 'string' &&
+            value.toLowerCase().includes(lowerSearchTerm)
+        );
+    });
 </script>
 
 
-<div class="space-y-4">
+<div class="space-y-4 overflow-x-auto">
 	<AddUser />
+
+	<div class="sm:flex sm:justify-end">
+		<TableSearch placeholder="Cari di sini" hoverable={true} bind:inputValue={searchTerm} classInput="mb-4 px-8 py-2 rounded-md border border-gray-300 w-full sm:max-w-xs" classSvgDiv="p-2" divClass="shadow-none relative"></TableSearch>
+	</div>
 
 	<Table shadow>
 		<TableHead class="text-sm">
@@ -97,7 +109,7 @@
 			<!-- </tr> -->
 		</TableHead>
 		<TableBody class="divide-y">
-			{#each data as row, index (row.no)}
+			{#each filteredItems as row, index (row.no)}
 				<TableBodyRow>
 					<TableBodyCell class="!p-4">{row.no}</TableBodyCell>
 					<TableBodyCell class="!p-4">{row.nama_lengkap}</TableBodyCell>

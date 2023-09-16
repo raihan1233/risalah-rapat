@@ -14,7 +14,7 @@
     drawerHidden = !drawerHidden;
   };
 
-  let spanClass = 'pl-2 self-center text-md text-gray-300 transition duration-75 rounded-lg hover:bg-gray-100';
+  let spanClass = 'pl-2 self-center text-md text-gray-300 transition duration-75 rounded-lg';
   // class="flex items-center w-full p-2 text-gray-300 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
 let backdrop: boolean = false;
   let activateClickOutside = true;
@@ -80,11 +80,222 @@ $: activeUrl = $page.url.pathname;
 
 <!-- <div class="container-fluid">
 	<div class="row"> -->
-		<nav class="sticky top-0 z-50 bg-gray-800 h-16 flex items-center justify-between w-full px-8">
+
+	<!-- </div>
+</div> -->
+
+<div class="flex">
+<Drawer
+  transitionType="fly"
+  {backdrop}
+  {transitionParams}
+  bind:hidden={drawerHidden}
+  bind:activateClickOutside
+  width="w-64 bg-gray-800"
+  id="sidebar"
+>
+<div class=" flex items-center">
+  <CloseButton on:click={() => (drawerHidden = true)} class="mb-4 text-white lg:hidden" />
+</div>
+
+<!-- <div class="flex h-screen">
+	<div class="w-1/5 flex-shrink-0"> -->
+		<!-- <button
+			type="button"
+			class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+			on:click={toggleSidebar}
+		>
+			<svg
+				class="w-6 h-6"
+				aria-hidden="true"
+				fill="currentColor"
+				viewBox="0 0 20 20"
+				xmlns="http://www.w3.org/2000/svg"
+			>
+				<path
+					clip-rule="evenodd"
+					fill-rule="evenodd"
+					d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"
+				/>
+			</svg>
+		</button> -->
+
+		<Sidebar
+			id="sidebar-multi-level-sidebar"
+			class="w-54"
+			aria-label="Sidebar"
+		>
+			<SidebarWrapper class="rounded px-3 py-4 overflow-y-auto bg-gray-800">
+				<SidebarGroup class="space-y-2 font-small mt-12">
+					<SidebarItem {spanClass} label="Home" href="/home" on:click={toggleSide} active={activeUrl === `/home`} class="hover:bg-sky-900">
+						<svelte:fragment slot="icon">
+              	<svg
+								xmlns="http://www.w3.org/2000/svg"
+								width="20"
+								height="20"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="#d1d5db"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								class="lucide lucide-home text-gray-300"
+								><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline
+									points="9 22 9 12 15 12 15 22"
+								/></svg
+							>
+            </svelte:fragment>
+					</SidebarItem>
+					<!-- <SidebarItem {spanClass} label="Home" href="/home" on:click={toggleSide} active={activeUrl === `/home`}>
+						<button
+							type="button"
+							class="flex items-center w-full p-2 text-base text-gray-200 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-slate-600"
+							aria-controls="dropdown-example"
+							data-collapse-toggle="dropdown-example"
+							on:click={() => toggleDropdown('rapat')}
+						>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								width="20"
+								height="20"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="#6B7280"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								class="lucide lucide-presentation"
+								><path d="M2 3h20" /><path d="M21 3v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V3" /><path
+									d="m7 21 5-5 5 5"
+								/></svg
+							>
+							<span class="flex-1 ml-3 text-left whitespace-nowrap text-gray-400">Rapat</span>
+							<svg
+								class="w-3 h-3"
+								aria-hidden="true"
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 10 6"
+							>
+								<path
+									stroke="#D1D5DB"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="m1 1 4 4 4-4"
+								/>
+							</svg>
+						</button> -->
+						<SidebarDropdownWrapper id="dropdown-example" class="text-gray-300 hover:bg-sky-900" label="Risalah">
+								<svelte:fragment slot="icon">
+									<svg
+								xmlns="http://www.w3.org/2000/svg"
+								width="20"
+								height="20"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="#d1d5db"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								class="lucide lucide-presentation"
+								><path d="M2 3h20" /><path d="M21 3v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V3" /><path
+									d="m7 21 5-5 5 5"
+								/></svg>
+								</svelte:fragment>
+							<SidebarItem {spanClass} label="Buat Risalah" href="/rapat/buat-rapat" on:click={toggleSide} active={activeUrl === `/rapat/buat-rapat`} class="hover:bg-sky-900">
+							</SidebarItem>
+							<SidebarItem {spanClass} label="Daftar Risalah" href="/rapat/daftar-rapat" on:click={toggleSide} active={activeUrl === `/rapat/daftar-rapat`} class="hover:bg-sky-900">
+							</SidebarItem>
+						</SidebarDropdownWrapper>
+					<!-- </SidebarItem> -->
+					<!-- <SidebarItem>
+						<button
+							type="button"
+							class="flex items-center w-full p-2 text-base text-gray-200 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-slate-600"
+							aria-controls="dropdown-example"
+							data-collapse-toggle="dropdown-example"
+							on:click={() => toggleDropdown('master')}
+						>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								width="20"
+								height="20"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="#6B7280"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								class="lucide lucide-layout-template"
+								><rect width="18" height="7" x="3" y="3" rx="1" /><rect
+									width="9"
+									height="7"
+									x="3"
+									y="14"
+									rx="1"
+								/><rect width="5" height="7" x="16" y="14" rx="1" /></svg
+							>
+							<span class="flex-1 ml-3 text-left whitespace-nowrap text-gray-400">Master</span>
+							<svg
+								class="w-3 h-3"
+								aria-hidden="true"
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 10 6"
+							>
+								<path
+									stroke="#D1D5DB"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="m1 1 4 4 4-4"
+								/>
+							</svg>
+						</button> -->
+						<SidebarDropdownWrapper id="dropdown-example" class="text-gray-300 hover:bg-sky-900" label="Master">
+							<svelte:fragment slot="icon">
+								<svg
+								xmlns="http://www.w3.org/2000/svg"
+								width="20"
+								height="20"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="#d1d5db"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								class="lucide lucide-layout-template"
+								><rect width="18" height="7" x="3" y="3" rx="1" /><rect
+									width="9"
+									height="7"
+									x="3"
+									y="14"
+									rx="1"
+								/><rect width="5" height="7" x="16" y="14" rx="1" /></svg
+							>
+							</svelte:fragment>
+							<SidebarItem {spanClass} label="Master Tempat" href="/master/tempat" on:click={toggleSide} active={activeUrl === `/master/tempat`} class="hover:bg-sky-900">
+							</SidebarItem>
+							<SidebarItem {spanClass} label="Master Template" href="/master/template" on:click={toggleSide} active={activeUrl === `/master/template`} class="hover:bg-sky-900">
+							</SidebarItem>
+							<SidebarItem {spanClass} label="Master User" href="/master/user" on:click={toggleSide} active={activeUrl === `/master/user`} class="hover:bg-sky-900">
+							</SidebarItem>
+						</SidebarDropdownWrapper>
+					<!-- </SidebarItem> -->
+				</SidebarGroup>
+			</SidebarWrapper>
+		</Sidebar>
+	<!-- </div>
+</div> -->
+</Drawer>
+
+	<div class="w-full">
+				<nav class="sticky top-0 z-30 bg-gray-800 h-16 flex items-center justify-between lg:justify-end w-full px-8">
 			<!-- <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
 				<div class="relative flex h-16 items-center justify-between">
 					<div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start"> -->
-						<Button on:click={toggleDrawer} class="bg-transparent">
+						<Button on:click={toggleDrawer} class="bg-transparent hover:bg-transparent p-0 flex items-center lg:hidden">
 							<Menu />
 						</Button>
 					<!-- </div> -->
@@ -163,216 +374,8 @@ $: activeUrl = $page.url.pathname;
 				<!-- </div> -->
 			<!-- </div> -->
 		</nav>
-	<!-- </div>
-</div> -->
-
-<Drawer
-  transitionType="fly"
-  {backdrop}
-  {transitionParams}
-  bind:hidden={drawerHidden}
-  bind:activateClickOutside
-  width="w-64 bg-gray-800"
-  id="sidebar"
->
-<div class=" flex items-center">
-  <CloseButton on:click={() => (drawerHidden = true)} class="mb-4 text-white lg:hidden" />
-</div>
-
-<!-- <div class="flex h-screen">
-	<div class="w-1/5 flex-shrink-0"> -->
-		<!-- <button
-			type="button"
-			class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-			on:click={toggleSidebar}
-		>
-			<svg
-				class="w-6 h-6"
-				aria-hidden="true"
-				fill="currentColor"
-				viewBox="0 0 20 20"
-				xmlns="http://www.w3.org/2000/svg"
-			>
-				<path
-					clip-rule="evenodd"
-					fill-rule="evenodd"
-					d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"
-				/>
-			</svg>
-		</button> -->
-
-		<Sidebar
-			id="sidebar-multi-level-sidebar"
-			class="w-54"
-			aria-label="Sidebar"
-		>
-			<SidebarWrapper class="rounded px-3 py-4 overflow-y-auto bg-gray-800">
-				<SidebarGroup class="space-y-2 font-small mt-12">
-					<SidebarItem {spanClass} label="Home" href="/home" on:click={toggleSide} active={activeUrl === `/home`}>
-						<svelte:fragment slot="icon">
-              	<svg
-								xmlns="http://www.w3.org/2000/svg"
-								width="20"
-								height="20"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="#6B7280"
-								stroke-width="2"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								class="lucide lucide-home"
-								><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline
-									points="9 22 9 12 15 12 15 22"
-								/></svg
-							>
-            </svelte:fragment>
-					</SidebarItem>
-					<!-- <SidebarItem {spanClass} label="Home" href="/home" on:click={toggleSide} active={activeUrl === `/home`}>
-						<button
-							type="button"
-							class="flex items-center w-full p-2 text-base text-gray-200 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-slate-600"
-							aria-controls="dropdown-example"
-							data-collapse-toggle="dropdown-example"
-							on:click={() => toggleDropdown('rapat')}
-						>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								width="20"
-								height="20"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="#6B7280"
-								stroke-width="2"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								class="lucide lucide-presentation"
-								><path d="M2 3h20" /><path d="M21 3v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V3" /><path
-									d="m7 21 5-5 5 5"
-								/></svg
-							>
-							<span class="flex-1 ml-3 text-left whitespace-nowrap text-gray-400">Rapat</span>
-							<svg
-								class="w-3 h-3"
-								aria-hidden="true"
-								xmlns="http://www.w3.org/2000/svg"
-								fill="none"
-								viewBox="0 0 10 6"
-							>
-								<path
-									stroke="#D1D5DB"
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									stroke-width="2"
-									d="m1 1 4 4 4-4"
-								/>
-							</svg>
-						</button> -->
-						<SidebarDropdownWrapper id="dropdown-example" class="text-gray-300" label="Risalah">
-								<svelte:fragment slot="icon">
-									<svg
-								xmlns="http://www.w3.org/2000/svg"
-								width="20"
-								height="20"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="#6B7280"
-								stroke-width="2"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								class="lucide lucide-presentation"
-								><path d="M2 3h20" /><path d="M21 3v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V3" /><path
-									d="m7 21 5-5 5 5"
-								/></svg>
-								</svelte:fragment>
-							<SidebarItem {spanClass} label="Buat Risalah" href="/rapat/buat-rapat" on:click={toggleSide} active={activeUrl === `/rapat/buat-rapat`}>
-							</SidebarItem>
-							<SidebarItem {spanClass} label="Daftar Risalah" href="/rapat/daftar-rapat" on:click={toggleSide} active={activeUrl === `/rapat/daftar-rapat`}>
-							</SidebarItem>
-						</SidebarDropdownWrapper>
-					<!-- </SidebarItem> -->
-					<!-- <SidebarItem>
-						<button
-							type="button"
-							class="flex items-center w-full p-2 text-base text-gray-200 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-slate-600"
-							aria-controls="dropdown-example"
-							data-collapse-toggle="dropdown-example"
-							on:click={() => toggleDropdown('master')}
-						>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								width="20"
-								height="20"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="#6B7280"
-								stroke-width="2"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								class="lucide lucide-layout-template"
-								><rect width="18" height="7" x="3" y="3" rx="1" /><rect
-									width="9"
-									height="7"
-									x="3"
-									y="14"
-									rx="1"
-								/><rect width="5" height="7" x="16" y="14" rx="1" /></svg
-							>
-							<span class="flex-1 ml-3 text-left whitespace-nowrap text-gray-400">Master</span>
-							<svg
-								class="w-3 h-3"
-								aria-hidden="true"
-								xmlns="http://www.w3.org/2000/svg"
-								fill="none"
-								viewBox="0 0 10 6"
-							>
-								<path
-									stroke="#D1D5DB"
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									stroke-width="2"
-									d="m1 1 4 4 4-4"
-								/>
-							</svg>
-						</button> -->
-						<SidebarDropdownWrapper id="dropdown-example" class="text-gray-300" label="Master">
-							<svelte:fragment slot="icon">
-								<svg
-								xmlns="http://www.w3.org/2000/svg"
-								width="20"
-								height="20"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="#6B7280"
-								stroke-width="2"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								class="lucide lucide-layout-template"
-								><rect width="18" height="7" x="3" y="3" rx="1" /><rect
-									width="9"
-									height="7"
-									x="3"
-									y="14"
-									rx="1"
-								/><rect width="5" height="7" x="16" y="14" rx="1" /></svg
-							>
-							</svelte:fragment>
-							<SidebarItem {spanClass} label="Master Tempat" href="/master/tempat" on:click={toggleSide} active={activeUrl === `/master/tempat`}>
-							</SidebarItem>
-							<SidebarItem {spanClass} label="Master Template" href="/master/template" on:click={toggleSide} active={activeUrl === `/master/template`}>
-							</SidebarItem>
-							<SidebarItem {spanClass} label="Master User" href="/master/user" on:click={toggleSide} active={activeUrl === `/master/user`}>
-							</SidebarItem>
-						</SidebarDropdownWrapper>
-					<!-- </SidebarItem> -->
-				</SidebarGroup>
-			</SidebarWrapper>
-		</Sidebar>
-	<!-- </div>
-</div> -->
-</Drawer>
-
-	<div class="flex w-full">
-		<main class="lg:ml-72 w-full px-8">
+		<main class="lg:ml-64 px-8">
 			<slot />
 		</main>
+	</div>
 	</div>

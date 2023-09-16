@@ -17,79 +17,97 @@
 	}
 
 	const data = [
-		{
-			no: 1,
-			waktu: '2023-09-08 09:00 AM',
-			notulen: 'meeting minutes for project discussion',
-			perihal: 'project update',
-			tempat: 'conference Room A',
-			tipe: 'internal',
-			status: 'Approve'
-		},
-		{
-			no: 2,
-			waktu: '2023-09-10 02:30 PM',
-			notulen: 'discussion on marketing strategy',
-			perihal: 'marketing Meeting',
-			tempat: 'zoom Meeting',
-			tipe: 'external',
-			status: 'Terkirim'
-		},
-		{
-			no: 3,
-			waktu: '2023-09-12 11:15 AM',
-			notulen: 'agenda for team building event',
-			perihal: 'team Building Planning',
-			tempat: 'cafeteria',
-			tipe: 'internal',
-			status: 'Belum Approve'
-		},
-		{
-			no: 4,
-			waktu: '2023-09-14 03:45 PM',
-			notulen: 'review of financial reports',
-			perihal: 'financial Review',
-			tempat: 'boardroom',
-			tipe: 'internal',
-			status: 'Terkirim'
-		},
-		{
-			no: 5,
-			waktu: '2023-09-16 10:30 AM',
-			notulen: 'agenda for product launch',
-			perihal: 'product Launch Meeting',
-			tempat: 'conference Room B',
-			tipe: 'internal',
-			status: 'Belum Approve'
-		},
-		{
-			no: 6,
-			waktu: '2023-09-18 01:00 PM',
-			notulen: 'discussion on quarterly goals',
-			perihal: 'quarterly Goals Meeting',
-			tempat: 'zoom Meeting',
-			tipe: 'internal',
-			status: 'Belum Approve'
-		},
-		{
-			no: 7,
-			waktu: '2023-09-20 04:15 PM',
-			notulen: 'review of project timelines',
-			perihal: 'project Timeline Review',
-			tempat: 'boardroom',
-			tipe: 'internal',
-			status: 'Belum Approve'
-		},
-		{
-			no: 8,
-			waktu: '2023-09-22 10:00 AM',
-			notulen: 'planning for annual conference',
-			perihal: 'conference Planning',
-			tempat: 'conference Room A',
-			tipe: 'internal',
-			status: 'Approve'
-		}
-	];
+	{
+		no: 1,
+		periode_waktu: '2023-09-08 09:00 AM to 2023-09-08 10:30 AM',
+		notulen: 'John Doe',
+		perihal: 'Project Review',
+		tempat: 'Conference Room A',
+		tipe: 'Meeting',
+		status: 'Approve',
+		waktu: '2023-09-10 09:00 AM'
+	},
+	{
+		no: 2,
+		periode_waktu: '2023-09-09 02:00 PM to 2023-09-09 03:30 PM',
+		notulen: 'Jane Smith',
+		perihal: 'Budget Presentation',
+		tempat: 'Boardroom',
+		tipe: 'Presentation',
+		status: 'Approve',
+		waktu: '2023-09-12 09:00 AM'
+	},
+	{
+		no: 3,
+		periode_waktu: '2023-09-10 10:30 AM to 2023-09-10 12:00 PM',
+		notulen: 'Mike Johnson',
+		perihal: 'Team Building',
+		tempat: 'Outdoor Park',
+		tipe: 'Event',
+		status: 'Terkirim',
+		waktu: '2023-09-10 17:00 PM'
+	},
+	{
+		no: 4,
+		periode_waktu: '2023-09-11 03:00 PM to 2023-09-11 04:30 PM',
+		notulen: 'Emily Davis',
+		perihal: 'Training Session',
+		tempat: 'Training Room B',
+		tipe: 'Training',
+		status: 'Belum Approve',
+		waktu: '2023-09-10 09:00 AM'
+	},
+	{
+		no: 5,
+		periode_waktu: '2023-09-12 11:00 AM to 2023-09-12 12:30 PM',
+		notulen: 'David Wilson',
+		perihal: 'Project Kickoff',
+		tempat: 'Conference Room C',
+		tipe: 'Meeting',
+		status: 'Belum Approve',
+		waktu: '2023-09-10 09:00 AM'
+	},
+	{
+		no: 6,
+		periode_waktu: '2023-09-12 09:30 AM to 2023-09-12 11:00 AM',
+		notulen: 'Sarah Brown',
+		perihal: 'Product Demo',
+		tempat: 'Demo Area',
+		tipe: 'Presentation',
+		status: 'Approve',
+		waktu: '2023-09-15 09:00 AM'
+	},
+	{
+		no: 7,
+		periode_waktu: '2023-09-14 11:00 AM to 2023-09-14 11:30 PM',
+		notulen: 'Michael Lee',
+		perihal: 'Quarterly Review',
+		tempat: 'Boardroom',
+		tipe: 'Meeting',
+		status: 'Terkirim',
+		waktu: '2023-09-10 09:00 AM'
+	},
+	{
+		no: 8,
+		periode_waktu: '2023-09-15 02:30 AM to 2023-09-12 04:00 PM',
+		notulen: 'Laura Miller',
+		perihal: 'Training Workshop',
+		tempat: 'Training Room A',
+		tipe: 'Training',
+		status: 'Belum Approve',
+		waktu: '2023-09-10 09:00 AM'
+	},
+	{
+		no: 9,
+		periode_waktu: '2023-09-16 01:00 AM to 2023-09-16 02:30 PM',
+		notulen: 'Chris Anderson',
+		perihal: 'Marketing Strategy',
+		tempat: 'Conference Room D',
+		tipe: 'Meeting',
+		status: 'Belum Approve',
+		waktu: '2023-09-10 09:00 AM'
+	}
+];
 
 	  function getBadgeColor(status) {
     switch (status) {
@@ -106,14 +124,27 @@
     ...row,
     badgeColor: getBadgeColor(row.status) 
   }));
+
+	  let searchTerm = '';
+  	$: filteredItems = data.filter((item) => {
+        const lowerSearchTerm = searchTerm.toLowerCase();
+        return Object.values(item).some((value) =>
+            typeof value === 'string' &&
+            value.toLowerCase().includes(lowerSearchTerm)
+        );
+    });
 	</script>
 
-
-	<Table shadow>
+<div >
+	<div class="sm:flex sm:justify-end">
+		<TableSearch placeholder="Cari di sini" hoverable={true} bind:inputValue={searchTerm} classInput="mb-4 px-8 py-2 rounded-md border border-gray-300 w-full sm:max-w-xs" classSvgDiv="p-2" divClass="shadow-none relative"></TableSearch>
+	</div>
+	<Table class="overflow-x-auto">
+	
 		<TableHead class="text-sm">
 			<!-- <tr> -->
 				<TableHeadCell class="!p-4">No</TableHeadCell>
-				<TableHeadCell class="!p-4">Waktu</TableHeadCell>
+				<TableHeadCell class="!p-4">Periode Waktu</TableHeadCell>
 				<TableHeadCell class="!p-4">Notulen</TableHeadCell>
 				<TableHeadCell class="!p-4">Perihal</TableHeadCell>
 				<TableHeadCell class="!p-4">Tempat</TableHeadCell>
@@ -123,11 +154,11 @@
 			<!-- </tr> -->
 		</TableHead>
 		<TableBody>
-			{#each data as row, index (row.no)}
+			{#each filteredItems as row, index (row.no)}
 				<TableBodyRow>
 					<TableBodyCell class="!p-4">{row.no}</TableBodyCell>
 					<TableBodyCell class="!p-4">
-						{row.waktu}
+						{row.periode_waktu}
 					</TableBodyCell>
 					<TableBodyCell class="!p-4">{row.notulen}</TableBodyCell>
 					<TableBodyCell class="!p-4">
@@ -153,4 +184,6 @@
 				</TableBodyRow>
 			{/each}
 		</TableBody>
+
 	</Table>
+</div>

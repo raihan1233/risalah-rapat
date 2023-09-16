@@ -57,7 +57,7 @@
 		</div>
 	</Card.Root>
 
-	<div class="sm:flex space-x-4">
+	<div class="sm:flex-row gap-4 flex flex-col">
 		<Button class="bg-sky-500 hover:bg-sky-700" on:click={saveDraft}>
 			<Save class="mr-2 h-4 w-4" />
 			Simpan Draft

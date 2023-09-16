@@ -7,7 +7,7 @@
   import { ArrowUpDown } from "lucide-svelte";
   import { Input } from "$lib/components/ui/input";
   import RelationDataTableActions from "./relation-data-table-actions.svelte";
-  import { Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell } from 'flowbite-svelte';
+  import { Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell, TableSearch } from 'flowbite-svelte';
   	import { PlusCircle, Download, Trash2 } from 'lucide-svelte';
 
   const data = [
@@ -19,7 +19,14 @@
 		},
   ];
 
-  
+  let searchTerm = '';
+  	$: filteredItems = data.filter((item) => {
+        const lowerSearchTerm = searchTerm.toLowerCase();
+        return Object.values(item).some((value) =>
+            typeof value === 'string' &&
+            value.toLowerCase().includes(lowerSearchTerm)
+        );
+    });
 </script>
 
 <div class="space-y-4">
@@ -27,6 +34,9 @@
 		<PlusCircle class="w-5 h-5 mr-2" />
 		Tambah
 	</Button> -->
+	<div class="sm:flex sm:justify-end">
+		<TableSearch placeholder="Cari di sini" hoverable={true} bind:inputValue={searchTerm} classInput="mb-4 px-8 py-2 rounded-md border border-gray-300 w-full sm:max-w-xs" classSvgDiv="p-2" divClass="shadow-none relative"></TableSearch>
+	</div>
 
 	<Table shadow>
 		<TableHead class="text-sm">
@@ -36,7 +46,7 @@
 			<!-- </tr> -->
 		</TableHead>
 		<TableBody class="divide-y">
-			{#each data as row, index}
+			{#each filteredItems as row, index}
 				<TableBodyRow>
 					<TableBodyCell class="!p-4">{row.dokumen_relasi}</TableBodyCell>
 					<TableBodyCell class="!p-4 space-x-2">

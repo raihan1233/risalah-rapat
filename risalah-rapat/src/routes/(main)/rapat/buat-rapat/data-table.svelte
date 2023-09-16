@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import { createEventDispatcher } from 'svelte';
 	import { PlusCircle, ArrowUpCircle, ArrowDownCircle, Trash2 } from 'lucide-svelte';
-	import { Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell } from 'flowbite-svelte';
+	import { Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell, TableSearch } from 'flowbite-svelte';
 	import { Button } from '$lib/components/ui/button'
 
 	const dispatch = createEventDispatcher();
@@ -148,6 +148,18 @@ const moveRowDown = (index) => {
 	onMount(async () => {
 		// Initialize datatables and add event listener for select input changes
 	});
+
+	let searchTerm = '';
+  let filteredTableData = [];
+
+  // Function to filter the table data based on search term
+  $: filteredTableData = tableData.filter((row) => {
+        const lowerSearchTerm = searchTerm.toLowerCase();
+        return Object.values(row).some((value) =>
+            typeof value === 'string' &&
+            value.toLowerCase().includes(lowerSearchTerm)
+        );
+    });
 </script>
 
 
@@ -156,6 +168,10 @@ const moveRowDown = (index) => {
 		<PlusCircle class="w-5 h-5 mr-2" />
 		Tambah
 	</Button>
+
+	<div class="sm:flex sm:justify-end">
+		<TableSearch placeholder="Cari di sini" hoverable={true} bind:inputValue={searchTerm} classInput="mb-4 px-8 py-2 rounded-md border border-gray-300 w-full sm:max-w-xs" classSvgDiv="p-2" divClass="shadow-none relative"></TableSearch>
+	</div>
 
 	<Table shadow>
 		<TableHead class="text-sm">
@@ -168,7 +184,7 @@ const moveRowDown = (index) => {
 			<!-- </tr> -->
 		</TableHead>
 		<TableBody class="divide-y">
-			{#each tableData as row, index (row.No_Urut)}
+			{#each filteredTableData as row, index (row.No_Urut)}
 				<TableBodyRow>
 					<TableBodyCell class="!p-4">{row.No_Urut}</TableBodyCell>
 					<TableBodyCell class="!p-4">
