@@ -19,7 +19,7 @@
 </script>
 
 <div class="overflow-x-hidden">
-	<div class="py-10 space-y-8 container mx-auto ">
+	<div class="py-10 space-y-8">
 		<Card.Root>
 			<Card.Header>
 				<div class="flex items-center justify-between">
@@ -50,7 +50,7 @@
 	
 		<Card.Root>
 			<div class="space-y-4">
-				<Card.Content>
+				<Card.Content class="p-6">
 					<DataTable searchData={searchData} />
 				</Card.Content>
 			</div>
