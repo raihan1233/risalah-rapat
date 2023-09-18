@@ -11,7 +11,7 @@
 	import EditUser from "./edit-user.svelte";
   import { Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell, TableSearch } from 'flowbite-svelte';
   
-  const data = [
+  let data = [
     {
 			no: 1,
 			nama_lengkap: 'John Doe',
@@ -78,6 +78,11 @@
 		}
   ];
 
+  const handleDataSaved = (event) => {
+    // Append the new data to the existing data array
+    data = [...data, event.detail];
+  };
+
     let searchTerm = '';
   	$: filteredItems = data.filter((item) => {
         const lowerSearchTerm = searchTerm.toLowerCase();
@@ -90,7 +95,7 @@
 
 
 <div class="space-y-4 overflow-x-auto">
-	<AddUser />
+	<AddUser on:dataSaved={handleDataSaved} {data} />
 
 	<div class="sm:flex sm:justify-end">
 		<TableSearch placeholder="Cari di sini" hoverable={true} bind:inputValue={searchTerm} classInput="mb-4 px-8 py-2 rounded-md border border-gray-300 w-full sm:max-w-xs" classSvgDiv="p-2" divClass="shadow-none relative"></TableSearch>
