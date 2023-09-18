@@ -58,9 +58,11 @@
 									Delete
 						</Button>
 
+						<a href={data[0].dokumen_relasi} download>
 						<Button class="bg-sky-500 hover:bg-sky-700">
-            <Download class="h-4 w-4 mr-2" />Download
-          </Button>
+            	<Download class="h-4 w-4 mr-2" />Download
+          	</Button>
+						</a>
 					</TableBodyCell>
 				</TableBodyRow>
 			{/each}

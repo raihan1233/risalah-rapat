@@ -127,7 +127,7 @@ $: activeUrl = $page.url.pathname;
 		>
 			<SidebarWrapper class="rounded px-3 py-4 overflow-y-auto bg-gray-800">
 				<SidebarGroup class="space-y-2 font-small">
-					<img src="/logo.png" alt="Logo Pelni" class="w-44 mb-6" />
+					<img src="/Logogram.png" alt="Logo Pelni" class="w-16 mx-auto mb-8" />
 					<SidebarItem {spanClass} label="Home" href="/home" on:click={toggleSide} active={activeUrl === `/home`} class="hover:bg-sky-900">
 						<svelte:fragment slot="icon">
               	<svg
