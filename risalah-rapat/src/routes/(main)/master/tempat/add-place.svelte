@@ -5,9 +5,21 @@
   import { Label } from "$lib/components/ui/label";
   import { Separator } from "$lib/components/ui/separator";
   import * as RadioGroup from "$lib/components/ui/radio-group";
+  import { createEventDispatcher } from "svelte";
   import Swal from 'sweetalert2';
 
+  export let data;
+
   const saveData = () => {
+    const newNo = data.length + 1;
+    const newData = {
+      no: newNo, // Generate a new number based on the current data length
+      tempat: inputData.tempat, // Example value, replace with actual input data
+      status: 'Aktif', // Example value, replace with actual input data
+    };
+
+    // Emit an event with the new data
+    dispatch('dataSaved', newData);
 		Swal.fire({
 			icon: 'success',
 			title: 'Data berhasil ditambahkan',
@@ -15,6 +27,14 @@
 			timer: 1500
 		});
 	};
+  console.log(saveData);
+  
+  let inputData = {
+    tempat: ""
+  }
+
+  const dispatch = createEventDispatcher();
+
 </script>
 
 <Dialog.Root>
@@ -29,7 +49,7 @@
     <div class="py-4 space-y-4">
       <div class="space-y-4">
         <Label for="tempat">Tempat</Label>
-        <Input id="tempat" placeholder="Masukkan tempat" />
+        <Input id="tempat" placeholder="Masukkan tempat" bind:value={inputData.tempat} />
       </div>
       <div class="space-y-4">
         <Label>Status</Label>

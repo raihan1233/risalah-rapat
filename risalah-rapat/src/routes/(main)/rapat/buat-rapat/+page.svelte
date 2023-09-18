@@ -26,12 +26,6 @@
 			timer: 1500
 		});
 	};
-	let isSwitchOn = true;
-
-	// Function to programmatically toggle the switch
-	function toggleSwitch() {
-		isSwitchOn = !isSwitchOn;
-	}
 
 	function openPDF() {
      let urlPDF = 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf';
