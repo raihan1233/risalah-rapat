@@ -32,7 +32,7 @@
 	export let data: PageData;
 </script>
 
-<div class="container mx-auto py-10 space-y-8">
+<div class="py-10 space-y-8">
 	<Card.Root>
 		<Card.Header>
 			<h2 class="text-3xl font-bold tracking-tight">Detail Risalah</h2>

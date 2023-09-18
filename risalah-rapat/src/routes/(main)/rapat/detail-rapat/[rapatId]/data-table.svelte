@@ -1,151 +1,242 @@
-<script lang="ts">
-	import { createTable, Render, Subscribe, createRender } from 'svelte-headless-table';
-	import { readable } from 'svelte/store';
-	import * as Table from '$lib/components/ui/table';
-	import { addPagination, addSortBy, addTableFilter } from 'svelte-headless-table/plugins';
-	import { Button } from '$lib/components/ui/button';
-	import { ArrowUpDown } from 'lucide-svelte';
-	import { Input } from '$lib/components/ui/input';
-	import DataTableActions from './data-table-actions.svelte';
-	import SelectUser from "./select-user.svelte";
-	import SelectRole from './select-role.svelte';
+<script>
+	import { onMount } from 'svelte';
+	import { createEventDispatcher } from 'svelte';
+	import { PlusCircle, ArrowUpCircle, ArrowDownCircle, Trash2 } from 'lucide-svelte';
+	import { Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell, TableSearch } from 'flowbite-svelte';
+	import { Button } from '$lib/components/ui/button'
 
-	type Checker = {
-		no: number;
-		user: string;
-		jabatan: string;
-		role: string;
+	const dispatch = createEventDispatcher();
+
+	const selectRoleOptions = ['Checker', 'Approver', 'Tembusan'];
+	let tableData = [];
+
+	const removeRow = (index) => {
+		tableData.splice(index, 1);
+		updateButtonVisibility();
 	};
-	const data: Checker[] = [
+
+	const addRow = () => {
+		const nextNo = tableData.length + 1;
+		const newRow = {
+			No_Urut: nextNo,
+			Pilih_User: '',
+			Nama_Jabatan: 'New Jabatan',
+			Role: 'New Role'
+		};
+		tableData = [...tableData, newRow];
+		updateButtonVisibility();
+	};
+
+	const data = [
 		{
-			no: 1,
-			user: 'User 1',
-			jabatan: 'Manager',
-			role: 'Admin'
+			No_Urut: 1,
+			Pilih_User: 'Mbak Rere',
+			Nama_Jabatan: 'Sekretaris',
+			Role: 'Checker'
 		},
 		{
-			no: 2,
-			user: 'User 2',
-			jabatan: 'Manager',
-			role: 'Admin'
+			Pilih_User: 'Mas Bagus',
+			Nama_Jabatan: 'Manajer TI'
+		},
+		{
+			Pilih_User: 'Mas Angga',
+			Nama_Jabatan: 'Vice President TI'
 		}
 	];
 
-	const table = createTable(readable(data), {
-		page: addPagination(),
-		sort: addSortBy(),
-		filter: addTableFilter({
-			fn: ({ filterValue, value }) => value.toLowerCase().includes(filterValue.toLowerCase())
-		})
+	// Add the default values from the 'data' array to the first row
+	const defaultValues = data[0];
+	const firstRow = { No_Urut: 1, ...defaultValues };
+	tableData.push(firstRow);
+
+	const selectUserOptions = data.map((user) => user.Pilih_User);
+
+	let userData = selectUserOptions[0]; // Default value
+
+	// const moveRowUp = (index) => {
+	// 	if (index === 1) {
+	// 		const currentRow = tableData[index];
+	// 		const nextRow = tableData[index + 1];
+	// 		tableData[index] = nextRow;
+	// 		tableData[index + 1] = currentRow;
+
+	// 		tableData.forEach((row, i) => {
+    //         row.No_Urut = i + 1;
+    //     });
+	// 		updateButtonVisibility();
+	// 	} else if (index >= 2) {
+	// 		const currentRow = tableData[index];
+	// 		const previousRow = tableData[index - 1];
+	// 		tableData[index] = previousRow;
+	// 		tableData[index - 1] = currentRow;
+
+	// 		tableData.forEach((row, i) => {
+    //         row.No_Urut = i + 1;
+    //     });
+	// 		updateButtonVisibility();
+	// 	}
+	// };
+
+
+	const moveRowUp = (index) => {
+    if (index === 1) {
+        // Swap the current row with the previous row
+        const currentRow = tableData[index];
+        const previousRow = tableData[index - 1];
+        tableData[index] = previousRow;
+        tableData[index - 1] = currentRow;
+    } else if (index >= 2) {
+        // Swap the current row with the previous row
+        const currentRow = tableData[index];
+        const previousRow = tableData[index - 1];
+        tableData[index] = previousRow;
+        tableData[index - 1] = currentRow;
+    }
+
+    // Update the No Urut values based on the final order
+    tableData.forEach((row, i) => {
+        row.No_Urut = i + 1;
+    });
+
+    updateButtonVisibility();
+};
+
+const moveRowDown = (index) => {
+    if (index < tableData.length - 1) {
+        // Swap the current row with the next row
+        const currentRow = tableData[index];
+        const nextRow = tableData[index + 1];
+        tableData[index] = nextRow;
+        tableData[index + 1] = currentRow;
+
+        // Update the No Urut values based on the final order
+        tableData.forEach((row, i) => {
+            row.No_Urut = i + 1;
+        });
+
+        updateButtonVisibility();
+    }
+};
+
+
+	const handleUserSelectionChange = (event, rowIndex) => {
+		const selectedValue = event.target.value;
+		const namaJabatan = data.find((user) => user.Pilih_User === selectedValue)?.Nama_Jabatan || '';
+		tableData[rowIndex].Nama_Jabatan = namaJabatan;
+	};
+
+	const getAksiOptions = (index) => {
+		if (index === 0) {
+			return [''];
+		} else if (index === tableData.length - 1) {
+			return ['Delete', 'Up'];
+		} else if (index === 1) {
+			return ['Delete', 'Down'];
+		} else {
+			return ['Delete', 'Up', 'Down'];
+		}
+	};
+
+	const updateButtonVisibility = () => {
+		tableData = tableData.map((row, index) => ({
+			...row,
+			Aksi: getAksiOptions(index)
+		}));
+	};
+	updateButtonVisibility();
+
+	onMount(async () => {
+		// Initialize datatables and add event listener for select input changes
 	});
 
-	const columns = table.createColumns([
-		table.column({
-			accessor: 'no',
-			header: 'No',
-			plugins: {
-				filter: {
-					exclude: true
-				}
-			}
-		}),
-		table.column({
-			accessor: 'user',
-			header: 'User',
-			cell: (item) => {
-        return createRender(SelectUser, { id: item.no });
-      },
-		}),
-		table.column({
-			accessor: 'jabatan',
-			header: 'Jabatan'
-		}),
-		table.column({
-			accessor: 'role',
-			header: 'Role',
-			cell: (item) => {
-        return createRender(SelectRole, { id: item.no });
-      },
-		}),
-		table.column({
-			accessor: ({ user }) => user,
-			header: 'Aksi',
-			cell: (item) => {
-				return createRender(DataTableActions, { id: item.no });
-			},
-			plugins: {
-				sort: {
-					disable: true
-				}
-			}
-		})
-	]);
+	let searchTerm = '';
+  let filteredTableData = [];
 
-	const { headerRows, pageRows, tableAttrs, tableBodyAttrs, pluginStates } =
-		table.createViewModel(columns);
-
-	const { hasNextPage, hasPreviousPage, pageIndex } = pluginStates.page;
-	const { filterValue } = pluginStates.filter;
+  // Function to filter the table data based on search term
+  $: filteredTableData = tableData.filter((row) => {
+        const lowerSearchTerm = searchTerm.toLowerCase();
+        return Object.values(row).some((value) =>
+            typeof value === 'string' &&
+            value.toLowerCase().includes(lowerSearchTerm)
+        );
+    });
 </script>
 
-<div>
-	<div class="flex items-center py-4 justify-between">
-		<Button variant="outline">Tambah</Button>
-		<Input class="max-w-sm" placeholder="Cari di sini..." type="text" bind:value={$filterValue} />
+
+<div class="space-y-4">
+	<Button class="bg-sky-500 hover:bg-sky-700 text-white" on:click={addRow} variant="default">
+		<PlusCircle class="w-5 h-5 mr-2" />
+		Tambah
+	</Button>
+
+	<div class="sm:flex sm:justify-end">
+		<TableSearch placeholder="Cari di sini" hoverable={true} bind:inputValue={searchTerm} classInput="mb-4 px-8 py-2 rounded-md border border-gray-300 w-full sm:max-w-xs" classSvgDiv="p-2" divClass="shadow-none relative"></TableSearch>
 	</div>
-	<div class="rounded-md border">
-		<Table.Root {...$tableAttrs}>
-			<Table.Header>
-				{#each $headerRows as headerRow}
-					<Subscribe rowAttrs={headerRow.attrs()}>
-						<Table.Row>
-							{#each headerRow.cells as cell (cell.id)}
-								<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
-									<Table.Head {...attrs}>
-										{#if cell.id === 'Aksi'}
-											<Render of={cell.render()} />
-										{:else}
-											<Button variant="ghost" on:click={props.sort.toggle}>
-												<Render of={cell.render()} />
-												<ArrowUpDown class={'ml-2 h-4 w-4'} />
-											</Button>
-										{/if}
-									</Table.Head>
-								</Subscribe>
+
+	<Table shadow>
+		<TableHead class="text-sm">
+			<!-- <tr> -->
+				<TableHeadCell class="!p-4">No Urut</TableHeadCell>
+				<TableHeadCell class="!p-4">Pilih User</TableHeadCell>
+				<TableHeadCell class="!p-4">Nama Jabatan</TableHeadCell>
+				<TableHeadCell class="!p-4">Role</TableHeadCell>
+				<TableHeadCell class="!p-4">Aksi</TableHeadCell>
+			<!-- </tr> -->
+		</TableHead>
+		<TableBody class="divide-y">
+			{#each filteredTableData as row, index (row.No_Urut)}
+				<TableBodyRow>
+					<TableBodyCell class="!p-4">{row.No_Urut}</TableBodyCell>
+					<TableBodyCell class="!p-4">
+						<select
+							class="p-1.5 text-gray-900 border-0 rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6 m-1.5"
+							bind:value={row.Pilih_User}
+							on:change={() => handleUserSelectionChange(event, index)}
+						>
+							{#each selectUserOptions as option}
+								<option value={option}>{option}</option>
 							{/each}
-						</Table.Row>
-					</Subscribe>
-				{/each}
-			</Table.Header>
-			<Table.Body {...$tableBodyAttrs}>
-				{#each $pageRows as row (row.id)}
-					<Subscribe rowAttrs={row.attrs()} let:rowAttrs>
-						<Table.Row {...rowAttrs}>
-							{#each row.cells as cell (cell.id)}
-								<Subscribe attrs={cell.attrs()} let:attrs>
-									<Table.Cell {...attrs}>
-										<Render of={cell.render()} />
-									</Table.Cell>
-								</Subscribe>
+						</select>
+					</TableBodyCell>
+					<TableBodyCell class="!p-4">{row.Nama_Jabatan}</TableBodyCell>
+					<TableBodyCell class="!p-4">
+						<select
+							class="p-1.5 text-gray-900 border-0 rounded-md py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6 px-3 m-1"
+							bind:value={row.Role}
+						>
+							{#each selectRoleOptions as option}
+								<option value={option}>{option}</option>
 							{/each}
-						</Table.Row>
-					</Subscribe>
-				{/each}
-			</Table.Body>
-		</Table.Root>
-	</div>
-	<div class="flex items-center justify-end space-x-2 py-4">
-		<Button
-			variant="outline"
-			size="sm"
-			on:click={() => ($pageIndex = $pageIndex - 1)}
-			disabled={!$hasPreviousPage}>Previous</Button
-		>
-		<Button
-			variant="outline"
-			size="sm"
-			disabled={!$hasNextPage}
-			on:click={() => ($pageIndex = $pageIndex + 1)}>Next</Button
-		>
-	</div>
+						</select>
+					</TableBodyCell>
+					<TableBodyCell class="!p-4 space-x-2">
+						{#each row.Aksi as aksiOption}
+							{#if aksiOption === 'Delete'}
+								<Button
+									class="bg-red-500 hover:bg-red-700 text-white"
+									variant="default"
+									on:click={() => removeRow(index)}
+								>
+									<Trash2 class="w-4 h-4 mr-2" />
+									Delete
+								</Button>
+							{/if}
+							{#if aksiOption === 'Up'}
+								<Button class="bg-emerald-500 hover:bg-emerald-700 text-white" variant="default" on:click={() => moveRowUp(index)}>
+									<ArrowUpCircle class="w-4 h-4 mr-2" />
+									Up
+								</Button>
+							{/if}
+							{#if aksiOption === 'Down'}
+								<Button class="bg-sky-500 hover:bg-sky-700 text-white" variant="default" on:click={() => moveRowDown(index)}>
+									<ArrowDownCircle class="w-4 h-4 mr-2" />
+									Down
+								</Button>
+							{/if}
+						{/each}
+					</TableBodyCell>
+				</TableBodyRow>
+			{/each}
+		</TableBody>
+	</Table>
 </div>
