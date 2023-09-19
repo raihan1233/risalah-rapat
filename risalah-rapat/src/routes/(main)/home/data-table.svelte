@@ -136,8 +136,13 @@
 	</script>
 
 <div >
-	<div class="sm:flex sm:justify-end">
-		<TableSearch placeholder="Cari di sini" hoverable={true} bind:inputValue={searchTerm} classInput="mb-4 px-8 py-2 rounded-md border border-gray-300 w-full sm:max-w-xs" classSvgDiv="p-2" divClass="shadow-none relative"></TableSearch>
+	<div class="sm:flex sm:justify-between">
+		<div class="px-4 gap-2 flex flex-wrap items-center">
+			<Badge class="bg-emerald-500 hover:bg-emerald-700">Approve</Badge>
+			<Badge class="bg-sky-500 hover:bg-sky-700">Terkirim</Badge>
+			<Badge class="bg-gray-500 hover:bg-gray-700">Belum Approve</Badge>
+		</div>
+		<TableSearch placeholder="Cari di sini" hoverable={true} bind:inputValue={searchTerm} classInput="px-8 py-2 rounded-md border border-gray-300 w-full sm:max-w-xs" classSvgDiv="p-2" divClass="shadow-none relative"></TableSearch>
 	</div>
 	<Table class="overflow-x-auto">
 	

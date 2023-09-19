@@ -4,10 +4,10 @@
     import { sineIn } from 'svelte/easing';
 	import { Button } from "$lib/components/ui/button";
 	import { Menu } from "lucide-svelte";
-  import { Navbar, Drawer, CloseButton , Sidebar,
+  import { Drawer, CloseButton , Sidebar,
     SidebarGroup,
     SidebarItem,
-    SidebarWrapper, SidebarDropdownWrapper} from 'flowbite-svelte';
+    SidebarWrapper, SidebarDropdownWrapper } from 'flowbite-svelte';
 
   let drawerHidden: boolean = false;
   const toggleDrawer = () => {
@@ -126,7 +126,8 @@ $: activeUrl = $page.url.pathname;
 			aria-label="Sidebar"
 		>
 			<SidebarWrapper class="rounded px-3 py-4 overflow-y-auto bg-gray-800">
-				<SidebarGroup class="space-y-2 font-small mt-12">
+				<SidebarGroup class="space-y-2 font-small">
+					<img src="/Logogram.png" alt="Logo Pelni" class="w-16 mx-auto mb-8" />
 					<SidebarItem {spanClass} label="Home" href="/home" on:click={toggleSide} active={activeUrl === `/home`} class="hover:bg-sky-900">
 						<svelte:fragment slot="icon">
               	<svg

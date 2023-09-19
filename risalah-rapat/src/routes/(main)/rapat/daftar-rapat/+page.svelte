@@ -2,11 +2,12 @@
 	import DataTable from './data-table.svelte';
 	import * as Card from '$lib/components/ui/card';
 	import FormRapat from './form-rapat.svelte';
+	import { Filter } from 'lucide-svelte';
 
-	let isToggleActive = true;
+	let isFilterActive = true;
 
-	const toggleVisibility = () => {
-		isToggleActive = !isToggleActive;
+	const toggleFilter = () => {
+		isFilterActive = !isFilterActive;
 	};
 
 	let searchData = {};
@@ -18,29 +19,29 @@
 </script>
 
 <div class="overflow-x-hidden">
-	<div class="py-10 space-y-8 container mx-auto ">
+	<div class="py-10 space-y-8">
 		<Card.Root>
 			<Card.Header>
 				<div class="flex items-center justify-between">
 					<h2 class="text-3xl font-bold tracking-tight">Daftar Risalah</h2>
 					<div class="flex items-center">
 						<button
-							class={isToggleActive
-								? 'bg-sky-500 w-10 h-6 rounded-full p-1'
-								: 'w-10 h-6 bg-gray-300 rounded-full p-1'}
-							on:click={toggleVisibility}
+							class="hover:bg-transparent focus:outline-none"
+							on:click={toggleFilter}
 						>
-							<span
-								class="bg-white w-4 h-4 rounded-full block shadow-md transform transition-transform"
-								class:translate-x-full={isToggleActive}
-							/>
+							<span>
+								<Filter
+									class={isFilterActive ? 'text-sky-500 fill-sky-500' : 'text-gray-400'}
+									size={32}
+								/>
+							</span>
 						</button>
 					</div>
 				</div>
 			</Card.Header>
 			<Card.Content>
 				<div>
-					{#if isToggleActive}
+					{#if isFilterActive}
 						<FormRapat on:search={handleSearch}/>
 					{/if}
 				</div>
@@ -49,7 +50,7 @@
 	
 		<Card.Root>
 			<div class="space-y-4">
-				<Card.Content>
+				<Card.Content class="p-6">
 					<DataTable searchData={searchData} />
 				</Card.Content>
 			</div>
