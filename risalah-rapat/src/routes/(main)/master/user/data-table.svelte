@@ -1,11 +1,5 @@
 <script lang="ts">
-	import { createTable, Render, Subscribe, createRender } from 'svelte-headless-table';
-	import { readable } from 'svelte/store';
-	import { addPagination, addSortBy, addTableFilter } from 'svelte-headless-table/plugins';
-	import { Button } from '$lib/components/ui/button';
-	import { ArrowUpDown } from 'lucide-svelte';
-	import { Input } from '$lib/components/ui/input';
-	import DataTableActions from './data-table-actions.svelte';
+	import { onMount } from 'svelte';
 	import AddUser from './add-user.svelte';
 	import EditUser from './edit-user.svelte';
 	import {
@@ -18,72 +12,24 @@
 		TableSearch
 	} from 'flowbite-svelte';
 
-	let data = [
-		{
-			no: 1,
-			nama_lengkap: 'John Doe',
-			username: 'johndoe123',
-			jabatan: 'Manager',
-			role: 'Admin',
-			status: 'Aktif'
-		},
-		{
-			no: 2,
-			nama_lengkap: 'Jane Smith',
-			username: 'janesmith456',
-			jabatan: 'Supervisor',
-			role: 'User',
-			status: 'Aktif'
-		},
-		{
-			no: 3,
-			nama_lengkap: 'Alice Johnson',
-			username: 'alicej',
-			jabatan: 'Developer',
-			role: 'User',
-			status: 'Tidak Aktif'
-		},
-		{
-			no: 4,
-			nama_lengkap: 'Bob Williams',
-			username: 'bobw',
-			jabatan: 'Designer',
-			role: 'Admin',
-			status: 'Aktif'
-		},
-		{
-			no: 5,
-			nama_lengkap: 'Eve Davis',
-			username: 'eved',
-			jabatan: 'Analyst',
-			role: 'User',
-			status: 'Aktif'
-		},
-		{
-			no: 6,
-			nama_lengkap: 'Charlie Brown',
-			username: 'charlieb',
-			jabatan: 'Manager',
-			role: 'Admin',
-			status: 'Tidak Aktif'
-		},
-		{
-			no: 7,
-			nama_lengkap: 'Grace Lee',
-			username: 'gracelee',
-			jabatan: 'Developer',
-			role: 'User',
-			status: 'Aktif'
-		},
-		{
-			no: 8,
-			nama_lengkap: 'David Wilson',
-			username: 'davidw',
-			jabatan: 'Designer',
-			role: 'Admin',
-			status: 'Aktif'
+	let data = [];
+
+	const fetchData = async () => {
+		try {
+			const response = await fetch('http://localhost:3000/users'); // Replace with your API endpoint
+			if (response.ok) {
+				data = await response.json();
+				console.log(data);
+				
+			} else {
+				console.error('Failed to fetch data from the API');
+			}
+		} catch (error) {
+			console.error('Error fetching data:', error);
 		}
-	];
+	};
+
+	onMount(fetchData);
 
 	const handleDataSaved = (event) => {
 		// Append the new data to the existing data array
@@ -136,12 +82,12 @@
 			<!-- </tr> -->
 		</TableHead>
 		<TableBody class="divide-y">
-			{#each filteredItems as row, index (row.no)}
+			{#each filteredItems as row, index (index)}
 				<TableBodyRow>
-					<TableBodyCell class="!p-4">{row.no}</TableBodyCell>
-					<TableBodyCell class="!p-4">{row.nama_lengkap}</TableBodyCell>
+					<TableBodyCell class="!p-4">{index + 1}</TableBodyCell>
+					<TableBodyCell class="!p-4">{row.fullname}</TableBodyCell>
 					<TableBodyCell class="!p-4">{row.username}</TableBodyCell>
-					<TableBodyCell class="!p-4">{row.jabatan}</TableBodyCell>
+					<TableBodyCell class="!p-4">{row.position}</TableBodyCell>
 					<TableBodyCell class="!p-4">{row.role}</TableBodyCell>
 					<TableBodyCell class="!p-4">{row.status}</TableBodyCell>
 					<TableBodyCell class="!p-4">
