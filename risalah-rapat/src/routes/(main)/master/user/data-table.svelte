@@ -14,7 +14,22 @@
 
 	let data = [];
 
-	const fetchData = async () => {
+	// const fetchData = async () => {
+	// 	try {
+	// 		const response = await fetch('http://localhost:3000/users'); // Replace with your API endpoint
+	// 		if (response.ok) {
+	// 			data = await response.json();
+	// 			console.log(data);
+				
+	// 		} else {
+	// 			console.error('Failed to fetch data from the API');
+	// 		}
+	// 	} catch (error) {
+	// 		console.error('Error fetching data:', error);
+	// 	}
+	// };
+
+	onMount(async () => {
 		try {
 			const response = await fetch('http://localhost:3000/users'); // Replace with your API endpoint
 			if (response.ok) {
@@ -27,9 +42,9 @@
 		} catch (error) {
 			console.error('Error fetching data:', error);
 		}
-	};
+	});
 
-	onMount(fetchData);
+	// onMount(fetchData);
 
 	const handleDataSaved = (event) => {
 		// Append the new data to the existing data array
@@ -92,7 +107,7 @@
 					<TableBodyCell class="!p-4">{row.status}</TableBodyCell>
 					<TableBodyCell class="!p-4">
 						<!-- {#each row.Aksi as aksiOption} -->
-						<EditUser {updateUserData} />
+						<EditUser user={row} />
 						<!-- {/each} -->
 					</TableBodyCell>
 				</TableBodyRow>

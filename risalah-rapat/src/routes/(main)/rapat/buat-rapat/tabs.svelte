@@ -5,7 +5,7 @@
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
     import DataTable from './data-table.svelte';
-	import DokumenRelasi from './dokumen-relasi.svelte';
+	// import DokumenRelasi from './add-relation-document.svelte';
 	import RelationDataTable from './relation-data-table.svelte';
 </script>
 
@@ -32,7 +32,7 @@
 				<Card.Title>Dokumen Relasi</Card.Title>
 			</Card.Header>
 			<Card.Content class="space-y-2">
-				<DokumenRelasi />
+				<!-- <DokumenRelasi /> -->
 				<RelationDataTable />
 			</Card.Content>
 		</Card.Root>

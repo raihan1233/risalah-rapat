@@ -40,6 +40,8 @@
   //   });;
 	// };
 
+  let isDialogOpen = false;
+
   let inputData = {
     fullname: "",
     username: "",
@@ -75,7 +77,7 @@ async function fetchData() {
 
     if (response.ok) {
       const newData = await response.json(); // Assuming the API responds with the newly added user data
-      dispatch('dataSaved', newData); // Emit an event with the new data
+      data = [...data, newData];
 
       Swal.fire({
         icon: 'success',
@@ -83,10 +85,11 @@ async function fetchData() {
         showConfirmButton: false,
         timer: 1500,
       }).then(() => {
-        // Close the dialog after the Swal popup is closed
-        console.log("closing dialog");
-        Dialog.close();
-      });
+          // Close the dialog by setting isDialogOpen to false
+          isDialogOpen = false;
+        });
+        
+        dispatch('dataSaved', newData);
     } else {
       Swal.fire({
         icon: 'error',
@@ -122,7 +125,7 @@ const saveData = () => {
 
 </script>
 
-<Dialog.Root>
+<Dialog.Root bind:open={isDialogOpen}>
   <Dialog.Trigger class={buttonVariants({ variant: "outline" })}>
     Tambah
   </Dialog.Trigger>
