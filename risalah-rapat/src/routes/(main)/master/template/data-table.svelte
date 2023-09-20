@@ -1,11 +1,5 @@
 <script lang="ts">
-	import { createTable, Render, Subscribe, createRender } from 'svelte-headless-table';
-	import { readable } from 'svelte/store';
-	// import * as Table from "$lib/components/ui/table";
-	import { addPagination, addSortBy, addTableFilter } from 'svelte-headless-table/plugins';
-	import { Button } from '$lib/components/ui/button';
-	import { ArrowUpDown } from 'lucide-svelte';
-	import { Input } from '$lib/components/ui/input';
+	import { onMount, setContext } from 'svelte';
 	import EditTemplate from './edit-template.svelte';
 	import AddTemplate from './add-template.svelte';
 	import {
@@ -18,61 +12,36 @@
 		TableSearch
 	} from 'flowbite-svelte';
 
-	let data = [
-		{
-			no: 1,
-			nama_template: 'Invoice',
-			file: 'invoice_template.docx',
-			status: 'Aktif'
-		},
-		{
-			no: 2,
-			nama_template: 'Report',
-			file: 'report_template.docx',
-			status: 'Aktif'
-		},
-		{
-			no: 3,
-			nama_template: 'Letter',
-			file: 'letter_template.docx',
-			status: 'Tidak Aktif'
-		},
-		{
-			no: 4,
-			nama_template: 'Resume',
-			file: 'resume_template.docx',
-			status: 'Aktif'
-		},
-		{
-			no: 5,
-			nama_template: 'Proposal',
-			file: 'proposal_template.docx',
-			status: 'Aktif'
-		},
-		{
-			no: 6,
-			nama_template: 'Agreement',
-			file: 'agreement_template.docx',
-			status: 'Tidak Aktif'
-		},
-		{
-			no: 7,
-			nama_template: 'Presentation',
-			file: 'presentation_template.pptx',
-			status: 'Aktif'
-		},
-		{
-			no: 8,
-			nama_template: 'Form',
-			file: 'form_template.pdf',
-			status: 'Aktif'
+	let data = [];
+	let templateData = {};
+	let templateId = '';
+
+	const fetchData = async () => {
+		try {
+			const response = await fetch('http://localhost:3000/template'); // Replace with your API endpoint
+			if (response.ok) {
+				data = await response.json();
+
+				console.log(data);
+			} else {
+				console.error('Failed to fetch data from the API');
+			}
+		} catch (error) {
+			console.error('Error fetching data:', error);
 		}
-	];
+	};
+
+	onMount(fetchData);
+
+	const handleDataUpdate = (event) => {
+		// Update the data array with the updated data
+		( data = event.detail);
+	};
 
 	const handleDataSaved = (event) => {
-    // Append the new data to the existing data array
-    data = [...data, event.detail];
-  };
+		// Append the new data to the existing data array
+		data = [...data, event.detail];
+	};
 
 	let searchTerm = '';
 	$: filteredItems = data.filter((item) => {
@@ -108,17 +77,23 @@
 			<!-- </tr> -->
 		</TableHead>
 		<TableBody class="divide-y">
-			{#each filteredItems as row, index (row.no)}
+			{#each filteredItems as row, index (row.id)}
 				<TableBodyRow>
-					<TableBodyCell class="!p-4">{row.no}</TableBodyCell>
-					<TableBodyCell class="!p-4">{row.nama_template}</TableBodyCell>
-					<TableBodyCell class="!p-4"><a href={data[0].file} class="underline" download>{row.file}</a></TableBodyCell>
+					<TableBodyCell class="!p-4">{index + 1}</TableBodyCell>
+					<TableBodyCell class="!p-4">{row.title}</TableBodyCell>
+					<TableBodyCell class="!p-4"
+						><a href={row.file} class="underline" download>{row.file}</a></TableBodyCell
+					>
 					<TableBodyCell class="!p-4">{row.status}</TableBodyCell>
 					<TableBodyCell class="!p-4">
-						<!-- {#each row.Aksi as aksiOption} -->
-						<EditTemplate />
-						<!-- {/each} -->
-					</TableBodyCell>
+						<EditTemplate
+							{templateData}
+							{data}
+							{templateId}
+							{index}
+							on:updateData={handleDataUpdate}
+						/></TableBodyCell
+					>
 				</TableBodyRow>
 			{/each}
 		</TableBody>

@@ -2,7 +2,6 @@
 	import { onMount } from 'svelte';
 	import EditPlace from './edit-place.svelte';
 	import AddPlace from './add-place.svelte';
-
 	import {
 		Table,
 		TableBody,
@@ -78,7 +77,7 @@
 					<TableBodyCell class="!p-4">{row.status}</TableBodyCell>
 					<TableBodyCell class="!p-4 space-x-2">
 						<!-- {#each row.Aksi as aksiOption} -->
-						<EditPlace />
+						<EditPlace id />
 						<!-- {/each} -->
 					</TableBodyCell>
 				</TableBodyRow>

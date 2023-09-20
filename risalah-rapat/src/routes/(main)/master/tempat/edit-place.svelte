@@ -8,14 +8,44 @@
   import Swal from 'sweetalert2';
   import { Pencil } from "lucide-svelte";
 
-  const saveData = () => {
-		Swal.fire({
-			icon: 'success',
-			title: 'Data berhasil disimpan',
-			showConfirmButton: false,
-			timer: 1500
-		});
-	};
+  export let id;
+  let tempat = "";
+  let status = "aktif";
+
+  const saveData = async () => {
+    try {
+      const response = await fetch(`/place/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ tempat, status }), // Send the updated data
+      });
+
+      if (response.ok) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Data berhasil disimpan',
+          showConfirmButton: false,
+          timer: 1500
+        });
+      } else {
+        console.error('Failed to update data:', response.statusText);
+        Swal.fire({
+          icon: 'error',
+          title: 'Gagal menyimpan data',
+          text: 'Terjadi kesalahan saat menyimpan data.'
+        });
+      }
+    } catch (error) {
+      console.error('Error updating data:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Gagal menyimpan data',
+        text: 'Terjadi kesalahan saat menyimpan data.'
+      });
+    }
+  };
 </script>
 
 <Dialog.Root>
@@ -30,7 +60,7 @@
     <div class="py-4 space-y-4">
       <div class="space-y-4">
         <Label for="tempat">Tempat</Label>
-        <Input id="tempat" placeholder="Masukkan tempat" />
+        <Input id="tempat" placeholder="Masukkan tempat" bind:value={tempat} />
       </div>
       <div class="space-y-4">
         <Label>Status</Label>

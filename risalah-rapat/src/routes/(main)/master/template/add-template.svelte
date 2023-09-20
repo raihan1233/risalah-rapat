@@ -12,14 +12,51 @@
   
   const dispatch = createEventDispatcher();
 
-  const saveData = () => {
-    const newNo = data.length + 1;
+  const saveData = async () => {
     const newData = {
-      no: newNo, // Generate a new number based on the current data length
-      nama_template: inputData.template, // Example value, replace with actual input data
-      file: inputData.unggahTemplate,
+      title: inputData.title, // Example value, replace with actual input data
+      file: inputData.file,
       status: 'Aktif', // Example value, replace with actual input data
     };
+    
+  console.log(newData);
+
+  try {
+			const response = await fetch('http://localhost:3000/template', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(newData)
+			});
+
+			if (response.ok) {
+				const responseData = await response.text();
+
+				// Emit an event with the new data (if needed)
+				dispatch('dataSaved', responseData);
+
+				Swal.fire({
+					icon: 'success',
+					title: 'Data berhasil ditambahkan',
+					showConfirmButton: false,
+					timer: 1500
+				});
+			} else {
+				Swal.fire({
+					icon: 'error',
+					title: 'Gagal menambahkan data',
+					text: 'Ada masalah saat menambahkan data ke server'
+				});
+			}
+		} catch (error) {
+			console.error('Error:', error);
+			Swal.fire({
+				icon: 'error',
+				title: 'Terjadi kesalahan',
+				text: 'Terjadi kesalahan saat mengirim data ke server'
+			});
+		}
 
     // Emit an event with the new data
     dispatch('dataSaved', newData);
@@ -30,10 +67,11 @@
 			timer: 1500
 		});
 	};
+  
 
   let inputData = {
-    template: "",
-    unggahTemplate: ""
+    title: "",
+    file: ""
   }
 </script>
 
@@ -49,11 +87,11 @@
     <div class="py-4 space-y-4">
       <div class="space-y-4">
         <Label for="template">Template</Label>
-        <Input id="template" placeholder="Masukkan nama template" bind:value={inputData.template} />
+        <Input id="template" placeholder="Masukkan nama template" bind:value={inputData.title} />
       </div>
       <div class="grid w-full max-w-sm items-center gap-x-1.5 space-y-4">
           <Label for="unggah-template">Unggah Template</Label>
-          <Input id="unggah-template" type="file" class="cursor-pointer"  bind:value={inputData.unggahTemplate}/>
+          <Input id="unggah-template" type="file" class="cursor-pointer"  bind:value={inputData.file}/>
       </div>
       <div class="space-y-4">
         <Label>Status</Label>

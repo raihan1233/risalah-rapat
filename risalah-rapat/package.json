@@ -34,12 +34,14 @@
 		"flowbite-svelte": "^0.44.15",
 		"formsnap": "^0.0.9",
 		"lucide-svelte": "^0.275.0-beta.0",
+		"nanoid": "^5.0.1",
 		"svelecte": "^3.17.2",
 		"svelte-tags-input": "^5.0.0",
 		"sveltekit-superforms": "^1.6.1",
 		"sweetalert2": "^11.7.27",
 		"tailwind-merge": "^1.14.0",
 		"tailwind-variants": "^0.1.14",
+		"uuid": "^9.0.1",
 		"zod": "^3.22.2"
 	}
 }
