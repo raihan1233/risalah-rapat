@@ -18,7 +18,7 @@
 
 		// Emit an event with the new data
 		try {
-			const response = await fetch('http://localhost:3000/addtempat', {
+			const response = await fetch('http://localhost:3000/place', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'

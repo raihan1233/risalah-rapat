@@ -17,7 +17,7 @@
 
 	const fetchData = async () => {
 		try {
-			const response = await fetch('http://localhost:3000/gettempat'); // Replace with your API endpoint
+			const response = await fetch('http://localhost:3000/place'); // Replace with your API endpoint
 			if (response.ok) {
 				data = await response.json();
 				console.log(data);
@@ -71,9 +71,9 @@
 			<!-- </tr> -->
 		</TableHead>
 		<TableBody class="divide-y">
-			{#each filteredItems as row, index (row.no)}
+			{#each filteredItems as row, index (index)}
 				<TableBodyRow>
-					<TableBodyCell class="!p-4">{row.no}</TableBodyCell>
+					<TableBodyCell class="!p-4">{index + 1}</TableBodyCell>
 					<TableBodyCell class="!p-4">{row.tempat}</TableBodyCell>
 					<TableBodyCell class="!p-4">{row.status}</TableBodyCell>
 					<TableBodyCell class="!p-4 space-x-2">
