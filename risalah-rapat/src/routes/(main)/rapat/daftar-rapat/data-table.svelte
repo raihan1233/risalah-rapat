@@ -184,7 +184,7 @@
 					<TableBodyCell class="!p-4">
 							<Button
 									class="bg-emerald-500 hover:bg-emerald-700"
-									on:click={goto(`/rapat/detail-rapat/${index}`)}>Detail</Button
+									on:click={goto(`/rapat/detail-rapat/${index + 1}`)}>Detail</Button
 								>
 					</TableBodyCell>
 				</TableBodyRow>

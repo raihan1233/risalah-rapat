@@ -1,5 +1,5 @@
 <script lang="ts">
-	import * as Tabs from '$lib/components/ui/tabs';
+
 	import * as Card from '$lib/components/ui/card';
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
@@ -9,7 +9,7 @@
 	import RelationDataTable from './relation-data-table.svelte';
 </script>
 
-<Tabs.Root value="Checker">
+<!-- <Tabs.Root value="Checker">
 	<Tabs.List class="grid w-full grid-cols-2 bg-cyan-500 text-white">
 			<Tabs.Trigger value="Checker">Checker</Tabs.Trigger>
 		<Tabs.Trigger value="Dokumen Relasi">Dokumen Relasi</Tabs.Trigger>
@@ -38,4 +38,4 @@
 		</Card.Root>
 	</Tabs.Content>
   
-</Tabs.Root>
+</Tabs.Root> -->

@@ -159,9 +159,9 @@
 			<!-- </tr> -->
 		</TableHead>
 		<TableBody>
-			{#each filteredItems as row, index (row.no)}
+			{#each filteredItems as row, index (index)}
 				<TableBodyRow>
-					<TableBodyCell class="!p-4">{row.no}</TableBodyCell>
+					<TableBodyCell class="!p-4">{index + 1}</TableBodyCell>
 					<TableBodyCell class="!p-4">
 						{row.periode_waktu}
 					</TableBodyCell>
@@ -183,7 +183,7 @@
 					<TableBodyCell class="!p-4">
 							<Button
 									class="bg-emerald-500 hover:bg-emerald-700"
-									on:click={directToDetailRapat}>Detail</Button
+									on:click={goto(`/rapat/detail-rapat/${index + 1}`)}>Detail</Button
 								>
 					</TableBodyCell>
 				</TableBodyRow>
