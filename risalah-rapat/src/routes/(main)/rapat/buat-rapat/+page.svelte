@@ -33,6 +33,7 @@
 	import { Separator } from '$lib/components/ui/separator';
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
+	import AddRelationDocument from './add-relation-document.svelte';
 
 	const sendData = () => {
 		Swal.fire({
@@ -92,7 +93,7 @@
 		template: '',
 		download: '',
 		update_temp: '',
-		agenda: ""
+		agenda: ''
 	};
 
 	let templateOptions = [
@@ -273,22 +274,51 @@
 	};
 
 	// relasi data table
-	const relasiData = [
-		{
-			dokumen_relasi: 'Lampiran.pdf'
-		},
-		{
-			dokumen_relasi: 'Dokumen.doc'
+	let relasiData = [];
+
+	onMount(async () => {
+		try {
+			const response = await fetch('http://localhost:3000/relation-documents'); // Replace with your API endpoint
+			if (response.ok) {
+				relasiData = await response.json();
+				console.log(relasiData);
+			} else {
+				console.error('Failed to fetch data from the API');
+			}
+		} catch (error) {
+			console.error('Error fetching data:', error);
 		}
-	];
+	});
+
+	const handleRelationDataSaved = (event) => {
+		// Append the new data to the existing data array
+		relasiData = [...relasiData, event.detail];
+	};
 
 	let searchRelasi = '';
-	$: filteredItems = relasiData.filter((item) => {
+	$: filteredRelasi = relasiData.filter((item) => {
 		const lowerSearchTerm = searchRelasi.toLowerCase();
 		return Object.values(item).some(
 			(value) => typeof value === 'string' && value.toLowerCase().includes(lowerSearchTerm)
 		);
 	});
+
+	async function deleteDocument(documentId) {
+		try {
+			const response = await fetch(`http://localhost:3000/relation-documents/${documentId}`, {
+				method: 'DELETE'
+			});
+
+			if (response.ok) {
+				// Hapus data dari tampilan setelah berhasil dihapus dari server
+				relasiData = relasiData.filter((item) => item.id !== documentId);
+			} else {
+				console.error('Gagal menghapus dokumen relasi');
+			}
+		} catch (error) {
+			console.error('Error:', error);
+		}
+	}
 </script>
 
 <div class="py-10 space-y-8">
@@ -346,10 +376,10 @@
 										on:change={handleTempatChange}
 										class="block w-full rounded-md px-3 py-3 border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 									>
-									<option selected disabled>pilih tempat</option>
-									{#each tempatOptions as option (option.value)}
-										<option value={option.label}>{option.label}</option>
-									{/each}
+										<option selected disabled>pilih tempat</option>
+										{#each tempatOptions as option (option.value)}
+											<option value={option.label}>{option.label}</option>
+										{/each}
 									</select>
 								</div>
 							</div>
@@ -553,7 +583,7 @@
 								<Card.Title>Dokumen Relasi</Card.Title>
 							</Card.Header>
 							<Card.Content class="space-y-2">
-								<Dialog.Root>
+								<!-- <Dialog.Root>
 									<Dialog.Trigger
 										class={buttonVariants({
 											variant: 'defalut',
@@ -584,14 +614,15 @@
 											>
 										</Dialog.Footer>
 									</Dialog.Content>
-								</Dialog.Root>
+								</Dialog.Root> -->
 
 								<div class="space-y-4">
+									<AddRelationDocument on:dataSaved={handleRelationDataSaved} {data} />
 									<div class="sm:flex sm:justify-end">
 										<TableSearch
 											placeholder="Cari di sini"
 											hoverable={true}
-											bind:inputValue={searchTerm}
+											bind:inputValue={searchRelasi}
 											classInput="mb-4 px-8 py-2 rounded-md border border-gray-300 w-full sm:max-w-xs"
 											classSvgDiv="p-2"
 											divClass="shadow-none relative"
@@ -606,19 +637,20 @@
 											<!-- </tr> -->
 										</TableHead>
 										<TableBody class="divide-y">
-											{#each filteredItems as row, index}
+											{#each filteredRelasi as row, index}
 												<TableBodyRow>
-													<TableBodyCell class="!p-4">{row.dokumen_relasi}</TableBodyCell>
+													<TableBodyCell class="!p-4">{row.name}</TableBodyCell>
 													<TableBodyCell class="!p-4 space-x-2">
 														<Button
 															class="bg-red-500 hover:bg-red-700 text-white"
 															variant="default"
+															on:click={() => deleteDocument(row.id)}
 														>
 															<Trash2 class="w-4 h-4 mr-2" />
 															Delete
 														</Button>
 
-														<a href={data[0].dokumen_relasi} download>
+														<a href={`http://localhost:3000/relation-documents/${row.id}`} download>
 															<Button class="bg-sky-500 hover:bg-sky-700">
 																<Download class="h-4 w-4 mr-2" />Download
 															</Button>
