@@ -76,7 +76,7 @@ const saveData = () => {
 </script>
 
 <Dialog.Root bind:open={isDialogOpen}>
-	<Dialog.Trigger class={buttonVariants({ variant: 'defalut', className: "bg-sky-500 hover:bg-sky-700 text-white" })}>
+	<Dialog.Trigger class={buttonVariants({ variant: 'default', className: "bg-sky-500 hover:bg-sky-700 text-white" })}>
 		<PlusCircle class="w-5 h-5 mr-2" />
 		Tambah
 	</Dialog.Trigger>

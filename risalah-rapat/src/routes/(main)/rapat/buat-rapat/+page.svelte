@@ -44,7 +44,7 @@
 		});
 	};
 
-	const saveDraft = async () => {
+	const saveFormRisalah = async () => {
 		try {
 			const formData = {
 				perihal: saveData.perihal,
@@ -79,12 +79,35 @@
 		}
 	};
 
+	const saveCheckerOrder = () => {
+		const listData = [];
+
+		for (const row of filteredTableData) {
+			const rowData = {
+				No_Urut: row.No_Urut,
+				Pilih_User: row.Pilih_User,
+				Nama_Jabatan: row.Nama_Jabatan,
+				Role: row.Role
+				// Add other properties from row if needed
+			};
+
+			listData.push(rowData);
+		}
+
+		console.log(listData);
+	};
+
+	const saveDraft = () => {
+		saveFormRisalah();
+		saveCheckerOrder();
+	};
+
 	function openPDF() {
 		let urlPDF = 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf';
 		window.open(urlPDF, '_blank');
 	}
 
-	let tags = [];
+	// let tags = [];
 
 	let saveData = {
 		perihal: '',
@@ -183,8 +206,6 @@
 	tableData.push(firstRow);
 
 	const selectUserOptions = data.map((user) => user.Pilih_User);
-
-	let userData = selectUserOptions[0]; // Default value
 
 	const moveRowUp = (index) => {
 		if (index === 1) {
