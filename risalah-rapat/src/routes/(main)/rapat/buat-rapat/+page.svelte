@@ -44,6 +44,25 @@
 		});
 	};
 
+	const saveDraft = () => {
+		// const saveFunctions = [];
+		saveFormRisalah();
+		saveCheckerOrder();
+		console.log(localRelasiData);
+		// push saveFormRisalah into array
+		// saveFunctions.push(saveFormRisalah);
+		// console.log(saveFunctions);
+
+		// push saveCheckerOrder into array
+		// saveFunctions.push(saveCheckerOrder);
+
+		// saveFunctions.forEach((saveFunction) => {
+		// 	saveFunction();
+		// })
+
+		// console.log(saveFunctions.saveFormRisalah);
+	};
+
 	const saveFormRisalah = async () => {
 		try {
 			const formData = {
@@ -85,7 +104,8 @@
 		for (const row of filteredTableData) {
 			const rowData = {
 				No_Urut: row.No_Urut,
-				Pilih_User: row.Pilih_User,
+				User_Internal: row.User_Internal,
+				User_Eksternal: row.User_Eksternal,
 				Nama_Jabatan: row.Nama_Jabatan,
 				Role: row.Role
 				// Add other properties from row if needed
@@ -95,11 +115,6 @@
 		}
 
 		console.log(listData);
-	};
-
-	const saveDraft = () => {
-		saveFormRisalah();
-		saveCheckerOrder();
 	};
 
 	function openPDF() {
@@ -175,8 +190,9 @@
 		const nextNo = tableData.length + 1;
 		const newRow = {
 			No_Urut: nextNo,
-			Pilih_User: '',
-			Nama_Jabatan: 'New Jabatan',
+			User_Internal: '',
+			User_Eksternal: '',
+			Nama_Jabatan: '',
 			Role: 'New Role'
 		};
 		tableData = [...tableData, newRow];
@@ -186,16 +202,16 @@
 	const data = [
 		{
 			No_Urut: 1,
-			Pilih_User: 'Mbak Rere',
+			User_Internal: 'Mbak Rere',
 			Nama_Jabatan: 'Sekretaris',
 			Role: 'Checker'
 		},
 		{
-			Pilih_User: 'Mas Bagus',
+			User_Internal: 'Mas Bagus',
 			Nama_Jabatan: 'Manajer TI'
 		},
 		{
-			Pilih_User: 'Mas Angga',
+			User_Internal: 'Mas Angga',
 			Nama_Jabatan: 'Vice President TI'
 		}
 	];
@@ -205,7 +221,7 @@
 	const firstRow = { No_Urut: 1, ...defaultValues };
 	tableData.push(firstRow);
 
-	const selectUserOptions = data.map((user) => user.Pilih_User);
+	const selectUserOptions = data.map((user) => user.User_Internal);
 
 	const moveRowUp = (index) => {
 		if (index === 1) {
@@ -247,11 +263,20 @@
 		}
 	};
 
-	const handleUserSelectionChange = (event, rowIndex) => {
+	// user internal change
+	const handleUserInternalChange = (event, rowIndex) => {
 		const selectedValue = event.target.value;
-		const namaJabatan = data.find((user) => user.Pilih_User === selectedValue)?.Nama_Jabatan || '';
+		const namaJabatan =
+			data.find((user) => user.User_Internal === selectedValue)?.Nama_Jabatan || '';
 		tableData[rowIndex].Nama_Jabatan = namaJabatan;
 	};
+
+	// user eksternal change
+	// const handleUserEksternalChange = (event, rowIndex) => {
+	// 	const selectedValue = event.target.value;
+	// 	const namaJabatan = '';
+	// 	tableData[rowIndex].Nama_Jabatan = namaJabatan;
+	// };
 
 	const getAksiOptions = (index) => {
 		if (index === 0) {
@@ -285,17 +310,15 @@
 	});
 
 	// dokumen relasi
-	const saveDocumenRelasi = () => {
-		Swal.fire({
-			icon: 'success',
-			title: 'Data berhasil ditambahkan',
-			showConfirmButton: false,
-			timer: 1500
-		});
-	};
 
 	// relasi data table
+
 	let relasiData = [];
+	let localRelasiData = relasiData;
+
+	$: {
+		localRelasiData = relasiData;
+	}
 
 	onMount(async () => {
 		try {
@@ -310,11 +333,6 @@
 			console.error('Error fetching data:', error);
 		}
 	});
-
-	const handleRelationDataSaved = (event) => {
-		// Append the new data to the existing data array
-		relasiData = [...relasiData, event.detail];
-	};
 
 	let searchRelasi = '';
 	$: filteredRelasi = relasiData.filter((item) => {
@@ -340,6 +358,71 @@
 			console.error('Error:', error);
 		}
 	}
+
+	// add relasi dokumen
+	let isDialogOpen = false;
+
+	let inputRelasiData = {
+		file: null,
+		name: ''
+	};
+
+	async function fetchRelasiData() {
+		try {
+			const formData = new FormData();
+			formData.append('attachment', inputRelasiData.file);
+			formData.append('attachmentName', inputRelasiData.name);
+
+			const response = await fetch('http://localhost:3000/upload-relation-documents', {
+				method: 'POST',
+				body: formData
+			});
+
+			if (response.ok) {
+				const newData = await response.json(); // Assuming the API responds with the newly added user data
+				// log(newData);
+				Swal.fire({
+					icon: 'success',
+					title: 'Data berhasil ditambahkan',
+					showConfirmButton: false,
+					timer: 1500
+				}).then(() => {
+					// Close the dialog by setting isDialogOpen to false
+					isDialogOpen = false;
+				});
+
+				// dispatch('dataSaved', newData);
+			} else {
+				Swal.fire({
+					icon: 'error',
+					title: 'Terjadi kesalahan saat menambahkan data'
+				});
+			}
+		} catch (error) {
+			console.error('Error:', error);
+			Swal.fire({
+				icon: 'error',
+				title: 'Terjadi kesalahan saat menambahkan data'
+			});
+		}
+	}
+
+	// Update your saveData function to call fetchData
+	const saveRelasiData = () => {
+		if (inputRelasiData.file && inputRelasiData.name) {
+			fetchRelasiData();
+
+			// console.log(inputRelasiData.file);
+			// console.log(inputRelasiData.name);
+		}
+	};
+
+	const handleFileInputChange = (event) => {
+		const file = event.target.files[0];
+		if (file) {
+			inputRelasiData.file = file;
+		}
+	};
 </script>
 
 <div class="py-10 space-y-8">
@@ -521,7 +604,8 @@
 										<TableHead class="text-sm">
 											<!-- <tr> -->
 											<TableHeadCell class="!p-4">No Urut</TableHeadCell>
-											<TableHeadCell class="!p-4">Pilih User</TableHeadCell>
+											<TableHeadCell class="!p-4">User Internal</TableHeadCell>
+											<TableHeadCell class="!p-4">User Eksternal</TableHeadCell>
 											<TableHeadCell class="!p-4">Nama Jabatan</TableHeadCell>
 											<TableHeadCell class="!p-4">Role</TableHeadCell>
 											<TableHeadCell class="!p-4">Aksi</TableHeadCell>
@@ -534,15 +618,28 @@
 													<TableBodyCell class="!p-4">
 														<select
 															class="p-1.5 text-gray-900 border-0 rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6 m-1.5"
-															bind:value={row.Pilih_User}
-															on:change={() => handleUserSelectionChange(event, index)}
+															bind:value={row.User_Internal}
+															on:change={() => handleUserInternalChange(event, index)}
 														>
 															{#each selectUserOptions as option}
 																<option value={option}>{option}</option>
 															{/each}
 														</select>
 													</TableBodyCell>
-													<TableBodyCell class="!p-4">{row.Nama_Jabatan}</TableBodyCell>
+													<TableBodyCell class="!p-4">
+														<input
+															type="text"
+															bind:value={row.User_Eksternal}
+															class="p-1.5 text-gray-900 border-0 rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6 m-1.5"
+														/>
+													</TableBodyCell>
+													<TableBodyCell class="!p-4">
+														<input
+															type="text"
+															class="p-1.5 text-gray-900 border-0 rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6 m-1.5"
+															bind:value={row.Nama_Jabatan}
+														/>
+													</TableBodyCell>
 													<TableBodyCell class="!p-4">
 														<select
 															class="p-1.5 text-gray-900 border-0 rounded-md py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6 px-3 m-1"
@@ -604,41 +701,50 @@
 								<Card.Title>Dokumen Relasi</Card.Title>
 							</Card.Header>
 							<Card.Content class="space-y-2">
-								<!-- <Dialog.Root>
-									<Dialog.Trigger
-										class={buttonVariants({
-											variant: 'defalut',
-											className: 'bg-sky-500 hover:bg-sky-700 text-white'
-										})}
-									>
-										<PlusCircle class="w-5 h-5 mr-2" />
-										Tambah
-									</Dialog.Trigger>
-									<Dialog.Content class="sm:max-w-[425px]">
-										<Dialog.Header>
-											<Dialog.Title>Tambah Dokumen Relasi</Dialog.Title>
-										</Dialog.Header>
-										<Separator />
-										<div class="py-4 space-y-4">
-											<div class="grid w-full max-w-sm items-center gap-x-1.5 space-y-4">
-												<Label for="unggah-lampiran">Unggah Lampiran</Label>
-												<Input id="unggah-lampiran" type="file" class="cursor-pointer" />
-											</div>
-											<div class="grid w-full max-w-sm items-center gap-x-1.5 space-y-4">
-												<Label for="nama-lampiran">Nama Lampiran</Label>
-												<Input id="nama-lampiran" placeholder="masukkan nama lampiran" />
-											</div>
-										</div>
-										<Dialog.Footer>
-											<Button type="submit" class="w-full" on:click={saveDocumenRelasi}
-												>Simpan</Button
-											>
-										</Dialog.Footer>
-									</Dialog.Content>
-								</Dialog.Root> -->
-
 								<div class="space-y-4">
-									<AddRelationDocument on:dataSaved={handleRelationDataSaved} {data} />
+									<Dialog.Root bind:open={isDialogOpen}>
+										<Dialog.Trigger
+											class={buttonVariants({
+												variant: 'default',
+												className: 'bg-sky-500 hover:bg-sky-700 text-white'
+											})}
+										>
+											<PlusCircle class="w-5 h-5 mr-2" />
+											Tambah
+										</Dialog.Trigger>
+										<Dialog.Content class="sm:max-w-[425px]">
+											<Dialog.Header>
+												<Dialog.Title>Tambah Dokumen Relasi</Dialog.Title>
+											</Dialog.Header>
+											<Separator />
+											<div class="py-4 space-y-4">
+												<div class="grid w-full max-w-sm items-center gap-x-1.5 space-y-4">
+													<Label for="unggah-lampiran">Unggah Lampiran</Label>
+													<Input
+														id="unggah-lampiran"
+														type="file"
+														class="cursor-pointer"
+														name="attachment"
+														on:change={handleFileInputChange}
+													/>
+												</div>
+												<div class="grid w-full max-w-sm items-center gap-x-1.5 space-y-4">
+													<Label for="nama-lampiran">Nama Lampiran</Label>
+													<Input
+														id="nama-lampiran"
+														placeholder="masukkan nama lampiran"
+														bind:value={inputRelasiData.name}
+													/>
+												</div>
+											</div>
+											<Dialog.Footer>
+												<Button type="submit" class="w-full" on:click={saveRelasiData}
+													>Simpan</Button
+												>
+											</Dialog.Footer>
+										</Dialog.Content>
+									</Dialog.Root>
+
 									<div class="sm:flex sm:justify-end">
 										<TableSearch
 											placeholder="Cari di sini"
