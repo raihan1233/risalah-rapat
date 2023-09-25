@@ -77,7 +77,7 @@
 					<TableBodyCell class="!p-4">{row.status}</TableBodyCell>
 					<TableBodyCell class="!p-4 space-x-2">
 						<!-- {#each row.Aksi as aksiOption} -->
-						<EditPlace id />
+						<EditPlace id={row.id} />
 						<!-- {/each} -->
 					</TableBodyCell>
 				</TableBodyRow>

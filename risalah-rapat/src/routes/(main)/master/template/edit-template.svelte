@@ -81,7 +81,7 @@
 		class={buttonVariants({ variant: 'default', className: 'bg-sky-500 hover:bg-sky-700' })}
 		on:click={() => dispatch('edit', templateId)}
 	>
-		<Pencil class="h-4 w-4" />
+		<Pencil class="h-4 w-4 mr-2" />Edit
 	</Dialog.Trigger>
 	<Dialog.Content class="sm:max-w-[425px]">
 		<Dialog.Header>

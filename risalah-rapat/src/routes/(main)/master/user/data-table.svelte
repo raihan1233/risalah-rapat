@@ -107,7 +107,7 @@
 					<TableBodyCell class="!p-4">{row.status}</TableBodyCell>
 					<TableBodyCell class="!p-4">
 						<!-- {#each row.Aksi as aksiOption} -->
-						<EditUser user={row} />
+						<EditUser id={row.id} />
 						<!-- {/each} -->
 					</TableBodyCell>
 				</TableBodyRow>

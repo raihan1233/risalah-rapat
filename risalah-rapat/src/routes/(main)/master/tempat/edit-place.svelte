@@ -7,14 +7,48 @@
   import * as RadioGroup from "$lib/components/ui/radio-group";
   import Swal from 'sweetalert2';
   import { Pencil } from "lucide-svelte";
+  import { onMount, beforeUpdate, afterUpdate } from 'svelte';
 
   export let id;
   let tempat = "";
-  let status = "aktif";
+  let status = "";
 
-  const saveData = async () => {
+  // Add a variable to store the fetched place data
+  let placeData = null;
+
+  let isDialogOpen = false;
+
+  const fetchData = async () => {
     try {
-      const response = await fetch(`/place/${id}`, {
+      const response = await fetch(`http://localhost:3000/place/${id}`);
+      if (response.ok) {
+        placeData = await response.json();
+        // Set the input fields based on the fetched data
+        tempat = placeData.tempat;
+        status = placeData.status;
+      } else {
+        console.error('Failed to fetch data for editing:', response.statusText);
+        Swal.fire({
+          icon: 'error',
+          title: 'Gagal mengambil data untuk pengeditan',
+          text: 'Terjadi kesalahan saat mengambil data.'
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching data for editing:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Gagal mengambil data untuk pengeditan',
+        text: 'Terjadi kesalahan saat mengambil data.'
+      });
+    }
+  };
+
+   onMount(fetchData); // Fetch data when the component is mounted
+
+    const saveData = async () => {
+    try {
+      const response = await fetch(`http://localhost:3000/place/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -28,6 +62,9 @@
           title: 'Data berhasil disimpan',
           showConfirmButton: false,
           timer: 1500
+        }).then(() => {
+          // Close the dialog by setting isDialogOpen to false
+          isDialogOpen = false;
         });
       } else {
         console.error('Failed to update data:', response.statusText);
@@ -48,9 +85,9 @@
   };
 </script>
 
-<Dialog.Root>
+<Dialog.Root bind:open={isDialogOpen}>
   <Dialog.Trigger class={buttonVariants({ variant: "default", className: "bg-sky-500 hover:bg-sky-700" })}>
-    <Pencil class="h-4 w-4" />
+    <Pencil class="h-4 w-4 mr-2" />Edit
   </Dialog.Trigger>
   <Dialog.Content class="sm:max-w-[425px]">
     <Dialog.Header>
@@ -64,13 +101,13 @@
       </div>
       <div class="space-y-4">
         <Label>Status</Label>
-        <RadioGroup.Root value="aktif" class="flex space-x-3.5">
+        <RadioGroup.Root class="flex space-x-3.5" bind:value={status}>
           <div class="flex items-center space-x-2">
-            <RadioGroup.Item value="aktif" id="aktif" />
+            <RadioGroup.Item value="Aktif" id="aktif" />
             <Label for="aktif">Aktif</Label>
           </div>
           <div class="flex items-center space-x-2">
-            <RadioGroup.Item value="tidak-aktif" id="tidak-aktif" />
+            <RadioGroup.Item value="Tidak Aktif" id="tidak-aktif" />
             <Label for="tidak-aktif">Tidak Aktif</Label>
           </div>
         </RadioGroup.Root>

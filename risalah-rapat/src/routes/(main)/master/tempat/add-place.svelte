@@ -13,7 +13,7 @@
 	const saveData = async () => {
 		const newData = {
 			tempat: inputData.tempat, // Example value, replace with actual input data
-			status: 'Aktif' // Example value, replace with actual input data
+			status: inputData.status // Example value, replace with actual input data
 		};
 
 		// Emit an event with the new data
@@ -37,7 +37,10 @@
 					title: 'Data berhasil ditambahkan',
 					showConfirmButton: false,
 					timer: 1500
-				});
+				}).then(() => {
+          // Close the dialog by setting isDialogOpen to false
+          isDialogOpen = false;
+        });
 			} else {
 				Swal.fire({
 					icon: 'error',
@@ -57,13 +60,16 @@
 	console.log(saveData);
 
 	let inputData = {
-		tempat: ''
+		tempat: '',
+		status: ""
 	};
 
 	const dispatch = createEventDispatcher();
+
+	let isDialogOpen = false;
 </script>
 
-<Dialog.Root>
+<Dialog.Root bind:open={isDialogOpen}>
 	<Dialog.Trigger class={buttonVariants({ variant: 'outline' })}>Tambah</Dialog.Trigger>
 	<Dialog.Content class="sm:max-w-[425px]">
 		<Dialog.Header>
@@ -77,13 +83,13 @@
 			</div>
 			<div class="space-y-4">
 				<Label>Status</Label>
-				<RadioGroup.Root value="aktif" class="flex space-x-3.5">
+				<RadioGroup.Root class="flex space-x-3.5" bind:value={inputData.status}>
 					<div class="flex items-center space-x-2">
-						<RadioGroup.Item value="aktif" id="aktif" />
+						<RadioGroup.Item value="Aktif" id="aktif" />
 						<Label for="aktif">Aktif</Label>
 					</div>
 					<div class="flex items-center space-x-2">
-						<RadioGroup.Item value="tidak-aktif" id="tidak-aktif" />
+						<RadioGroup.Item value="Tidak aktif" id="tidak-aktif" />
 						<Label for="tidak-aktif">Tidak Aktif</Label>
 					</div>
 				</RadioGroup.Root>
