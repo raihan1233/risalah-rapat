@@ -1,114 +1,113 @@
 <script lang="ts">
-  import { Button, buttonVariants } from "$lib/components/ui/button";
-  import * as Dialog from "$lib/components/ui/dialog";
-  import { Input } from "$lib/components/ui/input";
-  import { Label } from "$lib/components/ui/label";
-  import { Separator } from "$lib/components/ui/separator";
-  import * as RadioGroup from "$lib/components/ui/radio-group";
-  import { createEventDispatcher } from "svelte";
-  import Swal from 'sweetalert2';
+	import { Button, buttonVariants } from '$lib/components/ui/button';
+	import * as Dialog from '$lib/components/ui/dialog';
+	import { Input } from '$lib/components/ui/input';
+	import { Label } from '$lib/components/ui/label';
+	import { Separator } from '$lib/components/ui/separator';
+	import * as RadioGroup from '$lib/components/ui/radio-group';
+	import { createEventDispatcher } from 'svelte';
+	import Swal from 'sweetalert2';
 
-  export let data;
-  
-  const dispatch = createEventDispatcher();
+	export let data = [];
 
-  const saveData = async () => {
-    const newData = {
-      title: inputData.title, // Example value, replace with actual input data
-      file: inputData.file,
-      status: 'Aktif', // Example value, replace with actual input data
-    };
-    
-  console.log(newData);
+	const dispatch = createEventDispatcher();
 
-  try {
-			const response = await fetch('http://localhost:3000/template', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify(newData)
-			});
+	let isDialogOpen = false;
 
-			if (response.ok) {
-				const responseData = await response.text();
+	let inputData = {
+		title: '',
+		file: null,
+		status: ''
+	};
 
-				// Emit an event with the new data (if needed)
-				dispatch('dataSaved', responseData);
+	async function saveData() {
+		if (inputData.title && inputData.file && inputData.status) {
+			try {
+				const formData = new FormData();
+				formData.append('attachmentTitle', inputData.title);
+				formData.append('attachment', inputData.file);
+				formData.append('status', inputData.status);
 
-				Swal.fire({
-					icon: 'success',
-					title: 'Data berhasil ditambahkan',
-					showConfirmButton: false,
-					timer: 1500
+				const response = await fetch('http://localhost:3000/template', {
+					method: 'POST',
+					body: formData
 				});
-			} else {
+
+				if (response.ok) {
+					const newData = await response.json();
+					data = [...data, newData];
+
+					Swal.fire({
+						icon: 'success',
+						title: 'Data berhasil ditambahkan',
+						showConfirmButton: false,
+						timer: 1500
+					}).then(() => {
+						isDialogOpen = false;
+					});
+
+					dispatch('dataSaved', newData);
+				} else {
+					Swal.fire({
+						icon: 'error',
+						title: 'Terjadi kesalahan saat menambahkan data'
+					});
+				}
+			} catch (error) {
+				console.error('Error:', error);
 				Swal.fire({
 					icon: 'error',
-					title: 'Gagal menambahkan data',
-					text: 'Ada masalah saat menambahkan data ke server'
+					title: 'Terjadi kesalahan saat menambahkan data'
 				});
 			}
-		} catch (error) {
-			console.error('Error:', error);
-			Swal.fire({
-				icon: 'error',
-				title: 'Terjadi kesalahan',
-				text: 'Terjadi kesalahan saat mengirim data ke server'
-			});
 		}
+	}
 
-    // Emit an event with the new data
-    dispatch('dataSaved', newData);
-		Swal.fire({
-			icon: 'success',
-			title: 'Data berhasil ditambahkan',
-			showConfirmButton: false,
-			timer: 1500
-		});
+	const handleFileInputChange = (event) => {
+		const file = event.target.files[0];
+		if (file) {
+			inputData.file = file;
+		}
 	};
-  
-
-  let inputData = {
-    title: "",
-    file: ""
-  }
 </script>
 
-<Dialog.Root>
-  <Dialog.Trigger class={buttonVariants({ variant: "outline" })}>
-    Tambah
-  </Dialog.Trigger>
-  <Dialog.Content class="sm:max-w-[425px]">
-    <Dialog.Header>
-      <Dialog.Title>Tambah Template</Dialog.Title>
-    </Dialog.Header>
-    <Separator />
-    <div class="py-4 space-y-4">
-      <div class="space-y-4">
-        <Label for="template">Template</Label>
-        <Input id="template" placeholder="Masukkan nama template" bind:value={inputData.title} />
-      </div>
-      <div class="grid w-full max-w-sm items-center gap-x-1.5 space-y-4">
-          <Label for="unggah-template">Unggah Template</Label>
-          <Input id="unggah-template" type="file" class="cursor-pointer"  bind:value={inputData.file}/>
-      </div>
-      <div class="space-y-4">
-        <Label>Status</Label>
-        <RadioGroup.Root value="aktif" class="flex space-x-3.5">
-          <div class="flex items-center space-x-2">
-            <RadioGroup.Item value="aktif" id="aktif" />
-            <Label for="aktif">Aktif</Label>
-          </div>
-          <div class="flex items-center space-x-2">
-            <RadioGroup.Item value="tidak-aktif" id="tidak-aktif" />
-            <Label for="tidak-aktif">Tidak Aktif</Label>
-          </div>
-        </RadioGroup.Root>
-      </div>
-    </div>
-    <Dialog.Footer>
-      <Button type="submit" class="w-full" on:click={saveData}>Simpan</Button>
-    </Dialog.Footer>
-  </Dialog.Content>
+<Dialog.Root bind:open={isDialogOpen}>
+	<Dialog.Trigger class={buttonVariants({ variant: 'outline' })}>Tambah</Dialog.Trigger>
+	<Dialog.Content class="sm:max-w-[425px]">
+		<Dialog.Header>
+			<Dialog.Title>Tambah Template</Dialog.Title>
+		</Dialog.Header>
+		<Separator />
+		<div class="py-4 space-y-4">
+			<div class="space-y-4">
+				<Label for="template">Template</Label>
+				<Input id="template" placeholder="Masukkan nama template" bind:value={inputData.title} />
+			</div>
+			<div class="grid w-full max-w-sm items-center gap-x-1.5 space-y-4">
+				<Label for="unggah-template">Unggah Template</Label>
+				<Input
+					id="unggah-template"
+					type="file"
+					class="cursor-pointer"
+					on:change={handleFileInputChange}
+				/>
+			</div>
+			<div class="space-y-4">
+				<Label>Status</Label>
+				<RadioGroup.Root class="flex space-x-3.5" bind:value={inputData.status}>
+					<div class="flex items-center space-x-2">
+						<RadioGroup.Item value="Aktif" id="aktif" />
+						<Label for="aktif">Aktif</Label>
+					</div>
+					<div class="flex items-center space-x-2">
+						<RadioGroup.Item value="Tidak Aktif" id="tidak-aktif" />
+						<Label for="tidak-aktif">Tidak Aktif</Label>
+					</div>
+				</RadioGroup.Root>
+			</div>
+		</div>
+		<Dialog.Footer>
+			<Button type="submit" class="w-full" on:click={saveData}>Simpan</Button>
+		</Dialog.Footer>
+	</Dialog.Content>
 </Dialog.Root>

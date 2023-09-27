@@ -373,7 +373,7 @@
 			formData.append('attachment', inputRelasiData.file);
 			formData.append('attachmentName', inputRelasiData.name);
 
-			const response = await fetch('http://localhost:3000/upload-relation-documents', {
+			const response = await fetch('http://localhost:3000/relation-documents', {
 				method: 'POST',
 				body: formData
 			});

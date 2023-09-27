@@ -35,7 +35,7 @@
 
 	const handleDataUpdate = (event) => {
 		// Update the data array with the updated data
-		( data = event.detail);
+		data = event.detail;
 	};
 
 	const handleDataSaved = (event) => {
@@ -82,18 +82,14 @@
 					<TableBodyCell class="!p-4">{index + 1}</TableBodyCell>
 					<TableBodyCell class="!p-4">{row.title}</TableBodyCell>
 					<TableBodyCell class="!p-4"
-						><a href={row.file} class="underline" download>{row.file}</a></TableBodyCell
+						><a href={`http://localhost:3000/template/${row.id}`} class="underline" download
+							>{row.file}</a
+						></TableBodyCell
 					>
 					<TableBodyCell class="!p-4">{row.status}</TableBodyCell>
 					<TableBodyCell class="!p-4">
-						<EditTemplate
-							{templateData}
-							{data}
-							{templateId}
-							{index}
-							on:updateData={handleDataUpdate}
-						/></TableBodyCell
-					>
+						<EditTemplate id={row.id} />
+					</TableBodyCell>
 				</TableBodyRow>
 			{/each}
 		</TableBody>
