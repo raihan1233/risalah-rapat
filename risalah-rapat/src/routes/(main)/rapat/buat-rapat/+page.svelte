@@ -224,7 +224,7 @@
 	const selectUserOptions = data.map((user) => user.User_Internal);
 
 	const moveRowUp = (index) => {
-		if (index > 0) {
+		if (index > 1) {
 			// Cek apakah baris saat ini memiliki nilai
 			if (tableData[index].User_Internal) {
 				// Lakukan pemindahan baris ke atas
