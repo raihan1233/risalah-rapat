@@ -120,11 +120,35 @@
 		agenda: ''
 	};
 
-	let templateOptions = [
-		{ value: 'first.pdf', label: 'Template One', downloadLink: '/files/template1.pdf' },
-		{ value: 'second.pdf', label: 'Template Two', downloadLink: '/files/template2.pdf' },
-		{ value: 'three.pdf', label: 'Template Three', downloadLink: '/files/template3.pdf' }
-	]; // Store template options fetched from API
+	let templateOptions = []; // Store template options fetched from API
+	const fetchTemplate = async () => {
+		try {
+			const response = await fetch('http://localhost:3000/template'); // Replace with your API endpoint
+			if (response.ok) {
+				templateOptions = await response.json();
+				console.log(templateOptions);
+			} else {
+				console.error('Failed to fetch data from the API');
+			}
+		} catch (error) {
+			console.error('Error fetching data:', error);
+		}
+	};
+
+	const updateDownloadLink = () => {
+		const selectedOption = templateOptions.find((option) => option.label === saveData.template);
+		saveData.download = selectedOption ? selectedOption.value : '';
+	};
+
+	// Update the download link whenever the template value changes
+	$: {
+		updateDownloadLink();
+	}
+
+	const handleTemplateChange = (event) => {
+		saveData.template = event.target.value;
+		updateDownloadLink();
+	};
 
 	let tempatOptions = []
 	const fetchTempat = async () => {
@@ -142,25 +166,13 @@
 		}
 	};
 
-	onMount(fetchTempat)
-
-	const updateDownloadLink = () => {
-		const selectedOption = templateOptions.find((option) => option.label === saveData.template);
-		saveData.download = selectedOption ? selectedOption.downloadLink : '';
-	};
-
-	// Update the download link whenever the template value changes
-	$: {
-		updateDownloadLink();
-	}
+	onMount(() => {
+		fetchTempat();
+		fetchTemplate();
+	});
 
 	const handleTempatChange = (event) => {
 		saveData.tempat = event.target.value;
-	};
-
-	const handleTemplateChange = (event) => {
-		saveData.template = event.target.value;
-		updateDownloadLink();
 	};
 
 	onMount(() => {
@@ -316,7 +328,7 @@
 			const response = await fetch('http://localhost:3000/relation-documents'); // Replace with your API endpoint
 			if (response.ok) {
 				relasiData = await response.json();
-				console.log(relasiData);
+				// console.log(relasiData);
 			} else {
 				console.error('Failed to fetch data from the API');
 			}
@@ -494,8 +506,8 @@
 										placeholder="pilih template"
 									>
 										<option selected disabled>pilih template</option>
-										{#each templateOptions as option (option.value)}
-											<option value={option.label}>{option.label}</option>
+										{#each templateOptions as option (option.title)}
+											<option value={option.title}>{option.title}</option>
 										{/each}
 									</select>
 								</div>
