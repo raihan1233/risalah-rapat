@@ -224,43 +224,43 @@
 	const selectUserOptions = data.map((user) => user.User_Internal);
 
 	const moveRowUp = (index) => {
-		if (index === 1) {
-			// Swap the current row with the previous row
-			const currentRow = tableData[index];
-			const previousRow = tableData[index - 1];
-			tableData[index] = previousRow;
-			tableData[index - 1] = currentRow;
-		} else if (index >= 2) {
-			// Swap the current row with the previous row
-			const currentRow = tableData[index];
-			const previousRow = tableData[index - 1];
-			tableData[index] = previousRow;
-			tableData[index - 1] = currentRow;
-		}
+		if (index > 0) {
+			// Cek apakah baris saat ini memiliki nilai
+			if (tableData[index].User_Internal) {
+				// Lakukan pemindahan baris ke atas
+				const currentRow = tableData[index];
+				const previousRow = tableData[index - 1];
+				tableData[index] = previousRow;
+				tableData[index - 1] = currentRow;
 
-		// Update the No Urut values based on the final order
-		tableData.forEach((row, i) => {
-			row.No_Urut = i + 1;
-		});
+				// Update No Urut values based on the final order
+				tableData.forEach((row, i) => {
+					row.No_Urut = i + 1;
+				});
+			}
+		}
 
 		updateButtonVisibility();
 	};
 
 	const moveRowDown = (index) => {
 		if (index < tableData.length - 1) {
-			// Swap the current row with the next row
-			const currentRow = tableData[index];
-			const nextRow = tableData[index + 1];
-			tableData[index] = nextRow;
-			tableData[index + 1] = currentRow;
+			// Cek apakah baris saat ini memiliki nilai
+			if (tableData[index].User_Internal) {
+				// Lakukan pemindahan baris ke bawah
+				const currentRow = tableData[index];
+				const nextRow = tableData[index + 1];
+				tableData[index] = nextRow;
+				tableData[index + 1] = currentRow;
 
-			// Update the No Urut values based on the final order
-			tableData.forEach((row, i) => {
-				row.No_Urut = i + 1;
-			});
-
-			updateButtonVisibility();
+				// Update No Urut values based on the final order
+				tableData.forEach((row, i) => {
+					row.No_Urut = i + 1;
+				});
+			}
 		}
+
+		updateButtonVisibility();
 	};
 
 	// user internal change
