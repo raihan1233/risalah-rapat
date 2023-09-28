@@ -33,7 +33,6 @@
 	import { Separator } from '$lib/components/ui/separator';
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
-	import AddRelationDocument from './add-relation-document.svelte';
 
 	const sendData = () => {
 		Swal.fire({
@@ -45,22 +44,9 @@
 	};
 
 	const saveDraft = () => {
-		// const saveFunctions = [];
 		saveFormRisalah();
 		saveCheckerOrder();
 		console.log(localRelasiData);
-		// push saveFormRisalah into array
-		// saveFunctions.push(saveFormRisalah);
-		// console.log(saveFunctions);
-
-		// push saveCheckerOrder into array
-		// saveFunctions.push(saveCheckerOrder);
-
-		// saveFunctions.forEach((saveFunction) => {
-		// 	saveFunction();
-		// })
-
-		// console.log(saveFunctions.saveFormRisalah);
 	};
 
 	const saveFormRisalah = async () => {
@@ -140,11 +126,23 @@
 		{ value: 'three.pdf', label: 'Template Three', downloadLink: '/files/template3.pdf' }
 	]; // Store template options fetched from API
 
-	let tempatOptions = [
-		{ value: 'Ruang Lambelu', label: 'Ruang Lambelu' },
-		{ value: 'Ruang IT', label: 'Ruang IT' },
-		{ value: 'Ruang Kelaud', label: 'Ruang Kelaud' }
-	]; // Store tempat options fetched from API
+	let tempatOptions = []
+	const fetchTempat = async () => {
+		try {
+			const response = await fetch('http://localhost:3000/place'); // Replace with your API endpoint
+			if (response.ok) {
+				tempatOptions = await response.json();
+				console.log(tempatOptions);
+				
+			} else {
+				console.error('Failed to fetch data from the API');
+			}
+		} catch (error) {
+			console.error('Error fetching data:', error);
+		}
+	};
+
+	onMount(fetchTempat)
 
 	const updateDownloadLink = () => {
 		const selectedOption = templateOptions.find((option) => option.label === saveData.template);
@@ -270,13 +268,6 @@
 			data.find((user) => user.User_Internal === selectedValue)?.Nama_Jabatan || '';
 		tableData[rowIndex].Nama_Jabatan = namaJabatan;
 	};
-
-	// user eksternal change
-	// const handleUserEksternalChange = (event, rowIndex) => {
-	// 	const selectedValue = event.target.value;
-	// 	const namaJabatan = '';
-	// 	tableData[rowIndex].Nama_Jabatan = namaJabatan;
-	// };
 
 	const getAksiOptions = (index) => {
 		if (index === 0) {
@@ -481,8 +472,8 @@
 										class="block w-full rounded-md px-3 py-3 border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 									>
 										<option selected disabled>pilih tempat</option>
-										{#each tempatOptions as option (option.value)}
-											<option value={option.label}>{option.label}</option>
+										{#each tempatOptions as option (option.tempat)}
+											<option value={option.tempat}>{option.tempat}</option>
 										{/each}
 									</select>
 								</div>
