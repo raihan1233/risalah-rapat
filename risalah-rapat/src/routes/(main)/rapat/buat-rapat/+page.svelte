@@ -45,9 +45,28 @@
 
 	const saveDraft = () => {
 		saveFormRisalah();
+		saveTimeStamp();
 		saveCheckerOrder();
 		console.log(localRelasiData);
 	};
+
+	let formattedTimestamp;
+
+	const saveTimeStamp = () => {
+		const now = new Date();
+		const year = now.getFullYear();
+		const month = (now.getMonth() + 1).toString().padStart(2, '0');
+		const day = now.getDate().toString().padStart(2, '0');
+		const hours = now.getHours().toString().padStart(2, '0');
+		const minutes = now.getMinutes().toString().padStart(2, '0');
+		const amOrPm = hours < 12 ? 'am' : 'pm';
+		const formattedHours = (hours % 12).toString().padStart(2, '0');
+		formattedTimestamp = `${year}-${month}-${day} ${formattedHours}.${minutes} ${amOrPm}`;
+		console.log(formattedTimestamp);
+	};
+
+	// Initialize the timestamp when the component is first created
+	saveTimeStamp();
 
 	const saveFormRisalah = async () => {
 		try {
@@ -58,7 +77,8 @@
 				template: saveData.template,
 				download: saveData.download,
 				update_temp: saveData.update_temp,
-				agenda: saveData.agenda
+				agenda: saveData.agenda,
+				timestamp: formattedTimestamp
 			};
 
 			console.log(formData);
@@ -104,7 +124,8 @@
 	};
 
 	function openPDF() {
-		let urlPDF = 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf';
+		let urlPDF =
+			'https://drive.google.com/file/d/1XijaMzRhbKSiO1zP-803j1Urc4PDgqVy/view?usp=drive_link';
 		window.open(urlPDF, '_blank');
 	}
 
@@ -120,6 +141,8 @@
 		agenda: ''
 	};
 
+	let selectedTemplate = '';
+	console.log(selectedTemplate);
 	let templateOptions = []; // Store template options fetched from API
 	const fetchTemplate = async () => {
 		try {
@@ -136,28 +159,31 @@
 	};
 
 	const updateDownloadLink = () => {
-		const selectedOption = templateOptions.find((option) => option.label === saveData.template);
-		saveData.download = selectedOption ? selectedOption.value : '';
+		const selectedOption = templateOptions.find((option) => option.title === saveData.template);
+		console.log(selectedOption);
+		saveData.download = selectedOption ? selectedOption.title : '';
+		console.log(saveData.download);
 	};
 
 	// Update the download link whenever the template value changes
 	$: {
+		saveData.template = selectedTemplate;
 		updateDownloadLink();
 	}
 
 	const handleTemplateChange = (event) => {
-		saveData.template = event.target.value;
+		selectedTemplate = event.target.value;
+		console.log(selectedTemplate);
 		updateDownloadLink();
 	};
 
-	let tempatOptions = []
+	let tempatOptions = [];
 	const fetchTempat = async () => {
 		try {
 			const response = await fetch('http://localhost:3000/place'); // Replace with your API endpoint
 			if (response.ok) {
 				tempatOptions = await response.json();
 				console.log(tempatOptions);
-				
 			} else {
 				console.error('Failed to fetch data from the API');
 			}
@@ -166,13 +192,9 @@
 		}
 	};
 
-	onMount(() => {
-		fetchTempat();
-		fetchTemplate();
-	});
-
 	const handleTempatChange = (event) => {
 		saveData.tempat = event.target.value;
+		console.log(saveData.tempat);
 	};
 
 	onMount(() => {
@@ -185,6 +207,9 @@
 			dateFormat: 'Y-m-d H:i',
 			theme: 'light'
 		});
+
+		fetchTempat();
+		fetchTemplate();
 	});
 
 	// data table
@@ -501,7 +526,7 @@
 										id="pilih-template"
 										name="pilih-template"
 										class="block w-full rounded-md px-3 py-3 border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-										bind:value={saveData.template}
+										bind:value={selectedTemplate}
 										on:change={handleTemplateChange}
 										placeholder="pilih template"
 									>
