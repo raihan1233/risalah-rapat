@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
 	import { Label } from '$lib/components/ui/label';
@@ -59,7 +59,10 @@
             });
 
             if (response.ok) {
-                // Login successful
+				// Login successful
+				const data = await response.json();
+				token = data.token; // Store the JWT token
+				console.log(token);
                 popupSuccess();
                 setTimeout(() => {
                     window.location.href = '/home';
@@ -75,6 +78,7 @@
     }
 
 	let showPassword = false;
+	let token = '';
 
 	function togglePasswordVisibility() {
 		showPassword = !showPassword;

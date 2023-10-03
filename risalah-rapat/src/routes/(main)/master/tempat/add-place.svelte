@@ -1,4 +1,4 @@
-<script lang="ts">
+\<script>
 	import { Button, buttonVariants } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Input } from '$lib/components/ui/input';
@@ -18,10 +18,11 @@
 
 		// Emit an event with the new data
 		try {
-			const response = await fetch('http://localhost:3000/place', {
+			const response = await fetch('http://localhost:3000/places', {
 				method: 'POST',
 				headers: {
-					'Content-Type': 'application/json'
+					'Content-Type': 'application/json',
+					'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFubmlzYSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTY5NjIyMTgxNywiZXhwIjoxNjk2NDgxMDE3fQ.M879PmtOuY-2hwJ1qEFz596Jh-JhY1MjbF6z-WueUyA`
 				},
 				body: JSON.stringify(newData)
 			});
@@ -57,7 +58,6 @@
 			});
 		}
 	};
-	console.log(saveData);
 
 	let inputData = {
 		tempat: '',

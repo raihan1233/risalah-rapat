@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import { onMount } from 'svelte';
 	import EditPlace from './edit-place.svelte';
 	import AddPlace from './add-place.svelte';
@@ -16,11 +16,12 @@
 
 	const fetchData = async () => {
 		try {
-			const response = await fetch('http://localhost:3000/place'); // Replace with your API endpoint
+			const response = await fetch('http://localhost:3000/places', {
+				headers: {'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFubmlzYSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTY5NjIyMTgxNywiZXhwIjoxNjk2NDgxMDE3fQ.M879PmtOuY-2hwJ1qEFz596Jh-JhY1MjbF6z-WueUyA`}
+			}); // Replace with your API endpoint
 			if (response.ok) {
 				data = await response.json();
 				console.log(data);
-				
 			} else {
 				console.error('Failed to fetch data from the API');
 			}
@@ -32,16 +33,19 @@
 	onMount(fetchData);
 
 	const handleDataSaved = (event) => {
-		// Append the new data to the existing data array
-		data = [...data, event.detail];
+		// Update the data array with the updated values based on id
+		const { id, tempat, status } = event.detail;
+		data = data.map((item) => {
+			if (item.id === id) {
+				return { ...item, tempat, status };
+			}
+			return item;
+		});
 	};
 
 	let searchTerm = '';
 	$: filteredItems = data.filter((item) => {
 		const lowerSearchTerm = searchTerm.toLowerCase();
-		// return Object.values(item).some(
-		// 	(value) => typeof value === 'string' && value.toLowerCase().includes(lowerSearchTerm)
-		// );
 		return typeof item.tempat === 'string' && item.tempat.toLowerCase().includes(lowerSearchTerm);
 	});
 </script>

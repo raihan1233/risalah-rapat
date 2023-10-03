@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import { onMount, setContext } from 'svelte';
 	import EditTemplate from './edit-template.svelte';
 	import AddTemplate from './add-template.svelte';
@@ -13,12 +13,16 @@
 	} from 'flowbite-svelte';
 
 	let data = [];
-	let templateData = {};
-	let templateId = '';
 
 	const fetchData = async () => {
 		try {
-			const response = await fetch('http://localhost:3000/template'); // Replace with your API endpoint
+			const response = await fetch('http://localhost:3000/templates', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFubmlzYSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTY5NjIyMTgxNywiZXhwIjoxNjk2NDgxMDE3fQ.M879PmtOuY-2hwJ1qEFz596Jh-JhY1MjbF6z-WueUyA`
+				}
+			}); // Replace with your API endpoint
 			if (response.ok) {
 				data = await response.json();
 

@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import { Button, buttonVariants } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Input } from '$lib/components/ui/input';
@@ -8,7 +8,9 @@
 	import Swal from 'sweetalert2';
 	import { Pencil } from 'lucide-svelte';
 	import { onMount } from 'svelte';
+	// import { createEventDispatcher } from 'svelte';
 
+	// let dispatch = createEventDispatcher;
 	export let id;
 	let tempat = '';
 	let status = '';
@@ -20,7 +22,11 @@
 
 	const fetchData = async () => {
 		try {
-			const response = await fetch(`http://localhost:3000/place/${id}`);
+			const response = await fetch(`http://localhost:3000/places/${id}`, {
+				headers: {
+					'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFubmlzYSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTY5NjIyMTgxNywiZXhwIjoxNjk2NDgxMDE3fQ.M879PmtOuY-2hwJ1qEFz596Jh-JhY1MjbF6z-WueUyA`
+				}
+			});
 			if (response.ok) {
 				placeData = await response.json();
 				// Set the input fields based on the fetched data
@@ -48,10 +54,12 @@
 
 	const saveData = async () => {
 		try {
-			const response = await fetch(`http://localhost:3000/place/${id}`, {
+			const response = await fetch(`http://localhost:3000/places/${id}`, {
 				method: 'PUT',
 				headers: {
-					'Content-Type': 'application/json'
+					'Content-Type': 'application/json',
+					'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFubmlzYSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTY5NjIyMTgxNywiZXhwIjoxNjk2NDgxMDE3fQ.M879PmtOuY-2hwJ1qEFz596Jh-JhY1MjbF6z-WueUyA`
+				
 				},
 				body: JSON.stringify({ tempat, status }) // Send the updated data
 			});
@@ -63,6 +71,7 @@
 					showConfirmButton: false,
 					timer: 1500
 				}).then(() => {
+					dispatch('dataSaved', { id, tempat, status });
 					// Close the dialog by setting isDialogOpen to false
 					isDialogOpen = false;
 				});

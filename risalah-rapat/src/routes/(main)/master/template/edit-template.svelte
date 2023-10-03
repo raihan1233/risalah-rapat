@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import { Button, buttonVariants } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Input } from '$lib/components/ui/input';
@@ -24,7 +24,7 @@
 
 	const fetchData = async () => {
 		try {
-			const response = await fetch(`http://localhost:3000/template/${id}`);
+			const response = await fetch(`http://localhost:3000/templates/${id}`);
 			if (response.ok) {
 				templateData = await response.json();
 				// Set the input fields based on the fetched data
@@ -59,7 +59,7 @@
 			formData.append('file', file);
 			formData.append('status', status);
 
-			const response = await fetch(`http://localhost:3000/template/${id}`, {
+			const response = await fetch(`http://localhost:3000/templates/${id}`, {
 				method: 'PUT',
 				body: formData
 			});

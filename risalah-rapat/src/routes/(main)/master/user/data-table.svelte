@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import { onMount } from 'svelte';
 	import AddUser from './add-user.svelte';
 	import EditUser from './edit-user.svelte';
@@ -14,24 +14,12 @@
 
 	let data = [];
 
-	// const fetchData = async () => {
-	// 	try {
-	// 		const response = await fetch('http://localhost:3000/users'); // Replace with your API endpoint
-	// 		if (response.ok) {
-	// 			data = await response.json();
-	// 			console.log(data);
-				
-	// 		} else {
-	// 			console.error('Failed to fetch data from the API');
-	// 		}
-	// 	} catch (error) {
-	// 		console.error('Error fetching data:', error);
-	// 	}
-	// };
-
-	onMount(async () => {
+	const fetchData = async () => {
 		try {
-			const response = await fetch('http://localhost:3000/users'); // Replace with your API endpoint
+			const response = await fetch('http://localhost:3000/users', {
+				headers: {
+					'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFubmlzYSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTY5NjIzNTE0NiwiZXhwIjoxNjk2NDk0MzQ2fQ.UcKl0CPRYA33D-hYuKAtx1e_Kbm7T5tefHX9drWkv0U`}
+			}); // Replace with your API endpoint
 			if (response.ok) {
 				data = await response.json();
 				console.log(data);
@@ -42,9 +30,9 @@
 		} catch (error) {
 			console.error('Error fetching data:', error);
 		}
-	});
+	};
 
-	// onMount(fetchData);
+	onMount(fetchData);
 
 	const handleDataSaved = (event) => {
 		// Append the new data to the existing data array

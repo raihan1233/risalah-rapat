@@ -110,7 +110,7 @@
 		for (const row of filteredTableData) {
 			const rowData = {
 				No_Urut: row.No_Urut,
-				User_Internal: row.User_Internal,
+				User_Internal: row.fullname,
 				User_Eksternal: row.User_Eksternal,
 				Nama_Jabatan: row.Nama_Jabatan,
 				Role: row.Role
@@ -160,7 +160,6 @@
 
 	const updateDownloadLink = () => {
 		const selectedOption = templateOptions.find((option) => option.title === saveData.template);
-		console.log(selectedOption);
 		saveData.download = selectedOption ? selectedOption.title : '';
 		console.log(saveData.download);
 	};
