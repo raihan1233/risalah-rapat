@@ -1,0 +1,8 @@
+1. timeline diupdate -> anisa (tiap jumat)
+2. update log per individu -> tiap hari (anisa & raihan) -> untuk task dibuat rinci
+3. list kebutuhan web service dari setiap modul pada aplikasi (swagger/word/excel) -> raihan -> dedline jumat(06-10-2023)
+4. install navicat -> per individu
+5. buat skema model (table master, table header, lampiran, note, template, tracker) -> untuk kebutuhan project -> relasi table -> termasuk risalah rapat-> anisa -> dedline  (10-10-2023)
+6. create database table 
+7. buat WS sesuai no 3
+8. sinkron WS dan FE
