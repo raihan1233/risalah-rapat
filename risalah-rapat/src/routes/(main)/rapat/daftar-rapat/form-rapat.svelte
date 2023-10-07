@@ -1,116 +1,150 @@
-<script lang="ts" context="module">
-	import { z } from 'zod';
-	export const formSchema = z.object({});
-	export type FormSchema = typeof formSchema;
-</script>
-
-<script lang="ts">
-	import * as Form from '$lib/components/ui/form';
-	import type { SuperValidated } from 'sveltekit-superforms';
-
-		import { onMount } from 'svelte';
-		import flatpickr from 'flatpickr';
-    import 'flatpickr/dist/flatpickr.css';
-		import 'flatpickr/dist/themes/light.css';
-
-   onMount(() => {
-		flatpickr('#inputDate', {
-			mode: "range",
-			allowInput: true,
-			clickOpens: true,
-			time_24hr: true,
-			enableTime: true, // Enable time selection
-			dateFormat: 'Y-m-d H:i', // Format for both date and time
-        theme: 'light'
-		});
-	});
-
-	import Tags from "svelte-tags-input";
+<script>
+	import { onMount } from 'svelte';
+	import flatpickr from 'flatpickr';
+	import 'flatpickr/dist/flatpickr.css';
+	import 'flatpickr/dist/themes/light.css';
+	import Tags from 'svelte-tags-input';
 
 	let tags = [];
 
-	export let data: SuperValidated<FormSchema>;;
+	// let saveData = {
+	// 	perihal: '',
+	// 	periode: '',
+	// 	tempat: '',
+	// 	template: '',
+	// 	download: '',
+	// 	updateTemp: ''
+	// };
 
+	// let templateOptions = [
+	// 	{ value: 'first.pdf', label: 'Template One', downloadLink: '/files/template1.pdf' },
+	// 	{ value: 'second.pdf', label: 'Template Two', downloadLink: '/files/template2.pdf' },
+	// 	{ value: 'three.pdf', label: 'Template Three', downloadLink: '/files/template3.pdf' }
+	// ]; // Store template options fetched from API
+
+	// const updateDownloadLink = () => {
+	// 	const selectedOption = templateOptions.find((option) => option.label === saveData.template);
+	// 	saveData.download = selectedOption ? selectedOption.downloadLink : '';
+	// };
+
+	// // Update the download link whenever the template value changes
+	// $: {
+	// 	updateDownloadLink();
+	// }
+
+	// const handleTemplateChange = (event) => {
+	// 	saveData.template = event.target.value;
+	// 	updateDownloadLink();
+	// };
+
+	onMount(() => {
+		flatpickr('#periode-rapat', {
+			mode: 'range',
+			allowInput: true,
+			clickOpens: true,
+			time_24hr: true,
+			enableTime: true,
+			dateFormat: 'Y-m-d H:i',
+			theme: 'light'
+		});
+	});
 </script>
 
-<Form.Root form={data} schema={formSchema} let:config class="space-y-8">
-	<Form.Item>
-		<Form.Field {config} name="periode-waktu">
-			<Form.Label for="inputDate">Periode Waktu</Form.Label>
-				<Form.Input
-				 	id="inputDate"
-					placeholder="Masukkan periode waktu"
-				/>
-			<Form.Validation />
-		</Form.Field>
-	</Form.Item>
-
-	<Form.Item>
-		<Form.Field {config} name="status">
-			<Form.Label>Status</Form.Label>
-			<Form.Select>
-				<Form.SelectTrigger placeholder="Pilih status" />
-				<Form.SelectContent>
-					<Form.SelectItem value="Belum Approve" label="Belum Approve"
-						>Belum Approve
-					</Form.SelectItem>
-					<Form.SelectItem value="Terkirim" label="Terkirim">Terkirim</Form.SelectItem>
-					<Form.SelectItem value="Publish" label="Publish">Publish</Form.SelectItem>
-				</Form.SelectContent>
-			</Form.Select>
-		</Form.Field>
-	</Form.Item>
-
-	<Form.Item>
-		<Form.Field {config} name="tipe">
-			<Form.Label>Tipe</Form.Label>
-			<Form.Select>
-				<Form.SelectTrigger placeholder="Pilih tipe" />
-				<Form.SelectContent>
-					<Form.SelectItem value="Checker" label="Checker">Checker</Form.SelectItem>
-					<Form.SelectItem value="Approver" label="Approver">Approver</Form.SelectItem>
-					<Form.SelectItem value="Tembusan" label="Tembusan">Tembusan</Form.SelectItem>
-				</Form.SelectContent>
-			</Form.Select>
-		</Form.Field>
-	</Form.Item>
-
-	<Form.Item>
-		<Form.Field {config} name="perihal">
-			<Form.Label>Perihal</Form.Label>
-			<Form.Input placeholder="Perihal pemindahan jadwal risalah" />
-		</Form.Field>
-	</Form.Item>
-
-	<Form.Item>
-		<Form.Field {config} name="tempat">
-			<Form.Label>Tempat</Form.Label>
-			<Form.Input placeholder="Pilih Tempat" />
-		</Form.Field>
-	</Form.Item>
-
-		<Form.Item>
-		<Form.Field {config} name="agenda">
-			<Form.Label>Agenda</Form.Label>
-				<div class="agenda-input">
-					<Tags bind:tags={tags} addKeys={[13]} removeKeys={[8]} placeholder={"Masukkan agenda"} />
+<form>
+	<div class="space-y-12">
+		<!-- <div class="border-b border-gray-900/10 pb-12"> -->
+			<div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+				<div class="col-span-full">
+					<label for="periode-waktu" class="block text-sm font-medium leading-6 text-gray-900">Periode Waktu</label>
+					<div class="mt-2">
+						<input
+							placeholder="Masukkan tanggal"
+							type="date"
+							name="periode-waktu"
+							id="periode-waktu"
+							class="block w-full rounded-md px-3 py-3 border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+						/>
+					</div>
 				</div>
-			<Form.Validation />
-		</Form.Field>
-	</Form.Item>
 
-	<Form.Button>Cari</Form.Button>
-</Form.Root>
+				<div class="col-span-full">
+					<label for="status" class="block text-sm font-medium leading-6 text-gray-900">Status</label>
+					<div class="mt-2">
+						<select
+							id="status"
+							name="status"
+							class="block w-full rounded-md px-3 py-3 border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+						>
+							<option>Belum Approve</option>
+							<option>Terkirim</option>
+							<option>Publish</option>
+						</select>
+					</div>
+				</div>
 
-<style>	
-.agenda-input :global(.svelte-tags-input-layout){
-	border: 1px solid #e2e8f0 !important;
-	border-radius: 6px;
-	height: 40px !important;
-}
+				<div class="col-span-full">
+					<label for="tipe" class="block text-sm font-medium leading-6 text-gray-900">Tipe</label>
+					<div class="mt-2">
+						<select
+							id="tipe"
+							name="tipe"
+							class="block w-full rounded-md px-3 py-3 border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+						>
+							<option>Checker</option>
+							<option>Approver</option>
+							<option>Tembusan</option>
+						</select>
+					</div>
+				</div>
 
-.agenda-input :global(.svelte-tags-input-tag) {
-	background:#0ea5e9 !important;
-}
+				<div class="col-span-full">
+					<label for="perihal" class="block text-sm font-medium leading-6 text-gray-900">Perihal</label>
+					<div class="mt-2">
+						<input
+							placeholder="Masukkan perihal"
+							type="text"
+							name="perihal"
+							id="perihal"
+							class="block w-full rounded-md px-3 py-3 border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+						/>
+					</div>
+				</div>
 
+				<div class="col-span-full">
+					<label for="tempat" class="block text-sm font-medium leading-6 text-gray-900">Tempat</label>
+					<div class="mt-2">
+						<input
+							placeholder="Masukkan tempat"
+							type="text"
+							name="tempat"
+							id="tempat"
+							class="block w-full rounded-md px-3 py-3 border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+						/>
+					</div>
+				</div>
+
+				<div class="col-span-full">
+					<label for="agenda" class="block text-sm font-medium leading-6 text-gray-900">Agenda</label>
+					<div class="mt-2 agenda-input">
+						<Tags bind:tags addKeys={[13]} removeKeys={[8]} placeholder={'Masukkan agenda'} />
+					</div>
+				</div>
+			</div>
+			<div class="mt-6">
+				<button type="submit" class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Cari</button>
+			</div>
+		<!-- </div> -->
+	</div>
+</form>
+
+<style>
+	.agenda-input :global(.svelte-tags-input-layout) {
+		border: 1px solid #e2e8f0 !important;
+		border-radius: 6px;
+		height: 40px !important;
+	}
+
+	.agenda-input :global(.svelte-tags-input-tag) {
+		background: #0ea5e9 !important;
+	}
 </style>

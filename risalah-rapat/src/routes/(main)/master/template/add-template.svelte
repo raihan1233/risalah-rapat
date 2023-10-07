@@ -10,7 +10,7 @@
 
 	export let data = [];
 
-	const dispatch = createEventDispatcher();
+	let dispatch = createEventDispatcher();
 
 	let isDialogOpen = false;
 

@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
     import * as AlertDialog from "$lib/components/ui/alert-dialog";
       import { Button, buttonVariants } from "$lib/components/ui/button";
       import { XCircle } from "lucide-svelte";

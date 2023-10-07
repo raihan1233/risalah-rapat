@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
   import { onMount, afterUpdate } from "svelte";
   import { Button, buttonVariants } from "$lib/components/ui/button";
   import * as Dialog from "$lib/components/ui/dialog";

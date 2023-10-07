@@ -67,7 +67,7 @@
 			if (response.ok) {
 				Swal.fire({
 					icon: 'success',
-					title: 'Data berhasil disimpan',
+					title: 'Data berhasil dirubah',
 					showConfirmButton: false,
 					timer: 1500
 				}).then(() => {
@@ -87,7 +87,7 @@
 			console.error('Error updating data:', error);
 			Swal.fire({
 				icon: 'error',
-				title: 'Gagal menyimpan data',
+				title: 'Gagal menperbaharui data',
 				text: 'Terjadi kesalahan saat menyimpan data.'
 			});
 		}

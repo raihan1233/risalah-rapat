@@ -6,20 +6,30 @@
 	import { Separator } from '$lib/components/ui/separator';
 	import * as RadioGroup from '$lib/components/ui/radio-group';
 	import Swal from 'sweetalert2';
-	import { Eye, EyeOff, ImagePlus } from 'lucide-svelte';
+	import { Eye, EyeOff } from 'lucide-svelte';
 	import { createEventDispatcher } from 'svelte';
 
 	export let data;
 
-  const saveData = async () => {
+	let inputData = {
+		fullname: '',
+		username: '',
+		position: '',
+		role: '',
+		password: '',
+		confirmPassword: '',
+		status: ''
+	};
+
+	const saveData = async () => {
 		const newData = {
 			nama_lengkap: inputData.fullname,
 			username: inputData.username,
 			password: inputData.password,
-			confirm_password: inputData.confirm_password,
+			confirmPassword: inputData.confirmPassword,
 			jabatan: inputData.position,
 			role: inputData.role,
-			status: inputData.status// Example value, replace with actual input data
+			status: inputData.status // Example value, replace with actual input data
 		};
 
 		// Emit an event with the new data
@@ -28,7 +38,7 @@
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
-					'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFubmlzYSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTY5NjIyMTgxNywiZXhwIjoxNjk2NDgxMDE3fQ.M879PmtOuY-2hwJ1qEFz596Jh-JhY1MjbF6z-WueUyA`
+					Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFubmlzYSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTY5NjIyMTgxNywiZXhwIjoxNjk2NDgxMDE3fQ.M879PmtOuY-2hwJ1qEFz596Jh-JhY1MjbF6z-WueUyA`
 				},
 				body: JSON.stringify(newData)
 			});
@@ -45,9 +55,9 @@
 					showConfirmButton: false,
 					timer: 1500
 				}).then(() => {
-          // Close the dialog by setting isDialogOpen to false
-          isDialogOpen = false;
-        });
+					// Close the dialog by setting isDialogOpen to false
+					isDialogOpen = false;
+				});
 			} else {
 				Swal.fire({
 					icon: 'error',
@@ -65,16 +75,6 @@
 		}
 	};
 
-	let inputData = {
-		fullname: '',
-		username: '',
-		position: '',
-		role: '',
-		password: '',
-		confirm_password: '',
-		status: ''
-	};
-
 	const dispatch = createEventDispatcher();
 
 	let isDialogOpen = false;
@@ -83,14 +83,13 @@
 
 	const togglePasswordVisibility = () => {
 		showPassword = !showPassword;
-	}
+	};
 
 	let showConfirmPassword = false;
 
 	const toggleConfirmPasswordVisibility = () => {
 		showConfirmPassword = !showConfirmPassword;
-	}
-
+	};
 </script>
 
 <Dialog.Root bind:open={isDialogOpen}>

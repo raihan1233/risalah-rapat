@@ -28,7 +28,9 @@
 	import 'flatpickr/dist/themes/light.css';
 	import Tags from 'svelte-tags-input';
 	import Swal from 'sweetalert2';
-	import BatalButton from './batal-button.svelte';
+	// import BatalButton from './batal-button.svelte';
+	import KonfirmasiBatal from './konfirmasi-batal.svelte';
+	import KonfirmasiRevisi from './konfirmasi-revisi.svelte';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Separator } from '$lib/components/ui/separator';
 	import { Input } from '$lib/components/ui/input';
@@ -402,6 +404,42 @@
 			inputRelasiData.file = file;
 		}
 	};
+
+	// catatan revisi
+	const revisiData = [
+		{
+			nama_lengkap: 'John Doe',
+			jabatan: 'Manager',
+			konten: 'Revisi agenda untuk team building',
+			waktu: '2023-09-10 09:00 AM'
+		},
+		{
+			nama_lengkap: 'Alice Smith',
+			jabatan: 'Manager',
+			konten: 'Revisi diskusi strategi marketing',
+			waktu: '2023-09-07 14:30 PM'
+		},
+		{
+			nama_lengkap: 'Bob Johnson',
+			jabatan: 'Manager',
+			konten: 'Revisi laporan finansial',
+			waktu: '2023-09-03 10:30 AM'
+		},
+		{
+			nama_lengkap: 'Sarah Brown',
+			jabatan: 'Manager',
+			konten: 'Revisi agenda untuk peluncuran produk',
+			waktu: '2023-09-01 11:45 AM'
+		}
+	];
+
+	let searchRevisi = '';
+	$: filteredItems = revisiData.filter((item) => {
+		const lowerSearchTerm = searchRevisi.toLowerCase();
+		return Object.values(item).some(
+			(value) => typeof value === 'string' && value.toLowerCase().includes(lowerSearchTerm)
+		);
+	});
 </script>
 
 <div class="py-10 space-y-8">
@@ -546,9 +584,10 @@
 		<div class="space-y-4 pt-4">
 			<Card.Content>
 				<Tabs.Root value="Checker">
-					<Tabs.List class="grid w-full grid-cols-2 bg-cyan-500 text-white">
+					<Tabs.List class="grid w-full grid-cols-3 bg-cyan-500 text-white">
 						<Tabs.Trigger value="Checker">Checker</Tabs.Trigger>
 						<Tabs.Trigger value="Dokumen Relasi">Dokumen Relasi</Tabs.Trigger>
+						<Tabs.Trigger value="Catatan Revisi">Catatan Revisi</Tabs.Trigger>
 					</Tabs.List>
 
 					<!-- tabs checker starts -->
@@ -771,6 +810,49 @@
 						</Card.Root>
 					</Tabs.Content>
 					<!-- tabs doc relasi ends -->
+
+					<!-- tabs catatan revisi starts -->
+					<Tabs.Content value="Catatan Revisi">
+						<Card.Root>
+							<Card.Header>
+								<Card.Title>Catatan Revisi</Card.Title>
+							</Card.Header>
+							<Card.Content class='space-y-2'>
+								<div class="space-y-4">
+									<!-- <Button class="bg-sky-500 hover:bg-sky-700 text-white" variant="default">
+										<PlusCircle class="w-5 h-5 mr-2" />
+										Tambah
+									</Button> -->
+									<div class="sm:flex sm:justify-end">
+										<TableSearch placeholder="Cari di sini" hoverable={true} bind:inputValue={searchTerm} classInput="mb-4 px-8 py-2 rounded-md border border-gray-300 w-full sm:max-w-xs" classSvgDiv="p-2" divClass="shadow-none relative"></TableSearch>
+									</div>
+								
+									<Table shadow>
+										<TableHead class="text-sm">
+											<!-- <tr> -->
+												<TableHeadCell class="!p-4">Nama Lengkap</TableHeadCell>
+												<TableHeadCell class="!p-4">Jabatan</TableHeadCell>
+												<TableHeadCell class="!p-4">Konten</TableHeadCell>
+												<TableHeadCell class="!p-4">Waktu</TableHeadCell>
+											<!-- </tr> -->
+										</TableHead>
+										<TableBody class="divide-y">
+											{#each filteredItems as row, index}
+												<TableBodyRow>
+													<TableBodyCell class="!p-4">{row.nama_lengkap}</TableBodyCell>
+													<TableBodyCell class="!p-4">{row.jabatan}</TableBodyCell>
+													<TableBodyCell class="!p-4">{row.konten}</TableBodyCell>
+													<TableBodyCell class="!p-4">{row.waktu}</TableBodyCell>
+												</TableBodyRow>
+											{/each}
+										</TableBody>
+									</Table>
+								</div>
+								
+							</Card.Content>
+						</Card.Root>
+					</Tabs.Content>
+					<!-- tabs catatan revisi ends -->
 				</Tabs.Root>
 			</Card.Content>
 		</div>
@@ -791,7 +873,8 @@
 			<Send class="mr-2 h-4 w-4" />
 			Kirim
 		</Button>
-		<BatalButton />
+		<KonfirmasiRevisi />
+		<KonfirmasiBatal />
 	</div>
 	<!-- button action ends -->
 </div>
