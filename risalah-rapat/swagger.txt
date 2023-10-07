@@ -9,6 +9,7 @@ tags:
   - name: Modul Home
   - name: Modul Buat Risalah
   - name: Modul Daftar Risalah
+  - name: Modul Detail Risalah
   - name: Modul Tempat
   - name: Modul Template
   - name: Modul User
@@ -74,59 +75,6 @@ paths:
                 $ref: '#/components/schemas/FormRisalah'
         '405':
           description: Invalid input
-    get:
-      tags:
-        - Modul Daftar Risalah
-      summary: Mengecek list risalah
-      description: Mengecek list risalah sesuai dengan kata kunci yang dimasukkan
-      operationId: getListRisalah
-      parameters:
-        - name: perihal
-          in: query
-          description: Filter berdasarkan perihal risalah
-          required: false
-          schema:
-            type: string
-        - name: periode_risalah
-          in: query
-          description: Filter berdasarkan periode risalah
-          required: false
-          schema:
-            type: string
-        - name: pilih_tempat
-          in: query
-          description: Filter berdasarkan tempat risalah
-          required: false
-          schema:
-            type: string
-        - name: pilih_template
-          in: query
-          description: Filter berdasarkan template risalah
-          required: false
-          schema:
-            type: string
-        - name: agenda
-          in: query
-          description: Filter berdasarkan agenda risalah
-          required: false
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Risalah berhasil diambil
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/FormRisalah'
-            application/xml:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/FormRisalah'
-        '404':
-          description: Risalah tidak ditemukan
   /tracker:
     post:
       tags:
@@ -205,11 +153,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TrackerRisalah'
+                $ref: '#/components/schemas/Risalah'
         '405':
           description: Invalid input
     get:
       tags:
+        - Modul Daftar Risalah
         - Modul Home
       summary: Mendapatkan risalah
       description: Mengambil risalah dengan status yang belum approve
@@ -230,6 +179,33 @@ paths:
                   $ref: '#/components/schemas/Risalah'
         '404':
           description: Risalah tidak ditemukan
+  /risalah/{id}:
+    get:
+      tags:
+        - Modul Detail Risalah
+      summary: Mendapatkan detail risalah
+      description: Mengambil detail risalah berdasarkan ID
+      operationId: getDetailRisalah
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID risalah yang akan diambil
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Detail risalah berhasil diambil
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Risalah'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Risalah'
+        '404':
+          description: Risalah tidak ditemukan
+
   /place:
     post:
       tags:
@@ -461,14 +437,22 @@ components:
     User: 
       type: object
       properties:
-        nama:
+        nama_lengkap:
           type: string
-          description: nama user
+          description: nama lengkap user
           example: raihan dwi
+        username:
+          type: string
+          description: username
+          example: raihan
         jabatan:
           type: string
           description: jabatan user
           example: pegawai
+        role: 
+          type: string
+          description: role user
+          example: user
         status: 
           type: string
           description: status user
@@ -476,18 +460,22 @@ components:
     Revisi:
       type: object
       properties:
-        catatan revisi:
+        nama_lengkap:
+          type: string
+          description: nama lengkap yang merevisi
+          example: Bagus Navyan
+        konten_revisi:
           type: string
           description: catatan revisi risalah
           example: kurang blabkabakabakna
         jabatan:
           type: string
-          description: jabatan user
+          description: jabatan yang merevisi
           example: pegawai
-        status: 
+        waktu_revisi: 
           type: string
-          description: status user
-          example: aktif
+          description: waktu revisi
+          example: 01/01/2023 14.00
   # requestBodies:
   
   # securitySchemes:
