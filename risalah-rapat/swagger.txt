@@ -1,0 +1,493 @@
+openapi: 3.0.3
+info:
+  title: Swagger Risalah - OpenAPI 3.0
+  description: |-
+    Dokumentasi risalah rapat
+  version: 1.0.11
+tags:
+  - name: Modul Login
+  - name: Modul Home
+  - name: Modul Buat Risalah
+  - name: Modul Daftar Risalah
+  - name: Modul Detail Risalah
+  - name: Modul Tempat
+  - name: Modul Template
+  - name: Modul User
+  - name: Modul Revisi
+paths:
+  /auth:
+    post:
+      tags:
+        - Modul Login
+      summary: verifikasi user
+      description: digunakan untuk memvalidasi username & password user
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Auth'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Auth'
+        required: true
+      responses:
+        '200':
+          description: Login Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Auth'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Auth'
+        '405':
+          description: Invalid input
+      # security:
+      #   - auth:
+      #       - write:pets
+      #       - read:pets
+  /form-risalah:
+    post:
+      tags:
+        - Modul Buat Risalah
+      summary: membuat form 
+      description: digunakan untuk membuat form risalah
+      operationId: form buat risalah
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FormRisalah'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/FormRisalah'
+        required: true
+      responses:
+        '200':
+          description: Risalah successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FormRisalah'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/FormRisalah'
+        '405':
+          description: Invalid input
+  /tracker:
+    post:
+      tags:
+        - Modul Buat Risalah
+      summary: membuat urutan tracker
+      description: digunakan untuk membuat tracker risalah
+      operationId: tracker buat risalah
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TrackerRisalah'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/TrackerRisalah'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TrackerRisalah'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TrackerRisalah'
+        '405':
+          description: Invalid input
+  /dokumen_relasi:
+    post:
+      tags:
+        - Modul Buat Risalah
+      summary: menambahkan dokumen relasi (opsional)
+      description: digunakan untuk menambahkan dokumen relasi risalah
+      operationId: dokumen relasi buat risalah
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DokumenRelasi'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/DokumenRelasi'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DokumenRelasi'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DokumenRelasi'
+        '405':
+          description: Invalid input
+  /risalah:
+    post:
+      tags:
+        - Modul Buat Risalah
+      summary: menggabungkan tabel form risalah, tracker dan dokumen relasi (join)
+      description: digunakan untuk membuat risalah
+      operationId: risalah
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Risalah'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Risalah'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Risalah'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Risalah'
+        '405':
+          description: Invalid input
+    get:
+      tags:
+        - Modul Daftar Risalah
+        - Modul Home
+      summary: Mendapatkan risalah
+      description: Mengambil risalah dengan status yang belum approve
+      operationId: getRisalah
+      responses:
+        '200':
+          description: Risalah berhasil diambil
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Risalah'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Risalah'
+        '404':
+          description: Risalah tidak ditemukan
+  /risalah/{id}:
+    get:
+      tags:
+        - Modul Detail Risalah
+      summary: Mendapatkan detail risalah
+      description: Mengambil detail risalah berdasarkan ID
+      operationId: getDetailRisalah
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID risalah yang akan diambil
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Detail risalah berhasil diambil
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Risalah'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Risalah'
+        '404':
+          description: Risalah tidak ditemukan
+
+  /place:
+    post:
+      tags:
+        - Modul Tempat
+      summary: menambahkan tempat
+      description: menambahkan tempat untuk risalah
+      operationId: place
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Place'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Place'
+        required: true
+      responses:
+        '200':
+          description: Place Added Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Place'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Place'
+        '405':
+          description: Invalid input
+  /template:
+    post:
+      tags:
+        - Modul Template
+      summary: menambahkan template
+      description: menambahkan template untuk risalah
+      operationId: template
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Template'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Template'
+        required: true
+      responses:
+        '200':
+          description: Template Added Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Template'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Template'
+        '405':
+          description: Invalid input
+  /user:
+    post:
+      tags:
+        - Modul User
+      summary: menambahkan user
+      description: menambahkan user untuk risalah
+      operationId: user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        '200':
+          description: user Added Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/User'
+        '405':
+          description: Invalid input
+  /revisi:
+    post:
+      tags:
+        - Modul Revisi
+      summary: revisi risalah
+      description: merevisi file risalah terkait
+      operationId: revisi
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Revisi'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Revisi'
+        required: true
+      responses:
+        '200':
+          description: Revisi Successfull
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Revisi'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Revisi'
+        '405':
+          description: Invalid input
+components:
+  schemas:
+    Auth:
+      type: object
+      properties:
+        username: 
+          type: string
+          description: username
+          example: Raihan
+        password:
+          type: string
+          description: password
+          example: pelni banget
+    FormRisalah:
+      type: object
+      properties:
+        perihal:
+          type: string
+          description: perihal risalah
+          example: penjualan kapal penumpang
+        periode_risalah:
+          type: string
+          description: periode risalah
+          example: 01/10/2023 14.00 - 01/10/2023 16.00
+        pilih_tempat:
+          type: string
+          description: pilih tempat
+          example: ruang lambelu
+        pilih_template: 
+          type: string
+          description: pilih template
+          example: template-1
+        agenda: 
+          type: array
+          items: {}
+          description: agenda
+          example: ['ruang labemu', 'ruang lala', 'ruang rindu', 'ruang ruangan']
+        download: 
+          type: string
+          description: link file template
+          example: penjadwalan.docx
+        upload_template:
+          type: string
+          description: upload template file yang telah diedit
+          example: penjadwalan.pdf
+    TrackerRisalah:
+      type: array
+      items:
+        type: object
+        properties:
+          user_internal:
+            type: string
+            example: raihan
+          user_eksternal:
+            type: string
+            example: ''
+          nama_jabatan:
+            type: string
+            example: pegawai
+          role:
+            type: string
+            example: tembusan
+      example:
+        - user_internal: raihan
+          nama_jabatan: pegawai
+          role: tembusan
+        - user_internal: andi
+          nama_jabatan: supervisor
+          role: pengawas
+        - user_internal: budi
+          nama_jabatan: manager
+          role: atasan
+    DokumenRelasi:
+      type: object
+      properties:
+        unggah_lampiran: 
+          type: string
+          example: 'penjualan.pdf'
+        nama_lampiran:
+          type: string
+          example: "penjualan"
+    Risalah:
+      type: object
+      properties:
+        form_risalah: 
+          $ref: '#/components/schemas/FormRisalah'
+        tracker_risalah:
+          $ref: '#/components/schemas/TrackerRisalah'
+        dokumen_relasi:
+          $ref: '#/components/schemas/DokumenRelasi'
+    Place: 
+      type: object
+      properties:
+        tempat:
+          type: string
+          description: tempat risalah
+          example: ruang kelaud
+        status:
+          type: string
+          description: status risalah
+          example: aktif
+    Template: 
+      type: object
+      properties:
+        nama_template:
+          type: string
+          description: template risalah
+          example: template 1
+        file:
+          type: string
+          description: file template risalah
+          example: template-1.docx
+        status:
+          type: string
+          description: status risalah
+          example: aktif
+    User: 
+      type: object
+      properties:
+        nama_lengkap:
+          type: string
+          description: nama lengkap user
+          example: raihan dwi
+        username:
+          type: string
+          description: username
+          example: raihan
+        jabatan:
+          type: string
+          description: jabatan user
+          example: pegawai
+        role: 
+          type: string
+          description: role user
+          example: user
+        status: 
+          type: string
+          description: status user
+          example: aktif
+    Revisi:
+      type: object
+      properties:
+        nama_lengkap:
+          type: string
+          description: nama lengkap yang merevisi
+          example: Bagus Navyan
+        konten_revisi:
+          type: string
+          description: catatan revisi risalah
+          example: kurang blabkabakabakna
+        jabatan:
+          type: string
+          description: jabatan yang merevisi
+          example: pegawai
+        waktu_revisi: 
+          type: string
+          description: waktu revisi
+          example: 01/01/2023 14.00
+  # requestBodies:
+  
+  # securitySchemes:
+  #   auth:
+  #     type: oauth2
+  #     flows:
+  #       implicit:
+  #         authorizationUrl: https://petstore3.swagger.io/oauth/authorize
+  #         scopes:
+  #           write:pets: modify pets in your account
+  #           read:pets: read your pets
+    # api_key:
+    #   type: apiKey
+    #   name: api_key
+    #   in: header

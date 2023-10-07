@@ -53,3 +53,10 @@ revisi
 	catatan relasi sertakan badge untuk jumlah revisi
 	
 	notifikasi di daftar rapat, dan baris rapat yang perlu direvisi, serta di icon bell
+
+
+
+home, daftar, detail -> bisa diakses oleh checker dan approver
+home, risalah, master -> bisa diakses oleh drafter
+daftar risalah -> bisa diakses oleh tembusan jika statusnya bernilai publish
+
