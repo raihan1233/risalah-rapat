@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Swagger Risalah - OpenAPI 3.0
-  description: |-
+  description: |
     Dokumentasi risalah rapat
   version: 1.0.11
 tags:
@@ -43,10 +43,78 @@ paths:
                 $ref: '#/components/schemas/Auth'
         '405':
           description: Invalid input
-      # security:
-      #   - auth:
-      #       - write:pets
-      #       - read:pets
+
+    get: # GET method for retrieving user data
+      tags:
+        - Modul Login
+      summary: Get user information
+      description: Retrieve user information by username
+      operationId: getUserInfo
+      parameters:
+        - name: username
+          in: query
+          required: true
+          description: Username of the user to retrieve
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User information retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+
+    put: # PUT method for updating user data
+      tags:
+        - Modul Login
+      summary: Update user information
+      description: Update user information by username
+      operationId: updateUser
+      parameters:
+        - name: username
+          in: query
+          required: true
+          description: Username of the user to update
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        '200':
+          description: User information updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+
+    delete: # DELETE method for deleting a user
+      tags:
+        - Modul Login
+      summary: Delete user
+      description: Delete user by username
+      operationId: deleteUser
+      parameters:
+        - name: username
+          in: query
+          required: true
+          description: Username of the user to delete
+          schema:
+            type: string
+      responses:
+        '204':
+          description: User deleted successfully
+        '404':
+          description: User not found
+
   /form-risalah:
     post:
       tags:
@@ -75,6 +143,78 @@ paths:
                 $ref: '#/components/schemas/FormRisalah'
         '405':
           description: Invalid input
+
+    get: # GET method for retrieving form risalah data
+      tags:
+        - Modul Buat Risalah
+      summary: Get form risalah information
+      description: Retrieve form risalah information by ID
+      operationId: getFormRisalah
+      parameters:
+        - name: id
+          in: query
+          required: true
+          description: ID of the form risalah to retrieve
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Form risalah information retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FormRisalah'
+        '404':
+          description: Form risalah not found
+
+    put: # PUT method for updating form risalah data
+      tags:
+        - Modul Buat Risalah
+      summary: Update form risalah
+      description: Update form risalah by ID
+      operationId: updateFormRisalah
+      parameters:
+        - name: id
+          in: query
+          required: true
+          description: ID of the form risalah to update
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FormRisalah'
+        required: true
+      responses:
+        '200':
+          description: Form risalah updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FormRisalah'
+        '404':
+          description: Form risalah not found
+
+    delete: # DELETE method for deleting a form risalah
+      tags:
+        - Modul Buat Risalah
+      summary: Delete form risalah
+      description: Delete form risalah by ID
+      operationId: deleteFormRisalah
+      parameters:
+        - name: id
+          in: query
+          required: true
+          description: ID of the form risalah to delete
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Form risalah deleted successfully
+        '404':
+          description: Form risalah not found
+
   /tracker:
     post:
       tags:
@@ -102,6 +242,78 @@ paths:
                 $ref: '#/components/schemas/TrackerRisalah'
         '405':
           description: Invalid input
+
+    get: # GET method for retrieving tracker risalah data
+      tags:
+        - Modul Buat Risalah
+      summary: Get tracker risalah information
+      description: Retrieve tracker risalah information by ID
+      operationId: getTrackerRisalah
+      parameters:
+        - name: id
+          in: query
+          required: true
+          description: ID of the tracker risalah to retrieve
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Tracker risalah information retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TrackerRisalah'
+        '404':
+          description: Tracker risalah not found
+
+    put: # PUT method for updating tracker risalah data
+      tags:
+        - Modul Buat Risalah
+      summary: Update tracker risalah
+      description: Update tracker risalah by ID
+      operationId: updateTrackerRisalah
+      parameters:
+        - name: id
+          in: query
+          required: true
+          description: ID of the tracker risalah to update
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TrackerRisalah'
+        required: true
+      responses:
+        '200':
+          description: Tracker risalah updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TrackerRisalah'
+        '404':
+          description: Tracker risalah not found
+
+    delete: # DELETE method for deleting a tracker risalah
+      tags:
+        - Modul Buat Risalah
+      summary: Delete tracker risalah
+      description: Delete tracker risalah by ID
+      operationId: deleteTrackerRisalah
+      parameters:
+        - name: id
+          in: query
+          required: true
+          description: ID of the tracker risalah to delete
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Tracker risalah deleted successfully
+        '404':
+          description: Tracker risalah not found
+
   /dokumen_relasi:
     post:
       tags:
@@ -129,6 +341,78 @@ paths:
                 $ref: '#/components/schemas/DokumenRelasi'
         '405':
           description: Invalid input
+
+    get: # GET method for retrieving dokumen relasi data
+      tags:
+        - Modul Buat Risalah
+      summary: Get dokumen relasi information
+      description: Retrieve dokumen relasi information by ID
+      operationId: getDokumenRelasi
+      parameters:
+        - name: id
+          in: query
+          required: true
+          description: ID of the dokumen relasi to retrieve
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Dokumen relasi information retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DokumenRelasi'
+        '404':
+          description: Dokumen relasi not found
+
+    put: # PUT method for updating dokumen relasi data
+      tags:
+        - Modul Buat Risalah
+      summary: Update dokumen relasi
+      description: Update dokumen relasi by ID
+      operationId: updateDokumenRelasi
+      parameters:
+        - name: id
+          in: query
+          required: true
+          description: ID of the dokumen relasi to update
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DokumenRelasi'
+        required: true
+      responses:
+        '200':
+          description: Dokumen relasi updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DokumenRelasi'
+        '404':
+          description: Dokumen relasi not found
+
+    delete: # DELETE method for deleting a dokumen relasi
+      tags:
+        - Modul Buat Risalah
+      summary: Delete dokumen relasi
+      description: Delete dokumen relasi by ID
+      operationId: deleteDokumenRelasi
+      parameters:
+        - name: id
+          in: query
+          required: true
+          description: ID of the dokumen relasi to delete
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Dokumen relasi deleted successfully
+        '404':
+          description: Dokumen relasi not found
+
   /risalah:
     post:
       tags:
@@ -156,8 +440,10 @@ paths:
                 $ref: '#/components/schemas/Risalah'
         '405':
           description: Invalid input
-    get:
+
+    get: # GET method for retrieving risalah data
       tags:
+        - Modul Buat Risalah
         - Modul Daftar Risalah
         - Modul Home
       summary: Mendapatkan risalah
@@ -179,6 +465,7 @@ paths:
                   $ref: '#/components/schemas/Risalah'
         '404':
           description: Risalah tidak ditemukan
+
   /risalah/{id}:
     get:
       tags:
@@ -203,6 +490,54 @@ paths:
             application/xml:
               schema:
                 $ref: '#/components/schemas/Risalah'
+        '404':
+          description: Risalah tidak ditemukan
+
+    put: # PUT method for updating risalah data
+      tags:
+        - Modul Detail Risalah
+      summary: Update risalah
+      description: Update risalah by ID
+      operationId: updateRisalah
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID risalah yang akan diupdate
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Risalah'
+        required: true
+      responses:
+        '200':
+          description: Risalah berhasil diupdate
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Risalah'
+        '404':
+          description: Risalah tidak ditemukan
+
+    delete: # DELETE method for deleting a risalah
+      tags:
+        - Modul Detail Risalah
+      summary: Delete risalah
+      description: Delete risalah by ID
+      operationId: deleteRisalah
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID risalah yang akan dihapus
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Risalah berhasil dihapus
         '404':
           description: Risalah tidak ditemukan
 
@@ -234,6 +569,78 @@ paths:
                 $ref: '#/components/schemas/Place'
         '405':
           description: Invalid input
+
+    get: # GET method for retrieving place data
+      tags:
+        - Modul Tempat
+      summary: Get place information
+      description: Retrieve place information by ID
+      operationId: getPlace
+      parameters:
+        - name: id
+          in: query
+          required: true
+          description: ID tempat yang akan diambil
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Place information retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Place'
+        '404':
+          description: Place not found
+
+    put: # PUT method for updating place data
+      tags:
+        - Modul Tempat
+      summary: Update place
+      description: Update place by ID
+      operationId: updatePlace
+      parameters:
+        - name: id
+          in: query
+          required: true
+          description: ID tempat yang akan diupdate
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Place'
+        required: true
+      responses:
+        '200':
+          description: Place updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Place'
+        '404':
+          description: Place not found
+
+    delete: # DELETE method for deleting a place
+      tags:
+        - Modul Tempat
+      summary: Delete place
+      description: Delete place by ID
+      operationId: deletePlace
+      parameters:
+        - name: id
+          in: query
+          required: true
+          description: ID tempat yang akan dihapus
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Place deleted successfully
+        '404':
+          description: Place not found
+
   /template:
     post:
       tags:
@@ -262,13 +669,85 @@ paths:
                 $ref: '#/components/schemas/Template'
         '405':
           description: Invalid input
+
+    get: # GET method for retrieving template data
+      tags:
+        - Modul Template
+      summary: Get template information
+      description: Retrieve template information by ID
+      operationId: getTemplate
+      parameters:
+        - name: id
+          in: query
+          required: true
+          description: ID template yang akan diambil
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Template information retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Template'
+        '404':
+          description: Template not found
+
+    put: # PUT method for updating template data
+      tags:
+        - Modul Template
+      summary: Update template
+      description: Update template by ID
+      operationId: updateTemplate
+      parameters:
+        - name: id
+          in: query
+          required: true
+          description: ID template yang akan diupdate
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Template'
+        required: true
+      responses:
+        '200':
+          description: Template updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Template'
+        '404':
+          description: Template not found
+
+    delete: # DELETE method for deleting a template
+      tags:
+        - Modul Template
+      summary: Delete template
+      description: Delete template by ID
+      operationId: deleteTemplate
+      parameters:
+        - name: id
+          in: query
+          required: true
+          description: ID template yang akan dihapus
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Template deleted successfully
+        '404':
+          description: Template not found
+
   /user:
     post:
       tags:
         - Modul User
       summary: menambahkan user
-      description: menambahkan user untuk risalah
-      operationId: user
+      description: menambahkan user baru
+      operationId: createUser  # Unique operationId for the POST operation
       requestBody:
         content:
           application/json:
@@ -280,7 +759,7 @@ paths:
         required: true
       responses:
         '200':
-          description: user Added Successful
+          description: User Added Successful
           content:
             application/json:
               schema:
@@ -290,12 +769,84 @@ paths:
                 $ref: '#/components/schemas/User'
         '405':
           description: Invalid input
+
+    get:
+      tags:
+        - Modul User
+      summary: Get user information
+      description: Retrieve user information by ID
+      operationId: getUser  # Unique operationId for the GET operation
+      parameters:
+        - name: id
+          in: query
+          required: true
+          description: ID user yang akan diambil
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: User information retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+
+    put:
+      tags:
+        - Modul User
+      summary: Update user
+      description: Update user by ID
+      operationId: updateUserByID  # Unique operationId for the PUT operation
+      parameters:
+        - name: id
+          in: query
+          required: true
+          description: ID user yang akan diupdate
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        '200':
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+
+    delete:
+      tags:
+        - Modul User
+      summary: Delete user
+      description: Delete user by ID
+      operationId: deleteUserByID  # Unique operationId for the DELETE operation
+      parameters:
+        - name: id
+          in: query
+          required: true
+          description: ID user yang akan dihapus
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: User deleted successfully
+        '404':
+          description: User not found
+
   /revisi:
     post:
       tags:
         - Modul Revisi
-      summary: revisi risalah
-      description: merevisi file risalah terkait
+      summary: menambahkan revisi
+      description: menambahkan revisi untuk risalah
       operationId: revisi
       requestBody:
         content:
@@ -308,7 +859,7 @@ paths:
         required: true
       responses:
         '200':
-          description: Revisi Successfull
+          description: Revisi Added Successful
           content:
             application/json:
               schema:
@@ -318,176 +869,174 @@ paths:
                 $ref: '#/components/schemas/Revisi'
         '405':
           description: Invalid input
+
+    get: # GET method for retrieving revisi data
+      tags:
+        - Modul Revisi
+      summary: Get revisi information
+      description: Retrieve revisi information by ID
+      operationId: getRevisi
+      parameters:
+        - name: id
+          in: query
+          required: true
+          description: ID revisi yang akan diambil
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Revisi information retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Revisi'
+        '404':
+          description: Revisi not found
+
+    put: # PUT method for updating revisi data
+      tags:
+        - Modul Revisi
+      summary: Update revisi
+      description: Update revisi by ID
+      operationId: updateRevisi
+      parameters:
+        - name: id
+          in: query
+          required: true
+          description: ID revisi yang akan diupdate
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Revisi'
+        required: true
+      responses:
+        '200':
+          description: Revisi updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Revisi'
+        '404':
+          description: Revisi not found
+
+    delete: # DELETE method for deleting a revisi
+      tags:
+        - Modul Revisi
+      summary: Delete revisi
+      description: Delete revisi by ID
+      operationId: deleteRevisi
+      parameters:
+        - name: id
+          in: query
+          required: true
+          description: ID revisi yang akan dihapus
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Revisi deleted successfully
+        '404':
+          description: Revisi not found
+
 components:
   schemas:
     Auth:
       type: object
       properties:
-        username: 
+        username:
           type: string
-          description: username
-          example: Raihan
         password:
           type: string
-          description: password
-          example: pelni banget
+
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        email:
+          type: string
+        name:
+          type: string
+
     FormRisalah:
       type: object
       properties:
-        perihal:
+        id:
+          type: integer
+        title:
           type: string
-          description: perihal risalah
-          example: penjualan kapal penumpang
-        periode_risalah:
+        description:
           type: string
-          description: periode risalah
-          example: 01/10/2023 14.00 - 01/10/2023 16.00
-        pilih_tempat:
-          type: string
-          description: pilih tempat
-          example: ruang lambelu
-        pilih_template: 
-          type: string
-          description: pilih template
-          example: template-1
-        agenda: 
-          type: array
-          items: {}
-          description: agenda
-          example: ['ruang labemu', 'ruang lala', 'ruang rindu', 'ruang ruangan']
-        download: 
-          type: string
-          description: link file template
-          example: penjadwalan.docx
-        upload_template:
-          type: string
-          description: upload template file yang telah diedit
-          example: penjadwalan.pdf
+
     TrackerRisalah:
-      type: array
-      items:
-        type: object
-        properties:
-          user_internal:
-            type: string
-            example: raihan
-          user_eksternal:
-            type: string
-            example: ''
-          nama_jabatan:
-            type: string
-            example: pegawai
-          role:
-            type: string
-            example: tembusan
-      example:
-        - user_internal: raihan
-          nama_jabatan: pegawai
-          role: tembusan
-        - user_internal: andi
-          nama_jabatan: supervisor
-          role: pengawas
-        - user_internal: budi
-          nama_jabatan: manager
-          role: atasan
+      type: object
+      properties:
+        id:
+          type: integer
+        status:
+          type: string
+        date:
+          type: string
+
     DokumenRelasi:
       type: object
       properties:
-        unggah_lampiran: 
+        id:
+          type: integer
+        name:
           type: string
-          example: 'penjualan.pdf'
-        nama_lampiran:
+        url:
           type: string
-          example: "penjualan"
+
     Risalah:
       type: object
       properties:
-        form_risalah: 
-          $ref: '#/components/schemas/FormRisalah'
-        tracker_risalah:
-          $ref: '#/components/schemas/TrackerRisalah'
-        dokumen_relasi:
-          $ref: '#/components/schemas/DokumenRelasi'
-    Place: 
-      type: object
-      properties:
-        tempat:
+        id:
+          type: integer
+        title:
           type: string
-          description: tempat risalah
-          example: ruang kelaud
+        description:
+          type: string
         status:
           type: string
-          description: status risalah
-          example: aktif
-    Template: 
+        date:
+          type: string
+        form_id:
+          type: integer
+        tracker_id:
+          type: integer
+        dokumen_relasi_id:
+          type: integer
+
+    Place:
       type: object
       properties:
-        nama_template:
+        id:
+          type: integer
+        name:
           type: string
-          description: template risalah
-          example: template 1
-        file:
+        address:
           type: string
-          description: file template risalah
-          example: template-1.docx
-        status:
-          type: string
-          description: status risalah
-          example: aktif
-    User: 
+
+    Template:
       type: object
       properties:
-        nama_lengkap:
+        id:
+          type: integer
+        name:
           type: string
-          description: nama lengkap user
-          example: raihan dwi
-        username:
+        content:
           type: string
-          description: username
-          example: raihan
-        jabatan:
-          type: string
-          description: jabatan user
-          example: pegawai
-        role: 
-          type: string
-          description: role user
-          example: user
-        status: 
-          type: string
-          description: status user
-          example: aktif
+
     Revisi:
       type: object
       properties:
-        nama_lengkap:
+        id:
+          type: integer
+        description:
           type: string
-          description: nama lengkap yang merevisi
-          example: Bagus Navyan
-        konten_revisi:
-          type: string
-          description: catatan revisi risalah
-          example: kurang blabkabakabakna
-        jabatan:
-          type: string
-          description: jabatan yang merevisi
-          example: pegawai
-        waktu_revisi: 
-          type: string
-          description: waktu revisi
-          example: 01/01/2023 14.00
-  # requestBodies:
-  
-  # securitySchemes:
-  #   auth:
-  #     type: oauth2
-  #     flows:
-  #       implicit:
-  #         authorizationUrl: https://petstore3.swagger.io/oauth/authorize
-  #         scopes:
-  #           write:pets: modify pets in your account
-  #           read:pets: read your pets
-    # api_key:
-    #   type: apiKey
-    #   name: api_key
-    #   in: header
