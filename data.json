@@ -1,7 +1,45 @@
 {
-    "hari": "Senin",
-    "tanggal": "29 November 2023",
-    "waktu": "09.00 - 11.00",
-    "tempat": "Ruang Lambelu",
-    "agenda": "Penjualan Asset"
+  "hari": "Senin",
+  "tanggal": "29 November 2023",
+  "waktu": "09.00 - 11.00",
+  "tempat": "Ruang Lambelu",
+  "agenda": "Penjualan Asset",
+  "approverUsers": [
+    {
+      "name": "John",
+      "role": "anggota",
+      "tanda_tangan": "./logo.png"
+    },
+    {
+      "name": "Alice",
+      "role": "approver",
+      "tanda_tangan": "https://m.media-amazon.com/images/M/MV5BODcwNWE3OTMtMDc3MS00NDFjLWE1OTAtNDU3NjgxODMxY2UyXkEyXkFqcGdeQXVyNTAyODkwOQ@@._V1_.jpg"
+    },
+    {
+      "name": "Bob",
+      "role": "approver",
+      "tanda_tangan": "https://upload.wikimedia.org/wikipedia/id/9/90/One_Piece%2C_Volume_61_Cover_%28Japanese%29.jpg"
+    },
+    {
+      "name": "Eve",
+      "role": "approver",
+      "tanda_tangan": "https://media.suara.com/pictures/970x544/2022/09/10/23078-link-nonton-one-piece-bilibili.jpg"
+    },
+    {
+      "name": "Charlie",
+      "role": "anggota",
+      "tanda_tangan": "./logo-op.png"
+    },
+    {
+      "name": "David",
+      "role": "anggota",
+      "tanda_tangan": "./LOGO_IBIK.png"
+    },
+   
+    {
+      "name": "Grace",
+      "role": "anggota",
+      "tanda_tangan": "./logo.png"
+    }
+  ]
 }
