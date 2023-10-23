@@ -1,133 +1,10 @@
-// var async = require('async');
-// var officegen = require('officegen');
-// var fs = require('fs');
-// var path = require('path');
-
-// // Define the output directory where the DOCX file will be saved
-// var outDir = path.join(__dirname, '../../tmp');
-
-// // Create the output directory if it doesn't exist
-// if (!fs.existsSync(outDir)) {
-//   fs.mkdirSync(outDir, { recursive: true });
-// }
-
-// // Create the document object using officegen
-// var docx = officegen({
-//   type: 'docx', // Create a Word document
-//   orientation: 'portrait', // Set the document orientation to portrait
-//   pageMargins: { top: 1000, left: 1000, bottom: 1000, right: 1000 }, // Define page margins
-//   columns: 2, // Use two columns in the document
-// });
-
-// // Handle errors during document generation
-// docx.on('error', function (err) {
-//   console.log(err);
-// });
-
-// // Create a paragraph for the header
-// var header = docx.createP();
-// header.addText('Your Company Name', {
-//   bold: true,
-//   align: 'center',
-//   fontSize: 24,
-// });
-// header.addLineBreak();
-
-// // Create a paragraph for the address
-// var address = docx.createP();
-// address.addText('123 Main Street', {
-//   bold: true,
-// });
-// address.addLineBreak();
-// address.addText('City, State ZIP', {
-//   bold: true,
-// });
-// address.addLineBreak();
-
-// // Create a paragraph for the date
-// var date = docx.createP();
-// date.addText('Date: October 18, 2023', {
-//   bold: true,
-//   align: 'right',
-// });
-// date.addLineBreak();
-
-// // Create a paragraph for the recipient's address
-// var recipientAddress = docx.createP();
-// recipientAddress.addText('Recipient Name', {
-//   bold: true,
-// });
-// recipientAddress.addLineBreak();
-// recipientAddress.addText('Recipient Address', {
-//   bold: true,
-// });
-// recipientAddress.addLineBreak();
-// recipientAddress.addText('City, State ZIP', {
-//   bold: true,
-// });
-// recipientAddress.addLineBreak();
-// recipientAddress.addLineBreak();
-
-// // Create a paragraph for the salutation
-// var salutation = docx.createP();
-// salutation.addText('Dear Mr./Ms. Last Name,', {
-//   bold: true,
-// });
-// salutation.addLineBreak();
-// salutation.addLineBreak();
-
-// // Create a paragraph for the main content
-// var content = docx.createP();
-// content.addText('Here is the main content of your formal letter.', {
-//   align: 'justify',
-// });
-// content.addLineBreak();
-// content.addLineBreak();
-
-// // Create a paragraph for the closing
-// var closing = docx.createP();
-// closing.addText('Sincerely,', {
-//   bold: true,
-// });
-// closing.addLineBreak();
-// closing.addLineBreak();
-// closing.addText('Your Name', {
-//   bold: true,
-// });
-
-// // Specify the output file path
-// var outputPath = path.join(outDir, 'letter.docx');
-
-// // Create a write stream for the output file
-// var out = fs.createWriteStream(outputPath);
-
-// // Handle errors during the file writing process
-// out.on('error', function (err) {
-//   console.log(err);
-// });
-
-// // Use async to generate the document and save it to the file
-// async.parallel(
-//   [
-//     function (done) {
-//       out.on('close', function () {
-//         console.log('Finish creating the formal letter.');
-//         done(null);
-//       });
-//       docx.generate(out); // Generate the document and save it to the file
-//     },
-//   ],
-//   function (err) {
-//     if (err) {
-//       console.log('Error: ' + err);
-//     }
-//   }
-// );const fs = require('fs');
-
 const fs = require('fs');
 const Docxtemplater = require('docxtemplater');
-const path = require('path');
 const PizZip = require('pizzip');
+const path = require('path');
+const https = require("https");
+const Stream = require("stream").Transform;
+var ImageModule = require('docxtemplater-image-module-free'); // Import the image module
 
 // Baca template DOCX
 const templateFilePath = path.resolve(__dirname, 'Format_notulen_direksi.docx');
@@ -138,27 +15,89 @@ const doc = new Docxtemplater();
 doc.loadZip(zip);
 
 // Baca data JSON
-const data = require('./data.json');
+const data = JSON.parse(fs.readFileSync('data.json', 'utf8'));
 
-// Cocokkan data dengan template
-doc.setData(data);
+// Tentukan kriteria untuk user yang memiliki role "approver"
+const approverUsers = data.approverUsers.filter(user => user.role === 'approver');
 
-try {
-  doc.render();
-} catch (error) {
-  var e = {
-    message: error.message,
-    name: error.name,
-    stack: error.stack,
-    properties: error.properties,
-  };
-  console.log(JSON.stringify({ error: e }));
-  throw error;
+// Mengunduh gambar dari URL dan menyimpannya dalam objek yang berisi buffer gambar
+const imagePromises = [];
+for (const user of approverUsers) {
+  if (user.tanda_tangan.startsWith("http")) {
+    imagePromises.push(downloadImage(user.tanda_tangan));
+  } else {
+    imagePromises.push(Promise.resolve(fs.readFileSync(user.tanda_tangan)));
+  }
 }
 
-// Simpan hasil rendering ke file DOCX baru
-const outputPath = path.resolve(__dirname, 'output.docx');
-const buf = doc.getZip().generate({ type: 'nodebuffer' });
-fs.writeFileSync(outputPath, buf);
+Promise.all(imagePromises)
+  .then(images => {
+    // Cocokkan data dengan template
 
-console.log('File DOCX baru telah dibuat: output.docx');
+    var opts = {}
+    opts.centered = false; //Set to true to always center images
+    opts.fileType = "docx"; //Or pptx
+
+    //Pass your image loader
+    opts.getImage = function (tagValue, tagName) {
+      return images.shift();
+    }
+
+    // Pass the function that returns image size
+    opts.getSize = function (img, tagValue, tagName) {
+      return [150, 150];
+    }
+
+    var imageModule = new ImageModule(opts);
+
+    doc.attachModule(imageModule).setData({
+      hari: data.hari,
+      tanggal: data.tanggal,
+      waktu: data.waktu,
+      tempat: data.tempat,
+      agenda: data.agenda,
+      approverUsers
+    });
+
+    try {
+      doc.render();
+    } catch (error) {
+      var e = {
+        message: error.message,
+        name: error.name,
+        stack: error.stack,
+        properties: error.properties,
+      };
+      console.log(JSON.stringify({ error: e }));
+      throw error;
+    }
+
+    // Simpan hasil rendering ke file DOCX baru
+    const outputPath = path.resolve(__dirname, 'testing.docx');
+    const buf = doc.getZip().generate({ type: 'nodebuffer' });
+    fs.writeFile(outputPath, buf, (err) => {
+      if (err) {
+        console.error('Error writing the file:', err);
+      } else {
+        console.log('File replaced successfully');
+      }
+    });
+  })
+  .catch(error => {
+    console.error("Error downloading images:", error);
+  });
+
+function downloadImage(url) {
+  return new Promise((resolve, reject) => {
+    https.get(url, response => {
+      if (response.statusCode === 200) {
+        const data = new Stream();
+        response.on("data", chunk => data.push(chunk));
+        response.on("end", () => resolve(data.read()));
+        response.on("error", err => reject(err));
+      } else {
+        reject(new Error(`Request to ${url} failed, status code: ${response.statusCode}`));
+      }
+    });
+  });
+}
