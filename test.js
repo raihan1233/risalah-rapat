@@ -72,8 +72,16 @@ Promise.all(imagePromises)
       throw error;
     }
 
-    // Simpan hasil rendering ke file DOCX baru
-    const outputPath = path.resolve(__dirname, 'testing.docx');
+    // Buat nama file dengan penomoran
+    let outputFileName = 'testing.docx';
+    let index = 1;
+
+    while (fs.existsSync(outputFileName)) {
+      outputFileName = `testing(${index}).docx`;
+      index++;
+    }
+
+    const outputPath = path.resolve(__dirname, outputFileName);
     const buf = doc.getZip().generate({ type: 'nodebuffer' });
     fs.writeFile(outputPath, buf, (err) => {
       if (err) {
