@@ -4,10 +4,10 @@ const PizZip = require('pizzip');
 const path = require('path');
 const https = require("https");
 const Stream = require("stream").Transform;
-var ImageModule = require('docxtemplater-image-module-free'); // Import the image module
+var ImageModule = require('docxtemplater-image-module-free');
 
 // Baca template DOCX
-const templateFilePath = path.resolve(__dirname, 'Format_notulen_direksi.docx');
+const templateFilePath = path.resolve(__dirname, './Format_notulen_direksi.docx'); // Update with your template file
 const content = fs.readFileSync(templateFilePath, 'binary');
 
 const zip = new PizZip(content);
@@ -50,12 +50,18 @@ Promise.all(imagePromises)
 
     var imageModule = new ImageModule(opts);
 
+    // Generate daftar agenda sebagai list
+    const agendaList = data.agenda.map(item => ({
+      // Using '•' for the bullet character
+      item: `• ${item}`
+    }));
+
     doc.attachModule(imageModule).setData({
       hari: data.hari,
       tanggal: data.tanggal,
       waktu: data.waktu,
       tempat: data.tempat,
-      agenda: data.agenda,
+      agendaList, // Use agendaList to match the template
       approverUsers
     });
 
