@@ -3,7 +3,7 @@
   "tanggal": "29 November 2023",
   "waktu": "09.00 - 11.00",
   "tempat": "Ruang Lambelu",
-  "agenda": "Penjualan Asset",
+  "agenda": ["penjualan", "penjualan", "penjualan", "penjualan", "penjualan", "penjualan"],
   "approverUsers": [
     {
       "name": "John",
@@ -27,12 +27,12 @@
     },
     {
       "name": "Charlie",
-      "role": "anggota",
+      "role": "approver",
       "tanda_tangan": "./logo-op.png"
     },
     {
       "name": "David",
-      "role": "anggota",
+      "role": "approver",
       "tanda_tangan": "./LOGO_IBIK.png"
     },
    
