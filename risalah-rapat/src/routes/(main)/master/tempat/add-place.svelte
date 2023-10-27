@@ -1,4 +1,4 @@
-\<script>
+<script>
 	import { Button, buttonVariants } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Input } from '$lib/components/ui/input';
@@ -7,23 +7,20 @@
 	import * as RadioGroup from '$lib/components/ui/radio-group';
 	import { createEventDispatcher } from 'svelte';
 	import Swal from 'sweetalert2';
+	import { BASE_URL, fetchWithToken } from '../../../../utils/network-data';
 
 	export let data;
 
 	const saveData = async () => {
 		const newData = {
-			tempat: inputData.tempat, // Example value, replace with actual input data
+			nama: inputData.nama, // Example value, replace with actual input data
 			status: inputData.status // Example value, replace with actual input data
 		};
 
 		// Emit an event with the new data
 		try {
-			const response = await fetch('http://localhost:3000/places', {
+			const response = await fetchWithToken(`${BASE_URL}/_QUERIES/pelni/add_place?nama=${inputData.nama}&status=${inputData.status}`, {
 				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFubmlzYSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTY5NjIyMTgxNywiZXhwIjoxNjk2NDgxMDE3fQ.M879PmtOuY-2hwJ1qEFz596Jh-JhY1MjbF6z-WueUyA`
-				},
 				body: JSON.stringify(newData)
 			});
 
@@ -60,7 +57,7 @@
 	};
 
 	let inputData = {
-		tempat: '',
+		nama: '',
 		status: ""
 	};
 
@@ -70,7 +67,9 @@
 </script>
 
 <Dialog.Root bind:open={isDialogOpen}>
-	<Dialog.Trigger class={buttonVariants({ variant: 'outline' })}>Tambah</Dialog.Trigger>
+	<div class="px-4">
+		<Dialog.Trigger class={buttonVariants({ variant: 'outline' })}>Tambah</Dialog.Trigger>
+	</div>
 	<Dialog.Content class="sm:max-w-[425px]">
 		<Dialog.Header>
 			<Dialog.Title>Tambah Tempat</Dialog.Title>
@@ -79,7 +78,7 @@
 		<div class="py-4 space-y-4">
 			<div class="space-y-4">
 				<Label for="tempat">Tempat</Label>
-				<Input id="tempat" placeholder="Masukkan tempat" bind:value={inputData.tempat} />
+				<Input id="tempat" placeholder="Masukkan tempat" bind:value={inputData.nama} />
 			</div>
 			<div class="space-y-4">
 				<Label>Status</Label>

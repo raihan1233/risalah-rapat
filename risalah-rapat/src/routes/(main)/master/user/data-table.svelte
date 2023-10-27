@@ -11,15 +11,13 @@
 		TableHeadCell,
 		TableSearch
 	} from 'flowbite-svelte';
+		import { BASE_URL, fetchWithToken } from '../../../../utils/network-data';
 
 	let data = [];
 
 	const fetchData = async () => {
 		try {
-			const response = await fetch('http://localhost:3000/users', {
-				headers: {
-					'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFubmlzYSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTY5NjIzNTE0NiwiZXhwIjoxNjk2NDk0MzQ2fQ.UcKl0CPRYA33D-hYuKAtx1e_Kbm7T5tefHX9drWkv0U`}
-			}); // Replace with your API endpoint
+			const response = await fetchWithToken(`${BASE_URL}/_QUERIES/pelni/get_users`);
 			if (response.ok) {
 				data = await response.json();
 				console.log(data);
@@ -88,9 +86,9 @@
 			{#each filteredItems as row, index (index)}
 				<TableBodyRow>
 					<TableBodyCell class="!p-4">{index + 1}</TableBodyCell>
-					<TableBodyCell class="!p-4">{row.fullname}</TableBodyCell>
+					<TableBodyCell class="!p-4">{row.name}</TableBodyCell>
 					<TableBodyCell class="!p-4">{row.username}</TableBodyCell>
-					<TableBodyCell class="!p-4">{row.position}</TableBodyCell>
+					<TableBodyCell class="!p-4">{row.jabatan}</TableBodyCell>
 					<TableBodyCell class="!p-4">{row.role}</TableBodyCell>
 					<TableBodyCell class="!p-4">{row.status}</TableBodyCell>
 					<TableBodyCell class="!p-4">

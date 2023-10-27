@@ -7,23 +7,24 @@
 	import Swal from 'sweetalert2';
 	import { Eye, EyeOff } from 'lucide-svelte';
 	import { onMount } from 'svelte';
+	import { BASE_URL, putAccessToken, putUserId } from '../utils/network-data';
 
 	let data = [];
-	const fetchUsers = async () => {
-		try {
-			const response = await fetch('http://localhost:3000/users'); // Replace with your API endpoint
-			if (response.ok) {
-				data = await response.json();
-				console.log(data);
-			} else {
-				console.error('Failed to fetch data from the API');
-			}
-		} catch (error) {
-			console.error('Error fetching data:', error);
-		}
-	};
+	// const fetchUsers = async () => {
+	// 	try {
+	// 		const response = await fetch('http://localhost:3000/users'); // Replace with your API endpoint
+	// 		if (response.ok) {
+	// 			data = await response.json();
+	// 			console.log(data);
+	// 		} else {
+	// 			console.error('Failed to fetch data from the API');
+	// 		}
+	// 	} catch (error) {
+	// 		console.error('Error fetching data:', error);
+	// 	}
+	// };
 
-	onMount(fetchUsers);
+	// onMount(fetchUsers);
 
 	const popupSuccess = () => {
 		Swal.fire(`selamat datang ${inputData.username} !`, 'tunggu beberapa saat', 'success');
@@ -44,41 +45,45 @@
 	};
 
 	const handleSubmit = async () => {
-        if (!inputData.username || !inputData.password) {
-            popupError();
-            return;
-        }
+		if (!inputData.username || !inputData.password) {
+			popupError();
+			return;
+		}
 
-        try {
-            const response = await fetch('http://localhost:3000/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(inputData),
-            });
+		try {
+			const response = await fetch(`${BASE_URL}/auth`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(inputData)
+			});
 
-            if (response.ok) {
+			if (response.ok) {
 				// Login successful
 				const data = await response.json();
 				token = data.token; // Store the JWT token
+				id_user = data.user_info.id;
+				putAccessToken(token);
+				putUserId(id_user);
 				console.log(token);
-                popupSuccess();
-                setTimeout(() => {
-                    window.location.href = '/home';
-                }, 1500);
-            } else {
-                // Login failed
-                popupError();
-            }
-        } catch (error) {
-            console.error('Error during login:', error);
-            popupError();
-        }
-    }
+				popupSuccess();
+				setTimeout(() => {
+					window.location.href = '/home';
+				}, 1500);
+			} else {
+				// Login failed
+				popupError();
+			}
+		} catch (error) {
+			console.error('Error during login:', error);
+			popupError();
+		}
+	};
 
 	let showPassword = false;
 	let token = '';
+	let id_user = '';
 
 	function togglePasswordVisibility() {
 		showPassword = !showPassword;

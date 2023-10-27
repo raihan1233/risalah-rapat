@@ -8,11 +8,12 @@
 	import Swal from 'sweetalert2';
 	import { Pencil } from 'lucide-svelte';
 	import { onMount } from 'svelte';
-	// import { createEventDispatcher } from 'svelte';
+	import { BASE_URL, fetchWithToken } from '../../../../utils/network-data';
+	import { createEventDispatcher } from 'svelte';
 
-	// let dispatch = createEventDispatcher;
-	export let id;
-	let tempat = '';
+	let dispatch = createEventDispatcher;
+	export let id_place;
+	let nama = '';
 	let status = '';
 
 	// Add a variable to store the fetched place data
@@ -20,17 +21,13 @@
 
 	let isDialogOpen = false;
 
-	const fetchData = async () => {
+	onMount(async () => {
 		try {
-			const response = await fetch(`http://localhost:3000/places/${id}`, {
-				headers: {
-					'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFubmlzYSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTY5NjIyMTgxNywiZXhwIjoxNjk2NDgxMDE3fQ.M879PmtOuY-2hwJ1qEFz596Jh-JhY1MjbF6z-WueUyA`
-				}
-			});
+			const response = await fetchWithToken(`${BASE_URL}/_QUERIES/pelni/get_place?id_place=${id_place}`);
 			if (response.ok) {
 				placeData = await response.json();
 				// Set the input fields based on the fetched data
-				tempat = placeData.tempat;
+				nama = placeData.nama;
 				status = placeData.status;
 			} else {
 				console.error('Failed to fetch data for editing:', response.statusText);
@@ -48,47 +45,87 @@
 				text: 'Terjadi kesalahan saat mengambil data.'
 			});
 		}
-	};
+	});
 
-	onMount(fetchData); // Fetch data when the component is mounted
+	// onMount(fetchData); // Fetch data when the component is mounted
+
+	// const saveData = async () => {
+	// 	try {
+	// 		const response = await fetch(`http://localhost:3000/places/${id}`, {
+	// 			method: 'PUT',
+	// 			headers: {
+	// 				'Content-Type': 'application/json',
+	// 				'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFubmlzYSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTY5NjIyMTgxNywiZXhwIjoxNjk2NDgxMDE3fQ.M879PmtOuY-2hwJ1qEFz596Jh-JhY1MjbF6z-WueUyA`
+				
+	// 			},
+	// 			body: JSON.stringify({ tempat, status }) // Send the updated data
+	// 		});
+
+	// 		if (response.ok) {
+	// 			Swal.fire({
+	// 				icon: 'success',
+	// 				title: 'Data berhasil dirubah',
+	// 				showConfirmButton: false,
+	// 				timer: 1500
+	// 			}).then(() => {
+	// 				dispatch('dataSaved', { id, tempat, status });
+	// 				// Close the dialog by setting isDialogOpen to false
+	// 				isDialogOpen = false;
+	// 			});
+	// 		} else {
+	// 			console.error('Failed to update data:', response.statusText);
+	// 			Swal.fire({
+	// 				icon: 'error',
+	// 				title: 'Gagal menyimpan data',
+	// 				text: 'Terjadi kesalahan saat menyimpan data.'
+	// 			});
+	// 		}
+	// 	} catch (error) {
+	// 		console.error('Error updating data:', error);
+	// 		Swal.fire({
+	// 			icon: 'error',
+	// 			title: 'Gagal menperbaharui data',
+	// 			text: 'Terjadi kesalahan saat menyimpan data.'
+	// 		});
+	// 	}
+	// };
 
 	const saveData = async () => {
+		// Emit an event with the new data
 		try {
-			const response = await fetch(`http://localhost:3000/places/${id}`, {
-				method: 'PUT',
-				headers: {
-					'Content-Type': 'application/json',
-					'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFubmlzYSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTY5NjIyMTgxNywiZXhwIjoxNjk2NDgxMDE3fQ.M879PmtOuY-2hwJ1qEFz596Jh-JhY1MjbF6z-WueUyA`
-				
-				},
-				body: JSON.stringify({ tempat, status }) // Send the updated data
+			const response = await fetch(`${BASE_URL}/_QUERIES/pelni/patch_place?id_place=${id_place}&nama=${nama}&status=${status}`, {
+				method: 'PATCH',
+				body: JSON.stringify({ nama, status })
 			});
 
 			if (response.ok) {
+				const responseData = await response.text();
+
+				// Emit an event with the new data (if needed)
+				dispatch('dataSaved', responseData);
+
 				Swal.fire({
 					icon: 'success',
-					title: 'Data berhasil dirubah',
+					title: 'Data berhasil ditambahkan',
 					showConfirmButton: false,
 					timer: 1500
 				}).then(() => {
-					dispatch('dataSaved', { id, tempat, status });
-					// Close the dialog by setting isDialogOpen to false
-					isDialogOpen = false;
-				});
+          // Close the dialog by setting isDialogOpen to false
+          isDialogOpen = false;
+        });
 			} else {
-				console.error('Failed to update data:', response.statusText);
 				Swal.fire({
 					icon: 'error',
-					title: 'Gagal menyimpan data',
-					text: 'Terjadi kesalahan saat menyimpan data.'
+					title: 'Gagal menambahkan data',
+					text: 'Ada masalah saat menambahkan data ke server'
 				});
 			}
 		} catch (error) {
-			console.error('Error updating data:', error);
+			console.error('Error:', error);
 			Swal.fire({
 				icon: 'error',
-				title: 'Gagal menperbaharui data',
-				text: 'Terjadi kesalahan saat menyimpan data.'
+				title: 'Terjadi kesalahan',
+				text: 'Terjadi kesalahan saat mengirim data ke server'
 			});
 		}
 	};
@@ -108,7 +145,7 @@
 		<div class="py-4 space-y-4">
 			<div class="space-y-4">
 				<Label for="tempat">Tempat</Label>
-				<Input id="tempat" placeholder="Masukkan tempat" bind:value={tempat} />
+				<Input id="tempat" placeholder="Masukkan tempat" bind:value={nama} />
 			</div>
 			<div class="space-y-4">
 				<Label>Status</Label>
