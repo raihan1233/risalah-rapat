@@ -17,7 +17,7 @@
 
 	const fetchData = async () => {
 		try {
-			const response = await fetchWithToken(`${BASE_URL}/_QUERIES/pelni/get_users`);
+			const response = await fetchWithToken(`${process.env.BASE_URL_PRESTD}/_QUERIES/users/get_users?_page=1&_page_size=50`);
 			if (response.ok) {
 				data = await response.json();
 				console.log(data);

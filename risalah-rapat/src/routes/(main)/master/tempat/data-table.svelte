@@ -11,72 +11,13 @@
 		TableHeadCell,
 		TableSearch
 	} from 'flowbite-svelte';
-	import { BASE_URL, fetchWithToken } from '../../../../utils/network-data';
+	import { BASE_URL_PRESTD, fetchWithToken } from '../../../../utils/network-data';
 
 	export let data = [];
 
-	// const fetchData = async () => {
-	// 	try {
-	// 		// const response = await fetchWithToken(`${BASE_URL}/_QUERIES/pelni/get_places`);
-
-	// 		const response = await fetch(`${BASE_URL}/_QUERIES/pelni/get_places`, {
-	// 			method: 'OPTIONS',
-	// 			headers: {
-	// 				'Origin': 'http://localhost',
-	// 				'Authorization': `Bearer ${getAccessToken()}`
-	// 			}
-	// 		});
-
-	// 		if (response.ok) {
-	// 			data = await response.json();
-	// 			console.log(data);
-	// 		} else {
-	// 			console.error('Failed to fetch data from the API');
-	// 		}
-	// 	} catch (error) {
-	// 		console.error('Error fetching data:', error);
-	// 	}
-	// };
-
-// 		const url = 'http://127.0.0.1:3000/_QUERIES/pelni/get_places';
-
-// async function fetchData() {
-//   try {
-//     // Perform an OPTIONS request for CORS preflight
-//     const preflightResponse = await fetch(url, {
-//       method: 'OPTIONS',
-//       headers: {
-//         'Access-Control-Request-Method': 'GET',
-//         'Origin': 'http://localhost',
-//       },
-//     });
-
-//     // Extract the JWT token from the response headers
-//     const jwtToken = preflightResponse.headers.get('Authorization');
-
-//     // Make the actual GET request with JWT authentication
-//     const dataResponse = await fetch(url, {
-//       method: 'GET',
-//       headers: {
-//         'Authorization': `Bearer ${getAccessToken()}`
-//       },
-//     });
-
-//     // Parse and log the JSON data
-//     const data = await dataResponse.json();
-//     console.log(data);
-//   } catch (error) {
-//     console.error('Error:', error);
-//   }
-// }
-
-// // Call the async function
-// fetchData();
-
-
 	const fetchData = async () => {
 		try {
-			const response = await fetchWithToken(`${BASE_URL}/_QUERIES/places/get_places?_page=1&_page_size=25`); // Replace with your API endpoint)
+			const response = await fetchWithToken(`${BASE_URL_PRESTD}/_QUERIES/places/get_places?_page=1&_page_size=50`); // Replace with your API endpoint)
 			if (response.ok) {
 				data = await response.json();
 				console.log(data);

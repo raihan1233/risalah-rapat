@@ -83,7 +83,7 @@
     }
   };
 
-   onMount(fetchData); // Fetch data when the component is mounted
+  //  onMount(fetchData); // Fetch data when the component is mounted
 
 
   // Function to update user data and show success message

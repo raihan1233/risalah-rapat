@@ -7,8 +7,8 @@
   import { Drawer, CloseButton , Sidebar,
     SidebarGroup,
     SidebarItem,
-    SidebarWrapper, SidebarDropdownWrapper } from 'flowbite-svelte';
-	import { removeAccessToken } from '../../utils/network-data';
+    SidebarWrapper, SidebarDropdownWrapper, SidebarDropdownItem } from 'flowbite-svelte';
+	import { removeDataFromCookies } from '../../utils/network-data';
 
   let drawerHidden: boolean = false;
   const toggleDrawer = () => {
@@ -100,7 +100,7 @@ $: activeUrl = $page.url.pathname;
 			<SidebarWrapper class="rounded px-3 py-4 overflow-y-auto bg-gray-800">
 				<SidebarGroup class="space-y-2 font-small">
 					<img src="/Logogram.png" alt="Logo Pelni" class="w-16 mx-auto mb-8" />
-					<SidebarItem {spanClass} label="Home" href="/home" on:click={toggleSide} active={activeUrl === `/home`} class="hover:bg-sky-900">
+					<SidebarItem {spanClass} label="Home" href="/home" on:click={toggleSide} active={activeUrl === `/home`} class="hover:bg-sky-900" data-sveltekit-prefetch>
 						<svelte:fragment slot="icon">
               	<svg
 								xmlns="http://www.w3.org/2000/svg"
@@ -139,7 +139,7 @@ $: activeUrl = $page.url.pathname;
 								</svelte:fragment>
 							<SidebarItem {spanClass} label="Buat Risalah" href="/rapat/buat-rapat" on:click={toggleSide} active={activeUrl === `/rapat/buat-rapat`} class="hover:bg-sky-900">
 							</SidebarItem>
-							<SidebarItem {spanClass} label="Daftar Risalah" href="/rapat/daftar-rapat" on:click={toggleSide} active={activeUrl === `/rapat/daftar-rapat`} class="hover:bg-sky-900">
+							<SidebarItem {spanClass} label="Daftar Risalah" href="/rapat/daftar-rapat" on:click={toggleSide} active={activeUrl === `/rapat/daftar-rapat`} class="hover:bg-sky-900" data-sveltekit-prefetch>
 							</SidebarItem>
 						</SidebarDropdownWrapper>
 					
@@ -165,11 +165,11 @@ $: activeUrl = $page.url.pathname;
 								/><rect width="5" height="7" x="16" y="14" rx="1" /></svg
 							>
 							</svelte:fragment>
-							<SidebarItem {spanClass} label="Master Tempat" href="/master/tempat" on:click={toggleSide} active={activeUrl === `/master/tempat`} class="hover:bg-sky-900">
+							<SidebarItem {spanClass} label="Master Tempat" href="/master/tempat" on:click={toggleSide} active={activeUrl === `/master/tempat`} class="hover:bg-sky-900" data-sveltekit-prefetch>
 							</SidebarItem>
-							<SidebarItem {spanClass} label="Master Template" href="/master/template" on:click={toggleSide} active={activeUrl === `/master/template`} class="hover:bg-sky-900">
+							<SidebarItem {spanClass} label="Master Template" href="/master/template" on:click={toggleSide} active={activeUrl === `/master/template`} class="hover:bg-sky-900" data-sveltekit-prefetch>
 							</SidebarItem>
-							<SidebarItem {spanClass} label="Master User" href="/master/user" on:click={toggleSide} active={activeUrl === `/master/user`} class="hover:bg-sky-900">
+							<SidebarItem {spanClass} label="Master User" href="/master/user" on:click={toggleSide} active={activeUrl === `/master/user`} class="hover:bg-sky-900" data-sveltekit-prefetch>
 							</SidebarItem>
 						</SidebarDropdownWrapper>
 				</SidebarGroup>
@@ -249,7 +249,7 @@ $: activeUrl = $page.url.pathname;
 										role="menuitem"
 										tabindex="-1"
 										id="user-menu-item-2"
-										on:click={removeAccessToken}
+										on:click={removeDataFromCookies}
 										>Sign out</a
 									>
 								</div>

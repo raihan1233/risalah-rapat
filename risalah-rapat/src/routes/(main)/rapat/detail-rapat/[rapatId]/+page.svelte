@@ -36,6 +36,8 @@
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
 
+	// export let data;
+
 	const sendData = () => {
 		Swal.fire({
 			icon: 'success',

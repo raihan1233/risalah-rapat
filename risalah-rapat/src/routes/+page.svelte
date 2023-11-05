@@ -7,7 +7,7 @@
 	import Swal from 'sweetalert2';
 	import { Eye, EyeOff } from 'lucide-svelte';
 	import { onMount } from 'svelte';
-	import { BASE_URL, putAccessToken, putUserId } from '../utils/network-data';
+	import { BASE_URL_PRESTD, putAccessToken, putUserId } from '../utils/network-data';
 
 	let data = [];
 	// const fetchUsers = async () => {
@@ -51,7 +51,7 @@
 		}
 
 		try {
-			const response = await fetch(`${BASE_URL}/auth`, {
+			const response = await fetch(`${BASE_URL_PRESTD}/auth`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
@@ -64,6 +64,8 @@
 				const data = await response.json();
 				token = data.token; // Store the JWT token
 				id_user = data.user_info.id;
+				console.log(token);
+				console.log(id_user);
 				putAccessToken(token);
 				putUserId(id_user);
 				console.log(token);

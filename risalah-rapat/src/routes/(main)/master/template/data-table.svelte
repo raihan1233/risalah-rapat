@@ -11,21 +11,15 @@
 		TableHeadCell,
 		TableSearch
 	} from 'flowbite-svelte';
+	import { fetchWithToken, BASE_URL_PRESTD } from '../../../../utils/network-data';
 
 	let data = [];
 
 	const fetchData = async () => {
 		try {
-			const response = await fetch('http://localhost:3000/templates', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFubmlzYSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTY5NjIyMTgxNywiZXhwIjoxNjk2NDgxMDE3fQ.M879PmtOuY-2hwJ1qEFz596Jh-JhY1MjbF6z-WueUyA`
-				}
-			}); // Replace with your API endpoint
+			const response = await fetchWithToken(`${BASE_URL_PRESTD}/_QUERIES/templates/get_templates?_page=1&_page_size=50`); // Replace with your API endpoint)
 			if (response.ok) {
 				data = await response.json();
-
 				console.log(data);
 			} else {
 				console.error('Failed to fetch data from the API');
@@ -81,18 +75,18 @@
 			<!-- </tr> -->
 		</TableHead>
 		<TableBody class="divide-y">
-			{#each filteredItems as row, index (row.id)}
+			{#each filteredItems as row (row.id_template)}
 				<TableBodyRow>
-					<TableBodyCell class="!p-4">{index + 1}</TableBodyCell>
-					<TableBodyCell class="!p-4">{row.title}</TableBodyCell>
+					<TableBodyCell class="!p-4">{row.id_template}</TableBodyCell>
+					<TableBodyCell class="!p-4">{row.nama_template}</TableBodyCell>
 					<TableBodyCell class="!p-4"
-						><a href={`http://localhost:3000/template/${row.id}`} class="underline" download
+						><a href={fetchWithToken(`${BASE_URL}/_QUERIES/templates/get_template?id_template=${row.id_template}`)} class="underline" download
 							>{row.file}</a
 						></TableBodyCell
 					>
 					<TableBodyCell class="!p-4">{row.status}</TableBodyCell>
 					<TableBodyCell class="!p-4">
-						<EditTemplate id={row.id} />
+						<EditTemplate id={row.id_template} />
 					</TableBodyCell>
 				</TableBodyRow>
 			{/each}

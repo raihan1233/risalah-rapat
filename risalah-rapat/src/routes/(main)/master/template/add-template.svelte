@@ -7,8 +7,11 @@
 	import * as RadioGroup from '$lib/components/ui/radio-group';
 	import { createEventDispatcher } from 'svelte';
 	import Swal from 'sweetalert2';
+	import { fetchWithToken, BASE_URL_PRESTD, getUserId, BASE_URL_EXPRESS } from '../../../../utils/network-data';
 
-	export let data = [];
+	let user = getUserId();
+
+	// export let data = [];
 
 	let dispatch = createEventDispatcher();
 
@@ -27,18 +30,18 @@
 				formData.append('attachmentTitle', inputData.title);
 				formData.append('attachment', inputData.file);
 				formData.append('status', inputData.status);
+				formData.append('created_by', parseInt(user, 10));
+				formData.append('modified_by', parseInt(user, 10));
 
-				const response = await fetch('http://localhost:3000/templates', {
+				const response = await fetch(`${BASE_URL_EXPRESS}/_QUERIES/templates/add_template`, {
 					method: 'POST',
-					headers: {
-					'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFubmlzYSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTY5NjIyMTgxNywiZXhwIjoxNjk2NDgxMDE3fQ.M879PmtOuY-2hwJ1qEFz596Jh-JhY1MjbF6z-WueUyA`
-				},
 					body: formData
 				});
 
 				if (response.ok) {
-					const newData = await response.json();
-					data = [...data, newData];
+					const responseData = await response.text();
+					// templatesData = [...templatesData, newData];
+					dispatch('dataSaved', formData);
 
 					Swal.fire({
 						icon: 'success',
@@ -49,7 +52,6 @@
 						isDialogOpen = false;
 					});
 
-					dispatch('dataSaved', newData);
 				} else {
 					Swal.fire({
 						icon: 'error',

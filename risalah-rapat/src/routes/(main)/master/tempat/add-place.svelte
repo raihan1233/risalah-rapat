@@ -7,28 +7,34 @@
 	import * as RadioGroup from '$lib/components/ui/radio-group';
 	import { createEventDispatcher } from 'svelte';
 	import Swal from 'sweetalert2';
-	import { BASE_URL, fetchWithToken } from '../../../../utils/network-data';
+	import { BASE_URL_PRESTD, fetchWithToken, getUserId } from '../../../../utils/network-data';
 
+
+
+	let user = getUserId();
 	export let data;
 
 	const saveData = async () => {
 		const newData = {
 			nama: inputData.nama, // Example value, replace with actual input data
-			status: inputData.status // Example value, replace with actual input data
+			status: inputData.status, // Example value, replace with actual input data
+			created_by: parseInt(user, 10),
+  		modified_by: parseInt(user, 10)
 		};
 
 		// Emit an event with the new data
 		try {
-			const response = await fetchWithToken(`${BASE_URL}/_QUERIES/pelni/add_place?nama=${inputData.nama}&status=${inputData.status}`, {
+			const response = await fetchWithToken(`${BASE_URL_PRESTD}/_QUERIES/places/add_place?nama=${inputData.nama}&status=${inputData.status}&created_by=${user}&modified_by=${user}`, {
 				method: 'POST',
 				body: JSON.stringify(newData)
 			});
+			console.log('New Data:', newData);
 
 			if (response.ok) {
 				const responseData = await response.text();
-
+				console.log(responseData);
 				// Emit an event with the new data (if needed)
-				dispatch('dataSaved', responseData);
+				dispatch('dataSaved', JSON.stringify(newData));
 
 				Swal.fire({
 					icon: 'success',

@@ -8,13 +8,15 @@
 	import Swal from 'sweetalert2';
 	import { Eye, EyeOff } from 'lucide-svelte';
 	import { createEventDispatcher } from 'svelte';
+	import { BASE_URL_PRESTD, getUserId, fetchWithToken } from '../../../../utils/network-data';
 
-	export let data;
+	// export let data;
+	let user = getUserId();
 
 	let inputData = {
-		fullname: '',
+		name: '',
 		username: '',
-		position: '',
+		jabatan: '',
 		role: '',
 		password: '',
 		confirmPassword: '',
@@ -23,31 +25,28 @@
 
 	const saveData = async () => {
 		const newData = {
-			nama_lengkap: inputData.fullname,
+			name: inputData.name,
 			username: inputData.username,
 			password: inputData.password,
 			confirmPassword: inputData.confirmPassword,
-			jabatan: inputData.position,
+			jabatan: inputData.jabatan,
 			role: inputData.role,
 			status: inputData.status // Example value, replace with actual input data
 		};
 
 		// Emit an event with the new data
 		try {
-			const response = await fetch('http://localhost:3000/users', {
+			const response = await fetchWithToken(`${BASE_URL_PRESTD}/_QUERIES/users/add_user?name=${inputData.name}&username=${inputData.username}&password=${inputData.password}&jabatan=${inputData.jabatan}&role=${inputData.role}&status=${inputData.status}&created_by=${user}&modified_by=${user}`, {
 				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFubmlzYSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTY5NjIyMTgxNywiZXhwIjoxNjk2NDgxMDE3fQ.M879PmtOuY-2hwJ1qEFz596Jh-JhY1MjbF6z-WueUyA`
-				},
 				body: JSON.stringify(newData)
 			});
+			console.log('New Data:', newData);
 
 			if (response.ok) {
-				const responseData = await response.json();
-
+				const responseData = await response.text();
+				console.log(responseData);
 				// Emit an event with the new data (if needed)
-				dispatch('dataSaved', responseData);
+				dispatch('dataSaved', JSON.stringify(newData));
 
 				Swal.fire({
 					icon: 'success',
@@ -55,9 +54,9 @@
 					showConfirmButton: false,
 					timer: 1500
 				}).then(() => {
-					// Close the dialog by setting isDialogOpen to false
-					isDialogOpen = false;
-				});
+          // Close the dialog by setting isDialogOpen to false
+          isDialogOpen = false;
+        });
 			} else {
 				Swal.fire({
 					icon: 'error',
@@ -105,7 +104,7 @@
 				<Input
 					id="nama-lengkap"
 					placeholder="Masukkan nama lengkap"
-					bind:value={inputData.fullname}
+					bind:value={inputData.name}
 				/>
 			</div>
 			<div class="space-y-4">
@@ -114,7 +113,7 @@
 			</div>
 			<div class="space-y-4">
 				<Label for="jabatan">Jabatan</Label>
-				<Input id="jabatan" placeholder="Masukkan jabatan" bind:value={inputData.position} />
+				<Input id="jabatan" placeholder="Masukkan jabatan" bind:value={inputData.jabatan} />
 			</div>
 			<div class="space-y-4">
 				<Label for="password">Password</Label>

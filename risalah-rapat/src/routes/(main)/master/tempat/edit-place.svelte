@@ -8,7 +8,7 @@
 	import Swal from 'sweetalert2';
 	import { Pencil } from 'lucide-svelte';
 	import { onMount } from 'svelte';
-	import { BASE_URL, fetchWithToken } from '../../../../utils/network-data';
+	import { BASE_URL_PRESTD, fetchWithToken } from '../../../../utils/network-data';
 	import { createEventDispatcher } from 'svelte';
 
 	let dispatch = createEventDispatcher;
@@ -21,31 +21,31 @@
 
 	let isDialogOpen = false;
 
-	onMount(async () => {
-		try {
-			const response = await fetchWithToken(`${BASE_URL}/_QUERIES/pelni/get_place?id_place=${id_place}`);
-			if (response.ok) {
-				placeData = await response.json();
-				// Set the input fields based on the fetched data
-				nama = placeData.nama;
-				status = placeData.status;
-			} else {
-				console.error('Failed to fetch data for editing:', response.statusText);
-				Swal.fire({
-					icon: 'error',
-					title: 'Gagal mengambil data untuk pengeditan',
-					text: 'Terjadi kesalahan saat mengambil data.'
-				});
-			}
-		} catch (error) {
-			console.error('Error fetching data for editing:', error);
-			Swal.fire({
-				icon: 'error',
-				title: 'Gagal mengambil data untuk pengeditan',
-				text: 'Terjadi kesalahan saat mengambil data.'
-			});
-		}
-	});
+	// onMount(async () => {
+	// 	try {
+	// 		const response = await fetchWithToken(`${BASE_URL}/_QUERIES/pelni/get_place?id_place=${id_place}`);
+	// 		if (response.ok) {
+	// 			placeData = await response.json();
+	// 			// Set the input fields based on the fetched data
+	// 			nama = placeData.nama;
+	// 			status = placeData.status;
+	// 		} else {
+	// 			console.error('Failed to fetch data for editing:', response.statusText);
+	// 			Swal.fire({
+	// 				icon: 'error',
+	// 				title: 'Gagal mengambil data untuk pengeditan',
+	// 				text: 'Terjadi kesalahan saat mengambil data.'
+	// 			});
+	// 		}
+	// 	} catch (error) {
+	// 		console.error('Error fetching data for editing:', error);
+	// 		Swal.fire({
+	// 			icon: 'error',
+	// 			title: 'Gagal mengambil data untuk pengeditan',
+	// 			text: 'Terjadi kesalahan saat mengambil data.'
+	// 		});
+	// 	}
+	// });
 
 	// onMount(fetchData); // Fetch data when the component is mounted
 
@@ -93,7 +93,7 @@
 	const saveData = async () => {
 		// Emit an event with the new data
 		try {
-			const response = await fetch(`${BASE_URL}/_QUERIES/pelni/patch_place?id_place=${id_place}&nama=${nama}&status=${status}`, {
+			const response = await fetch(`${BASE_URL_PRESTD}/_QUERIES/pelni/patch_place?id_place=${id_place}&nama=${nama}&status=${status}`, {
 				method: 'PATCH',
 				body: JSON.stringify({ nama, status })
 			});

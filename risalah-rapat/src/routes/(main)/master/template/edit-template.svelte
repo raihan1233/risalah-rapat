@@ -22,34 +22,34 @@
 
 	let isDialogOpen = false;
 
-	const fetchData = async () => {
-		try {
-			const response = await fetch(`http://localhost:3000/templates/${id}`);
-			if (response.ok) {
-				templateData = await response.json();
-				// Set the input fields based on the fetched data
-				title = templateData.title;
-				file = templateData.file;
-				status = templateData.status;
-			} else {
-				console.error('Failed to fetch data for editing:', response.statusText);
-				Swal.fire({
-					icon: 'error',
-					title: 'Gagal mengambil data untuk pengeditan',
-					text: 'Terjadi kesalahan saat mengambil data.'
-				});
-			}
-		} catch (error) {
-			console.error('Error fetching data for editing:', error);
-			Swal.fire({
-				icon: 'error',
-				title: 'Gagal mengambil data untuk pengeditan',
-				text: 'Terjadi kesalahan saat mengambil data.'
-			});
-		}
-	};
+	// const fetchData = async () => {
+	// 	try {
+	// 		const response = await fetch(`http://localhost:3000/templates/${id}`);
+	// 		if (response.ok) {
+	// 			templateData = await response.json();
+	// 			// Set the input fields based on the fetched data
+	// 			title = templateData.title;
+	// 			file = templateData.file;
+	// 			status = templateData.status;
+	// 		} else {
+	// 			console.error('Failed to fetch data for editing:', response.statusText);
+	// 			Swal.fire({
+	// 				icon: 'error',
+	// 				title: 'Gagal mengambil data untuk pengeditan',
+	// 				text: 'Terjadi kesalahan saat mengambil data.'
+	// 			});
+	// 		}
+	// 	} catch (error) {
+	// 		console.error('Error fetching data for editing:', error);
+	// 		Swal.fire({
+	// 			icon: 'error',
+	// 			title: 'Gagal mengambil data untuk pengeditan',
+	// 			text: 'Terjadi kesalahan saat mengambil data.'
+	// 		});
+	// 	}
+	// };
 
-	onMount(fetchData); // Fetch data when the component is mounted
+	// onMount(fetchData); // Fetch data when the component is mounted
 
 	// Function to update user data and show success message
 	const saveData = async () => {

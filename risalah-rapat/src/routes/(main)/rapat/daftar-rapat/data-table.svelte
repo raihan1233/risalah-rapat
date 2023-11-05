@@ -11,103 +11,31 @@
 	import { Badge } from "$lib/components/ui/badge";
 
 	import { goto } from '$app/navigation';
+	import { BASE_URL, fetchWithToken, getUserId } from '../../../../utils/network-data';
+	import { onMount } from 'svelte';
+	import moment from 'moment/moment'
 
 	const directToDetailRapat = () => {
 		goto(`/rapat/detail-rapat/`);
 	}
 
-	const data = [
-	{
-		no: 1,
-		periode_waktu: '2023-09-08 09:00 AM to 2023-09-08 10:30 AM',
-		notulen: 'John Doe',
-		perihal: 'Project Review',
-		tempat: 'Conference Room A',
-		tipe: 'Meeting',
-		status: 'Approve',
-		waktu: '2023-09-10 09:00 AM'
-	},
-	{
-		no: 2,
-		periode_waktu: '2023-09-09 02:00 PM to 2023-09-09 03:30 PM',
-		notulen: 'Jane Smith',
-		perihal: 'Budget Presentation',
-		tempat: 'Boardroom',
-		tipe: 'Presentation',
-		status: 'Approve',
-		waktu: '2023-09-12 09:00 AM'
-	},
-	{
-		no: 3,
-		periode_waktu: '2023-09-10 10:30 AM to 2023-09-10 12:00 PM',
-		notulen: 'Mike Johnson',
-		perihal: 'Team Building',
-		tempat: 'Outdoor Park',
-		tipe: 'Event',
-		status: 'Terkirim',
-		waktu: '2023-09-10 17:00 PM'
-	},
-	{
-		no: 4,
-		periode_waktu: '2023-09-11 03:00 PM to 2023-09-11 04:30 PM',
-		notulen: 'Emily Davis',
-		perihal: 'Training Session',
-		tempat: 'Training Room B',
-		tipe: 'Training',
-		status: 'Belum Approve',
-		waktu: '2023-09-10 09:00 AM'
-	},
-	{
-		no: 5,
-		periode_waktu: '2023-09-12 11:00 AM to 2023-09-12 12:30 PM',
-		notulen: 'David Wilson',
-		perihal: 'Project Kickoff',
-		tempat: 'Conference Room C',
-		tipe: 'Meeting',
-		status: 'Belum Approve',
-		waktu: '2023-09-10 09:00 AM'
-	},
-	{
-		no: 6,
-		periode_waktu: '2023-09-12 09:30 AM to 2023-09-12 11:00 AM',
-		notulen: 'Sarah Brown',
-		perihal: 'Product Demo',
-		tempat: 'Demo Area',
-		tipe: 'Presentation',
-		status: 'Approve',
-		waktu: '2023-09-15 09:00 AM'
-	},
-	{
-		no: 7,
-		periode_waktu: '2023-09-14 11:00 AM to 2023-09-14 11:30 PM',
-		notulen: 'Michael Lee',
-		perihal: 'Quarterly Review',
-		tempat: 'Boardroom',
-		tipe: 'Meeting',
-		status: 'Terkirim',
-		waktu: '2023-09-10 09:00 AM'
-	},
-	{
-		no: 8,
-		periode_waktu: '2023-09-15 02:30 AM to 2023-09-12 04:00 PM',
-		notulen: 'Laura Miller',
-		perihal: 'Training Workshop',
-		tempat: 'Training Room A',
-		tipe: 'Training',
-		status: 'Belum Approve',
-		waktu: '2023-09-10 09:00 AM'
-	},
-	{
-		no: 9,
-		periode_waktu: '2023-09-16 01:00 AM to 2023-09-16 02:30 PM',
-		notulen: 'Chris Anderson',
-		perihal: 'Marketing Strategy',
-		tempat: 'Conference Room D',
-		tipe: 'Meeting',
-		status: 'Belum Approve',
-		waktu: '2023-09-10 09:00 AM'
-	}
-];
+	let user = getUserId();
+	let data = []
+	const fetchData = async () => {
+		try {
+			const response = await fetchWithToken(`${process.env.BASE_URL_PRESTD}/_QUERIES/risalah/get_all_meetings?id_user=${user}&_page=1&_page_size=50`); 
+			if (response.ok) {
+				data = await response.json();
+				console.log(data);
+			} else {
+				console.error('Failed to fetch data from the API');
+			}
+		} catch (error) {
+			console.error('Error fetching data:', error);
+		}getUserId
+	};
+
+	onMount(fetchData);
 
 	  function getBadgeColor(status) {
     switch (status) {
@@ -153,6 +81,7 @@
 				<TableHeadCell class="!p-4">Periode Waktu</TableHeadCell>
 				<TableHeadCell class="!p-4">Notulen</TableHeadCell>
 				<TableHeadCell class="!p-4">Perihal</TableHeadCell>
+				<TableHeadCell class="!p-4">Agenda</TableHeadCell>
 				<TableHeadCell class="!p-4">Tempat</TableHeadCell>
 				<TableHeadCell class="!p-4">Tipe</TableHeadCell>
 				<TableHeadCell class="!p-4">Status</TableHeadCell>
@@ -160,16 +89,20 @@
 			<!-- </tr> -->
 		</TableHead>
 		<TableBody>
-			{#each filteredItems as row, index (index)}
+			{#each filteredItems as row, index (row.id_risalah_header)}
 				<TableBodyRow>
 					<TableBodyCell class="!p-4">{index + 1}</TableBodyCell>
 					<TableBodyCell class="!p-4">
-						{row.periode_waktu}
+						{#each JSON.parse(row.periode) as periode, index}
+								{moment(periode, 'YYYY-MM-DD HH:mm:ss').format('MMMM Do YYYY HH:mm a')}
+								{#if index === 0} &mdash;&nbsp; {/if}
+						{/each}
 					</TableBodyCell>
 					<TableBodyCell class="!p-4">{row.notulen}</TableBodyCell>
 					<TableBodyCell class="!p-4">
 						{row.perihal}
 					</TableBodyCell>
+					<TableBodyCell class="!p-4">{JSON.parse(row.agenda.replace(/{{(.+)}}/, '[$1]')).join(", ")}</TableBodyCell>
 					<TableBodyCell class="!p-4">{row.tempat}</TableBodyCell>
 					<TableBodyCell class="!p-4">{row.tipe}</TableBodyCell>
 					<TableBodyCell class="!p-4">
@@ -184,7 +117,7 @@
 					<TableBodyCell class="!p-4">
 							<Button
 									class="bg-emerald-500 hover:bg-emerald-700"
-									on:click={goto(`/rapat/detail-rapat/${index + 1}`)}>Detail</Button
+									on:click={goto(`/rapat/detail-rapat/${row.id_risalah_header}`)}>Detail</Button
 								>
 					</TableBodyCell>
 				</TableBodyRow>
