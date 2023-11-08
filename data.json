@@ -13,27 +13,27 @@
     {
       "name": "Alice",
       "role": "approver",
-      "tanda_tangan": "https://m.media-amazon.com/images/M/MV5BODcwNWE3OTMtMDc3MS00NDFjLWE1OTAtNDU3NjgxODMxY2UyXkEyXkFqcGdeQXVyNTAyODkwOQ@@._V1_.jpg"
+      "tanda_tangan": "https://upload.wikimedia.org/wikipedia/commons/4/49/Jujutsu_Kaisen_logo.png"
     },
     {
       "name": "Bob",
       "role": "approver",
-      "tanda_tangan": "https://upload.wikimedia.org/wikipedia/id/9/90/One_Piece%2C_Volume_61_Cover_%28Japanese%29.jpg"
+      "tanda_tangan": "https://cloud.pelni.co.id/apps/files_sharing/publicpreview/bDETYcBsZCHGBbf?file=/Logogram.png&fileId=4740685&x=1366&y=768&a=true"
     },
     {
       "name": "Eve",
       "role": "approver",
-      "tanda_tangan": "https://media.suara.com/pictures/970x544/2022/09/10/23078-link-nonton-one-piece-bilibili.jpg"
+      "tanda_tangan": "https://cloud.pelni.co.id/apps/files_sharing/publicpreview/bDETYcBsZCHGBbf?file=/Pelni%20Logo%20Baru%20Tagline%20Fullcolor.png&fileId=4740672&x=1366&y=768&a=true"
     },
     {
       "name": "Charlie",
       "role": "approver",
-      "tanda_tangan": "./logo-op.png"
+      "tanda_tangan": "https://cloud.pelni.co.id/apps/files_sharing/publicpreview/bDETYcBsZCHGBbf?file=/Pelni%20Logo%20Baru%20tanpa%20Tagline%20Fullcolor.png&fileId=4740671&x=1366&y=768&a=true"
     },
     {
       "name": "David",
       "role": "approver",
-      "tanda_tangan": "./LOGO_IBIK.png"
+      "tanda_tangan": "./logo.png"
     },
    
     {
