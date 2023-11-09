@@ -5,8 +5,7 @@ const path = require('path');
 const https = require('https');
 const Stream = require('stream').Transform;
 const ImageModule = require('docxtemplater-image-module-free');
-const puppeteer = require('puppeteer');
-const mammoth = require('mammoth');
+const { exec } = require('child_process'); // Import child_process module
 
 // Baca template DOCX
 const templateFilePath = path.resolve(__dirname, './format_satu.docx'); // Update with your template file
@@ -87,8 +86,8 @@ Promise.all(imagePromises)
     const buf = doc.getZip().generate({ type: 'nodebuffer' });
     fs.writeFileSync(outputPathDocx, buf);
 
-    // Convert the DOCX content to HTML using mammoth
-    convertToHtml(outputPathDocx, outputPathDocx);
+    // Convert the DOCX to PDF using Pandoc with the --pdf-engine option
+    convertToPdf(outputPathDocx);
   })
   .catch(error => {
     console.error('Error downloading images:', error);
@@ -109,24 +108,15 @@ async function downloadImage(url) {
   });
 }
 
-async function convertToHtml(docxPath, outputPathDocx) {
-  const { value } = await mammoth.convertToHtml({ path: docxPath });
-  const htmlContent = value;
+function convertToPdf(docxPath) {
+  const outputPdfPath = docxPath.replace('.docx', '.pdf');
+  const pandocCommand = `pandoc ${docxPath} -o ${outputPdfPath} --pdf-engine=xelatex`;
 
-  // Convert HTML to PDF using Puppeteer
-  convertToPdf(htmlContent, outputPathDocx);
-}
-
-async function convertToPdf(htmlContent, outputPathDocx) {
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
-  const pdfPath = outputPathDocx.replace('.docx', '.pdf');
-
-  // Set the HTML content and print to PDF
-  await page.setContent(htmlContent);
-  await page.pdf({ path: pdfPath, format: 'A4' });
-
-  await browser.close();
-
-  console.log('PDF file converted and saved as', pdfPath);
+  exec(pandocCommand, (error, stdout, stderr) => {
+    if (error) {
+      console.error('Error converting DOCX to PDF:', error);
+    } else {
+      console.log('PDF file converted and saved as', outputPdfPath);
+    }
+  });
 }
