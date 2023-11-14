@@ -21,6 +21,7 @@
 		TableHeadCell,
 		TableSearch
 	} from 'flowbite-svelte';
+	import Select from 'svelte-select';
 	// import Tabs from './tabs.svelte';
 	import { onMount } from 'svelte';
 	import flatpickr from 'flatpickr';
@@ -450,6 +451,14 @@
 			inputRelasiData.file = file;
 		}
 	};
+
+	// select2 tempat
+	let tempatItems = ['lambelu', 'going merry', 'thousand sunny', 'lala land', 'pulau elbaf'];
+	let tempatValue = null;
+
+	// select2 template
+	let templateItems = ['template-one', 'template-two', 'template-three'];
+	let templateValue = null;
 </script>
 
 <div class="py-10 space-y-8">
@@ -500,7 +509,7 @@
 									>Pilih Tempat</label
 								>
 								<div class="mt-2">
-									<select
+									<!-- <select
 										id="pilih-tempat"
 										name="pilih-tempat"
 										bind:value={saveData.tempat}
@@ -511,7 +520,12 @@
 										{#each tempatOptions as option (option.tempat)}
 											<option value={option.tempat}>{option.tempat}</option>
 										{/each}
-									</select>
+									</select> -->
+									<Select
+										class="block w-full rounded-md px-3 py-3 border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+										items={tempatItems}
+										bind:tempatValue
+									/>
 								</div>
 							</div>
 
@@ -521,7 +535,7 @@
 									class="block text-sm font-medium leading-6 text-gray-900">Pilih Template</label
 								>
 								<div class="mt-2">
-									<select
+									<!-- <select
 										id="pilih-template"
 										name="pilih-template"
 										class="block w-full rounded-md px-3 py-3 border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -533,7 +547,12 @@
 										{#each templateOptions as option (option.title)}
 											<option value={option.title}>{option.title}</option>
 										{/each}
-									</select>
+									</select> -->
+									<Select
+										class="block w-full rounded-md px-3 py-3 border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+										items={templateItems}
+										bind:templateValue
+									/>
 								</div>
 							</div>
 
