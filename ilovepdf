@@ -1,0 +1,22 @@
+const ILovePDFApi = require('@ilovepdf/ilovepdf-nodejs');
+const ILovePDFFile = require('@ilovepdf/ilovepdf-nodejs/ILovePDFFile');
+const instance = new ILovePDFApi('project_public_ffab4c31a829ed324f7c40608d2cdd7d_9wlVra687ae696b44251dc04c66d330ea0430', 'secret_key_42ab03b9c7d1c2fa509337419f8597e3_CVU1j22074d3956e3dc3cb03764a6e1e5a377');
+
+const task = instance.newTask('officepdf');
+
+task.start()
+.then(() => {
+    const file = new ILovePDFFile('./testing.docx');
+
+    return task.addFile(file);
+})
+.then(() => {
+    return task.process();
+})
+.then(() => {
+    return task.download();
+})
+.then((data) => {
+    fs.writeFileSync('./output.pdf', data);
+});
+       
