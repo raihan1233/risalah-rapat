@@ -1,0 +1,134 @@
+const fs = require('fs');
+const Docxtemplater = require('docxtemplater');
+const PizZip = require('pizzip');
+const path = require('path');
+const https = require('https');
+const Stream = require('stream').Transform;
+const ImageModule = require('docxtemplater-image-module-free');
+const ILovePDFApi = require('@ilovepdf/ilovepdf-nodejs');
+const ILovePDFFile = require('@ilovepdf/ilovepdf-nodejs/ILovePDFFile');
+const { exec } = require('child_process');
+
+// Baca template DOCX
+const templateFilePath = path.resolve(__dirname, './format_satu.docx');
+const content = fs.readFileSync(templateFilePath, 'binary');
+
+const doc = new Docxtemplater();
+doc.loadZip(new PizZip(content));
+
+// Baca data JSON
+const data = JSON.parse(fs.readFileSync('data.json', 'utf8'));
+
+// Tentukan kriteria untuk user yang memiliki role "approver"
+const approverUsers = data.approverUsers.filter(user => user.role === 'approver');
+
+// Mengunduh gambar dari URL dan menyimpannya dalam objek yang berisi buffer gambar
+const imagePromises = [];
+for (const user of approverUsers) {
+  if (user.tanda_tangan.startsWith('http')) {
+    imagePromises.push(downloadImage(user.tanda_tangan));
+  } else {
+    imagePromises.push(Promise.resolve(fs.readFileSync(user.tanda_tangan)));
+  }
+}
+
+Promise.all(imagePromises)
+  .then(images => {
+    var opts = {};
+    opts.centered = false;
+    opts.fileType = 'docx';
+
+    opts.getImage = function (tagValue, tagName) {
+      return images.shift();
+    };
+
+    opts.getSize = function (img, tagValue, tagName) {
+      return [150, 150];
+    };
+
+    const imageModule = new ImageModule(opts);
+
+    const agendaList = data.agenda.map(item => ({
+      item: `• ${item}`,
+    }));
+
+    doc.attachModule(imageModule).setData({
+      hari: data.hari,
+      tanggal: data.tanggal,
+      waktu: data.waktu,
+      tempat: data.tempat,
+      agendaList,
+      approverUsers,
+    });
+
+    try {
+      doc.render();
+    } catch (error) {
+      var e = {
+        message: error.message,
+        name: error.name,
+        stack: error.stack,
+        properties: error.properties,
+      };
+      console.log(JSON.stringify({ error: e }));
+      throw error;
+    }
+
+    // Buat nama file DOCX dengan penomoran
+    let outputFileName = 'testing.docx';
+    let index = 1;
+
+    while (fs.existsSync(outputFileName)) {
+      outputFileName = `testing(${index}).docx`;
+      index++;
+    }
+
+    const outputPathDocx = path.resolve(__dirname, outputFileName);
+
+    const buf = doc.getZip().generate({ type: 'nodebuffer' });
+    fs.writeFileSync(outputPathDocx, buf);
+
+    console.log('DOCX file generated and saved as', outputPathDocx);
+
+    // iLovePDF Conversion
+    const ilovepdfInstance = new ILovePDFApi(
+      'project_public_ffab4c31a829ed324f7c40608d2cdd7d_9wlVra687ae696b44251dc04c66d330ea0430',
+      'secret_key_42ab03b9c7d1c2fa509337419f8597e3_CVU1j22074d3956e3dc3cb03764a6e1e5a377'
+    );
+
+    const ilovepdfTask = ilovepdfInstance.newTask('officepdf');
+
+    ilovepdfTask.start()
+      .then(() => {
+        const ilovepdfFile = new ILovePDFFile(outputPathDocx);
+        return ilovepdfTask.addFile(ilovepdfFile);
+      })
+      .then(() => ilovepdfTask.process())
+      .then(() => ilovepdfTask.download())
+      .then((data) => {
+        const outputPdfPath = outputPathDocx.replace('.docx', '.pdf');
+        fs.writeFileSync(outputPdfPath, data);
+        console.log('PDF file converted and saved as', outputPdfPath);
+      })
+      .catch((error) => {
+        console.error('Error converting DOCX to PDF:', error);
+      });
+  })
+  .catch(error => {
+    console.error('Error downloading images:', error);
+  });
+
+async function downloadImage(url) {
+  return new Promise((resolve, reject) => {
+    https.get(url, response => {
+      if (response.statusCode === 200) {
+        const data = new Stream();
+        response.on('data', chunk => data.push(chunk));
+        response.on('end', () => resolve(data.read()));
+        response.on('error', err => reject(err));
+      } else {
+        reject(new Error(`Request to ${url} failed, status code: ${response.statusCode}`));
+      }
+    });
+  });
+}
