@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import * as Tabs from '$lib/components/ui/tabs';
 	import * as Card from '$lib/components/ui/card';
 	import { Button, buttonVariants } from '$lib/components/ui/button';
@@ -35,8 +35,13 @@
 	import { Separator } from '$lib/components/ui/separator';
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
+	import type { PageData } from './$types';
+	import { BASE_URL_EXPRESS } from '../../../../../utils/network-data';
 
-	// export let data;
+	export let data: PageData;
+	$: ({ meetingDetail } = data);
+
+	console.log(data);
 
 	const sendData = () => {
 		Swal.fire({
@@ -93,11 +98,11 @@
 
 		for (const row of filteredTableData) {
 			const rowData = {
-				No_Urut: row.No_Urut,
-				User_Internal: row.User_Internal,
-				User_Eksternal: row.User_Eksternal,
-				Nama_Jabatan: row.Nama_Jabatan,
-				Role: row.Role
+				nomor_urut: row.nomor_urut,
+				user_internal: row.user_internal,
+				user_eksternal: row.user_eksternal,
+				jabatan: row.jabatan,
+				role: row.role
 				// Add other properties from row if needed
 			};
 
@@ -179,30 +184,33 @@
 	const addRow = () => {
 		const nextNo = tableData.length + 1;
 		const newRow = {
-			No_Urut: nextNo,
-			User_Internal: '',
-			User_Eksternal: '',
-			Nama_Jabatan: '',
-			Role: 'New Role'
+			nomor_urut: nextNo,
+			user_internal: '',
+			user_eksternal: '',
+			jabatan: '',
+			role: 'New Role'
 		};
 		tableData = [...tableData, newRow];
 		updateButtonVisibility();
 	};
 
-	const data = [
+	const userData = [
 		{
-			No_Urut: 1,
-			User_Internal: 'Mbak Rere',
-			Nama_Jabatan: 'Sekretaris',
-			Role: 'Checker'
+			nomor_urut: 1,
+			user_internal: 'Mbak Rere',
+			user_eksternal: '',
+			jabatan: 'Sekretaris',
+			role: 'Checker'
 		},
 		{
-			User_Internal: 'Mas Bagus',
-			Nama_Jabatan: 'Manajer TI'
+			user_internal: 'Mas Bagus',
+			user_eksternal: '',
+			jabatan: 'Manajer TI'
 		},
 		{
-			User_Internal: 'Mas Angga',
-			Nama_Jabatan: 'Vice President TI'
+			user_internal: 'Mas Angga',
+			user_eksternal: '',
+			jabatan: 'Vice President TI'
 		}
 	];
 
@@ -211,12 +219,12 @@
 	const firstRow = { No_Urut: 1, ...defaultValues };
 	tableData.push(firstRow);
 
-	const selectUserOptions = data.map((user) => user.User_Internal);
+	const selectUserOptions = userData.map((user) => user.user_internal);
 
 	const moveRowUp = (index) => {
 		if (index > 1) {
 			// Cek apakah baris saat ini memiliki nilai
-			if (tableData[index].User_Internal) {
+			if (tableData[index].user_internal) {
 				// Lakukan pemindahan baris ke atas
 				const currentRow = tableData[index];
 				const previousRow = tableData[index - 1];
@@ -236,7 +244,7 @@
 	const moveRowDown = (index) => {
 		if (index < tableData.length - 1) {
 			// Cek apakah baris saat ini memiliki nilai
-			if (tableData[index].User_Internal) {
+			if (tableData[index].user_internal) {
 				// Lakukan pemindahan baris ke bawah
 				const currentRow = tableData[index];
 				const nextRow = tableData[index + 1];
@@ -256,9 +264,8 @@
 	// user internal change
 	const handleUserInternalChange = (event, rowIndex) => {
 		const selectedValue = event.target.value;
-		const namaJabatan =
-			data.find((user) => user.User_Internal === selectedValue)?.Nama_Jabatan || '';
-		tableData[rowIndex].Nama_Jabatan = namaJabatan;
+		const jabatan = data.find((user) => user.user_internal === selectedValue)?.jabatan || '';
+		tableData[rowIndex].jabatan = jabatan;
 	};
 
 	const getAksiOptions = (index) => {
@@ -303,20 +310,6 @@
 		localRelasiData = relasiData;
 	}
 
-	onMount(async () => {
-		try {
-			const response = await fetch('http://localhost:3000/relation-documents'); // Replace with your API endpoint
-			if (response.ok) {
-				relasiData = await response.json();
-				console.log(relasiData);
-			} else {
-				console.error('Failed to fetch data from the API');
-			}
-		} catch (error) {
-			console.error('Error fetching data:', error);
-		}
-	});
-
 	let searchRelasi = '';
 	$: filteredRelasi = relasiData.filter((item) => {
 		const lowerSearchTerm = searchRelasi.toLowerCase();
@@ -324,23 +317,6 @@
 			(value) => typeof value === 'string' && value.toLowerCase().includes(lowerSearchTerm)
 		);
 	});
-
-	async function deleteDocument(documentId) {
-		try {
-			const response = await fetch(`http://localhost:3000/relation-documents/${documentId}`, {
-				method: 'DELETE'
-			});
-
-			if (response.ok) {
-				// Hapus data dari tampilan setelah berhasil dihapus dari server
-				relasiData = relasiData.filter((item) => item.id !== documentId);
-			} else {
-				console.error('Gagal menghapus dokumen relasi');
-			}
-		} catch (error) {
-			console.error('Error:', error);
-		}
-	}
 
 	// add relasi dokumen
 	let isDialogOpen = false;
@@ -350,55 +326,15 @@
 		name: ''
 	};
 
-	async function fetchRelasiData() {
-		try {
-			const formData = new FormData();
-			formData.append('attachment', inputRelasiData.file);
-			formData.append('attachmentName', inputRelasiData.name);
+	// // Update your saveData function to call fetchData
+	// const saveRelasiData = () => {
+	// 	if (inputRelasiData.file && inputRelasiData.name) {
+	// 		fetchRelasiData();
 
-			const response = await fetch('http://localhost:3000/relation-documents', {
-				method: 'POST',
-				body: formData
-			});
-
-			if (response.ok) {
-				const newData = await response.json(); // Assuming the API responds with the newly added user data
-				// log(newData);
-				Swal.fire({
-					icon: 'success',
-					title: 'Data berhasil ditambahkan',
-					showConfirmButton: false,
-					timer: 1500
-				}).then(() => {
-					// Close the dialog by setting isDialogOpen to false
-					isDialogOpen = false;
-				});
-
-				// dispatch('dataSaved', newData);
-			} else {
-				Swal.fire({
-					icon: 'error',
-					title: 'Terjadi kesalahan saat menambahkan data'
-				});
-			}
-		} catch (error) {
-			console.error('Error:', error);
-			Swal.fire({
-				icon: 'error',
-				title: 'Terjadi kesalahan saat menambahkan data'
-			});
-		}
-	}
-
-	// Update your saveData function to call fetchData
-	const saveRelasiData = () => {
-		if (inputRelasiData.file && inputRelasiData.name) {
-			fetchRelasiData();
-
-			// console.log(inputRelasiData.file);
-			// console.log(inputRelasiData.name);
-		}
-	};
+	// 		// console.log(inputRelasiData.file);
+	// 		// console.log(inputRelasiData.name);
+	// 	}
+	// };
 
 	const handleFileInputChange = (event) => {
 		const file = event.target.files[0];
@@ -410,28 +346,28 @@
 	// catatan revisi
 	const revisiData = [
 		{
-			nama_lengkap: 'John Doe',
+			nama: 'John Doe',
 			jabatan: 'Manager',
 			konten: 'Revisi agenda untuk team building',
-			waktu: '2023-09-10 09:00 AM'
+			waktu_revisi: '2023-09-10 09:00 AM'
 		},
 		{
-			nama_lengkap: 'Alice Smith',
+			nama: 'Alice Smith',
 			jabatan: 'Manager',
 			konten: 'Revisi diskusi strategi marketing',
-			waktu: '2023-09-07 14:30 PM'
+			waktu_revisi: '2023-09-07 14:30 PM'
 		},
 		{
-			nama_lengkap: 'Bob Johnson',
+			nama: 'Bob Johnson',
 			jabatan: 'Manager',
 			konten: 'Revisi laporan finansial',
-			waktu: '2023-09-03 10:30 AM'
+			waktu_revisi: '2023-09-03 10:30 AM'
 		},
 		{
-			nama_lengkap: 'Sarah Brown',
+			nama: 'Sarah Brown',
 			jabatan: 'Manager',
 			konten: 'Revisi agenda untuk peluncuran produk',
-			waktu: '2023-09-01 11:45 AM'
+			waktu_revisi: '2023-09-01 11:45 AM'
 		}
 	];
 
@@ -442,6 +378,10 @@
 			(value) => typeof value === 'string' && value.toLowerCase().includes(lowerSearchTerm)
 		);
 	});
+
+	// const trackers = meetingDetail[0].risalah.trackers;
+	// const relation_documents = meetingDetail[0].risalah.relation_documents;
+	// const revision_notes = meetingDetail[0].risalah.revision_notes;
 </script>
 
 <div class="py-10 space-y-8">
@@ -461,7 +401,7 @@
 								>
 								<div class="mt-2">
 									<input
-										bind:value={saveData.perihal}
+										value={meetingDetail[0].risalah.header.perihal}
 										placeholder="Perihal pemindahan jadwal rapat"
 										type="text"
 										name="perihal"
@@ -479,7 +419,7 @@
 									<input
 										id="periode-rapat"
 										placeholder="Masukkan periode waktu"
-										bind:value={saveData.periode}
+										value={meetingDetail[0].risalah.header.periode}
 										type="date"
 										name="periode-rapat"
 										class="block w-full rounded-md px-3 py-3 border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -495,7 +435,6 @@
 									<select
 										id="pilih-tempat"
 										name="pilih-tempat"
-										bind:value={saveData.tempat}
 										on:change={handleTempatChange}
 										class="block w-full rounded-md px-3 py-3 border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 									>
@@ -631,14 +570,14 @@
 											<TableHeadCell class="!p-4">Aksi</TableHeadCell>
 											<!-- </tr> -->
 										</TableHead>
-										<TableBody class="divide-y">
-											{#each filteredTableData as row, index (row.No_Urut)}
+										<TableBody>
+											{#each filteredTableData as row, index (row.nomor_urut)}
 												<TableBodyRow>
-													<TableBodyCell class="!p-4">{row.No_Urut}</TableBodyCell>
+													<TableBodyCell class="!p-4">{row.nomor_urut}</TableBodyCell>
 													<TableBodyCell class="!p-4">
 														<select
 															class="p-1.5 text-gray-900 border-0 rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6 m-1.5"
-															bind:value={row.User_Internal}
+															bind:value={row.user_internal}
 															on:change={() => handleUserInternalChange(event, index)}
 														>
 															{#each selectUserOptions as option}
@@ -649,7 +588,7 @@
 													<TableBodyCell class="!p-4">
 														<input
 															type="text"
-															bind:value={row.User_Eksternal}
+															bind:value={row.user_eksternal}
 															class="p-1.5 text-gray-900 border-0 rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6 m-1.5"
 														/>
 													</TableBodyCell>
@@ -657,13 +596,13 @@
 														<input
 															type="text"
 															class="p-1.5 text-gray-900 border-0 rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6 m-1.5"
-															bind:value={row.Nama_Jabatan}
+															bind:value={row.jabatan}
 														/>
 													</TableBodyCell>
 													<TableBodyCell class="!p-4">
 														<select
 															class="p-1.5 text-gray-900 border-0 rounded-md py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6 px-3 m-1"
-															bind:value={row.Role}
+															bind:value={row.role}
 														>
 															{#each selectRoleOptions as option}
 																<option value={option}>{option}</option>
@@ -758,9 +697,7 @@
 												</div>
 											</div>
 											<Dialog.Footer>
-												<Button type="submit" class="w-full" on:click={saveRelasiData}
-													>Simpan</Button
-												>
+												<Button type="submit" class="w-full">Simpan</Button>
 											</Dialog.Footer>
 										</Dialog.Content>
 									</Dialog.Root>
@@ -783,7 +720,7 @@
 											<TableHeadCell class="!p-4">Aksi</TableHeadCell>
 											<!-- </tr> -->
 										</TableHead>
-										<TableBody class="divide-y">
+										<TableBody>
 											{#each filteredRelasi as row, index}
 												<TableBodyRow>
 													<TableBodyCell class="!p-4">{row.name}</TableBodyCell>
@@ -791,7 +728,6 @@
 														<Button
 															class="bg-red-500 hover:bg-red-700 text-white"
 															variant="default"
-															on:click={() => deleteDocument(row.id)}
 														>
 															<Trash2 class="w-4 h-4 mr-2" />
 															Delete
@@ -819,38 +755,44 @@
 							<Card.Header>
 								<Card.Title>Catatan Revisi</Card.Title>
 							</Card.Header>
-							<Card.Content class='space-y-2'>
+							<Card.Content class="space-y-2">
 								<div class="space-y-4">
 									<!-- <Button class="bg-sky-500 hover:bg-sky-700 text-white" variant="default">
 										<PlusCircle class="w-5 h-5 mr-2" />
 										Tambah
 									</Button> -->
 									<div class="sm:flex sm:justify-end">
-										<TableSearch placeholder="Cari di sini" hoverable={true} bind:inputValue={searchTerm} classInput="mb-4 px-8 py-2 rounded-md border border-gray-300 w-full sm:max-w-xs" classSvgDiv="p-2" divClass="shadow-none relative"></TableSearch>
+										<TableSearch
+											placeholder="Cari di sini"
+											hoverable={true}
+											bind:inputValue={searchTerm}
+											classInput="mb-4 px-8 py-2 rounded-md border border-gray-300 w-full sm:max-w-xs"
+											classSvgDiv="p-2"
+											divClass="shadow-none relative"
+										/>
 									</div>
-								
+
 									<Table shadow>
 										<TableHead class="text-sm">
 											<!-- <tr> -->
-												<TableHeadCell class="!p-4">Nama Lengkap</TableHeadCell>
-												<TableHeadCell class="!p-4">Jabatan</TableHeadCell>
-												<TableHeadCell class="!p-4">Konten</TableHeadCell>
-												<TableHeadCell class="!p-4">Waktu</TableHeadCell>
+											<TableHeadCell class="!p-4">Nama Lengkap</TableHeadCell>
+											<TableHeadCell class="!p-4">Jabatan</TableHeadCell>
+											<TableHeadCell class="!p-4">Konten</TableHeadCell>
+											<TableHeadCell class="!p-4">Waktu</TableHeadCell>
 											<!-- </tr> -->
 										</TableHead>
-										<TableBody class="divide-y">
+										<TableBody>
 											{#each filteredItems as row, index}
 												<TableBodyRow>
-													<TableBodyCell class="!p-4">{row.nama_lengkap}</TableBodyCell>
+													<TableBodyCell class="!p-4">{row.nama}</TableBodyCell>
 													<TableBodyCell class="!p-4">{row.jabatan}</TableBodyCell>
 													<TableBodyCell class="!p-4">{row.konten}</TableBodyCell>
-													<TableBodyCell class="!p-4">{row.waktu}</TableBodyCell>
+													<TableBodyCell class="!p-4">{row.waktu_revisi}</TableBodyCell>
 												</TableBodyRow>
 											{/each}
 										</TableBody>
 									</Table>
 								</div>
-								
 							</Card.Content>
 						</Card.Root>
 					</Tabs.Content>

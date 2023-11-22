@@ -40,7 +40,16 @@
 
 				if (response.ok) {
 					const responseData = await response.text();
-					// templatesData = [...templatesData, newData];
+					console.log(responseData);
+					// const res = Object.fromEntries(formData);
+					// console.log(res);
+
+					// const templateData = {};
+					// 	formData.forEach((value, key) => {
+					// 		templateData[key] = value;
+					// 	});
+					// dispatch('dataSaved', templateData);
+
 					dispatch('dataSaved', formData);
 
 					Swal.fire({

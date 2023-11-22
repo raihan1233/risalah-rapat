@@ -10,7 +10,6 @@
 	import { createEventDispatcher } from 'svelte';
 	import { BASE_URL_PRESTD, getUserId, fetchWithToken } from '../../../../utils/network-data';
 
-	// export let data;
 	let user = getUserId();
 
 	let inputData = {
@@ -23,6 +22,36 @@
 		status: ''
 	};
 
+		const popupSuccess = () => {
+		Swal.fire({
+			icon: 'success',
+			title: 'Data berhasil ditambahkan',
+			showConfirmButton: false,
+			timer: 1500
+		}).then(() => {
+          // Close the dialog by setting isDialogOpen to false
+          isDialogOpen = false;
+		});
+	};
+
+	const popupError = () => {
+		Swal.fire({
+			icon: 'error',
+			title: 'Gagal menambahkan data',
+			text: 'Ada masalah saat menambahkan data ke server'
+		});
+		return;
+	};
+
+	const handleSubmit = () => {
+		if (!inputData.password || !inputData.confirmPassword) {
+			popupError();
+		}
+		if (inputData.password === inputData.confirmPassword) {
+			popupSuccess();
+		}
+	};
+
 	const saveData = async () => {
 		const newData = {
 			name: inputData.name,
@@ -31,32 +60,24 @@
 			confirmPassword: inputData.confirmPassword,
 			jabatan: inputData.jabatan,
 			role: inputData.role,
-			status: inputData.status // Example value, replace with actual input data
+			tipe: inputData.tipe,
+			status: inputData.status
 		};
 
-		// Emit an event with the new data
 		try {
-			const response = await fetchWithToken(`${BASE_URL_PRESTD}/_QUERIES/users/add_user?name=${inputData.name}&username=${inputData.username}&password=${inputData.password}&jabatan=${inputData.jabatan}&role=${inputData.role}&status=${inputData.status}&created_by=${user}&modified_by=${user}`, {
+			const response = await fetchWithToken(`${BASE_URL_PRESTD}/_QUERIES/users/add_user?name=${inputData.name}&username=${inputData.username}&password=${inputData.password}&jabatan=${inputData.jabatan}&role=${inputData.role}&tipe=${inputData.tipe}&status=${inputData.status}&created_by=${user}&modified_by=${user}`, {
 				method: 'POST',
-				body: JSON.stringify(newData)
+				// body: JSON.stringify(newData)
 			});
-			console.log('New Data:', newData);
+			// console.log('New Data:', newData);
 
 			if (response.ok) {
 				const responseData = await response.text();
 				console.log(responseData);
-				// Emit an event with the new data (if needed)
-				dispatch('dataSaved', JSON.stringify(newData));
 
-				Swal.fire({
-					icon: 'success',
-					title: 'Data berhasil ditambahkan',
-					showConfirmButton: false,
-					timer: 1500
-				}).then(() => {
-          // Close the dialog by setting isDialogOpen to false
-          isDialogOpen = false;
-        });
+				// dispatch('dataSaved', JSON.stringify(newData));
+
+				handleSubmit();
 			} else {
 				Swal.fire({
 					icon: 'error',
@@ -145,7 +166,7 @@
 						id="konfirmasi-password"
 						placeholder="Masukkan ulang password"
 						type={showConfirmPassword ? 'text' : 'password'}
-						bind:value={inputData.confirm_password}
+						bind:value={inputData.confirmPassword}
 					/>
 					<div
 						class="absolute inset-y-0 right-0 flex items-center p-3 focus:outline-none"
@@ -171,6 +192,19 @@
 					<div class="flex items-center space-x-2">
 						<RadioGroup.Item value="admin" id="admin" />
 						<Label for="admin">Admin</Label>
+					</div>
+				</RadioGroup.Root>
+			</div>
+			<div class="space-y-4">
+				<Label>Tipe</Label>
+				<RadioGroup.Root class="flex space-x-4" bind:value={inputData.tipe}>
+					<div class="flex items-center space-x-2">
+						<RadioGroup.Item value="internal" id="internal" />
+						<Label for="internal">Internal</Label>
+					</div>
+					<div class="flex items-center space-x-2">
+						<RadioGroup.Item value="eksternal" id="eksternal" />
+						<Label for="eksternal">Eksternal</Label>
 					</div>
 				</RadioGroup.Root>
 			</div>

@@ -7,12 +7,9 @@
 	import * as RadioGroup from '$lib/components/ui/radio-group';
 	import { createEventDispatcher } from 'svelte';
 	import Swal from 'sweetalert2';
-	import { BASE_URL_PRESTD, fetchWithToken, getUserId } from '../../../../utils/network-data';
-
-
+	import { BASE_URL_PRESTD, BASE_URL_EXPRESS, fetchWithToken, getUserId } from '../../../../utils/network-data';
 
 	let user = getUserId();
-	export let data;
 
 	const saveData = async () => {
 		const newData = {
@@ -31,7 +28,7 @@
 			console.log('New Data:', newData);
 
 			if (response.ok) {
-				const responseData = await response.text();
+				const responseData = await response.json();
 				console.log(responseData);
 				// Emit an event with the new data (if needed)
 				dispatch('dataSaved', JSON.stringify(newData));
@@ -76,6 +73,7 @@
 	<div class="px-4">
 		<Dialog.Trigger class={buttonVariants({ variant: 'outline' })}>Tambah</Dialog.Trigger>
 	</div>
+	<form action="?/createPlace" method="POST">
 	<Dialog.Content class="sm:max-w-[425px]">
 		<Dialog.Header>
 			<Dialog.Title>Tambah Tempat</Dialog.Title>
@@ -83,25 +81,26 @@
 		<Separator />
 		<div class="py-4 space-y-4">
 			<div class="space-y-4">
-				<Label for="tempat">Tempat</Label>
-				<Input id="tempat" placeholder="Masukkan tempat" bind:value={inputData.nama} />
+				<Label for="nama">Tempat</Label>
+				<Input id="nama" placeholder="Masukkan tempat" />
 			</div>
 			<div class="space-y-4">
 				<Label>Status</Label>
-				<RadioGroup.Root class="flex space-x-3.5" bind:value={inputData.status}>
+				<RadioGroup.Root class="flex space-x-3.5">
 					<div class="flex items-center space-x-2">
-						<RadioGroup.Item value="Aktif" id="aktif" />
+						<RadioGroup.Item value="Aktif" id="aktif" name="status"/>
 						<Label for="aktif">Aktif</Label>
 					</div>
 					<div class="flex items-center space-x-2">
-						<RadioGroup.Item value="Tidak aktif" id="tidak-aktif" />
+						<RadioGroup.Item value="Tidak aktif" id="tidak-aktif" name="status" />
 						<Label for="tidak-aktif">Tidak Aktif</Label>
 					</div>
 				</RadioGroup.Root>
 			</div>
 		</div>
 		<Dialog.Footer>
-			<Button type="submit" class="w-full" on:click={saveData}>Simpan</Button>
+			<Button type="submit" class="w-full">Simpan</Button>
 		</Dialog.Footer>
 	</Dialog.Content>
+	</form>
 </Dialog.Root>

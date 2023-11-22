@@ -44,6 +44,7 @@
 		"sweetalert2": "^11.7.27",
 		"tailwind-merge": "^1.14.0",
 		"tailwind-variants": "^0.1.14",
-		"uuid": "^9.0.1"
+		"uuid": "^9.0.1",
+		"zod": "^3.22.4"
 	}
 }

@@ -7,64 +7,56 @@
 	import * as RadioGroup from '$lib/components/ui/radio-group';
 	import Swal from 'sweetalert2';
 	import { Pencil } from 'lucide-svelte';
-	import { createEventDispatcher, onMount } from 'svelte';
-	import { v4 as uuidv4 } from 'uuid';
-	const dispatch = createEventDispatcher();
+	import { createEventDispatcher } from 'svelte';
+	import { BASE_URL_EXPRESS, getUserId } from '../../../../utils/network-data';
 
-	export let id;
+	let user = getUserId();
+	let dispatch = createEventDispatcher();
 
-	let title = '';
-	let file = '';
-	let status = '';
+	export let id_template;
+	export let templateData;
+
+	let title = templateData.nama_template;
+	let file = templateData.file;
+	let selectedFile = null;
+
+	// let file = null;
+	// console.log(file);
+	let status = templateData.status;
 
 	// Add a variable to store the fetched place data
-	let templateData = null;
+	// let templateData = null;
 
 	let isDialogOpen = false;
 
-	// const fetchData = async () => {
-	// 	try {
-	// 		const response = await fetch(`http://localhost:3000/templates/${id}`);
-	// 		if (response.ok) {
-	// 			templateData = await response.json();
-	// 			// Set the input fields based on the fetched data
-	// 			title = templateData.title;
-	// 			file = templateData.file;
-	// 			status = templateData.status;
-	// 		} else {
-	// 			console.error('Failed to fetch data for editing:', response.statusText);
-	// 			Swal.fire({
-	// 				icon: 'error',
-	// 				title: 'Gagal mengambil data untuk pengeditan',
-	// 				text: 'Terjadi kesalahan saat mengambil data.'
-	// 			});
-	// 		}
-	// 	} catch (error) {
-	// 		console.error('Error fetching data for editing:', error);
-	// 		Swal.fire({
-	// 			icon: 'error',
-	// 			title: 'Gagal mengambil data untuk pengeditan',
-	// 			text: 'Terjadi kesalahan saat mengambil data.'
-	// 		});
-	// 	}
-	// };
-
-	// onMount(fetchData); // Fetch data when the component is mounted
-
-	// Function to update user data and show success message
 	const saveData = async () => {
 		try {
-			const formData = new FormData();
-			formData.append('title', title);
-			formData.append('file', file);
-			formData.append('status', status);
+		// 	const newData = {
+		// 	id_template: id_template,
+		// 	nama: nama, 
+		// 	status: status, 
+  	// 	modified_by: parseInt(user, 10)
+		// };
 
-			const response = await fetch(`http://localhost:3000/templates/${id}`, {
-				method: 'PUT',
+			const formData = new FormData();
+			formData.append('id_template', id_template)
+			formData.append('attachmentTitle', title);
+			formData.append('attachment', selectedFile);
+			formData.append('status', status);
+			formData.append('modified_by', parseInt(user, 10));
+
+			const response = await fetch(`${BASE_URL_EXPRESS}/_QUERIES/templates/patch_template/${id_template}`, {
+				method: 'PATCH',
 				body: formData
 			});
 
 			if (response.ok) {
+				const responseData = await response.text();
+				console.log(responseData);
+
+				dispatch('dataUpdated', formData);
+				console.log(formData);
+
 				Swal.fire({
 					icon: 'success',
 					title: 'Data berhasil disimpan',
@@ -82,14 +74,31 @@
 				});
 			}
 		} catch (error) {
-			console.error('Error updating user data:', error);
+			console.error('Error updating template data:', error);
 		}
 	};
 
+	// const handleFileInputChange = (event) => {
+	// 	const file = event.target.files[0];
+	// 	console.log(file);
+	// 	if (file) {
+	// 		templateData.file = file;
+	// 		console.log(file);
+	// 	}
+	// };
+
+	$: if (file) {
+		// const file = event.target.files[0];
+		// templateData.file = file;
+		console.log(file);
+	}
+
 	const handleFileInputChange = (event) => {
-		const file = event.target.files[0];
-		if (file) {
-			templateData.file = file;
+		const newFile = event.target.files[0];
+		console.log(newFile);
+		if (newFile) {
+			selectedFile = newFile;
+			console.log(selectedFile);
 		}
 	};
 </script>
@@ -117,6 +126,7 @@
 					type="file"
 					class="cursor-pointer"
 					name="attachment"
+					bind:file
 					on:change={handleFileInputChange}
 				/>
 			</div>
