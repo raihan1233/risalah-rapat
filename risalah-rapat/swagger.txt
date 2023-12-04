@@ -69,54 +69,6 @@ paths:
         '404':
           description: User not found
 
-    # put: # PUT method for updating user data
-    #   tags:
-    #     - Modul Login
-    #   summary: Update user information
-    #   description: Update user information by username
-    #   operationId: updateUser
-    #   parameters:
-    #     - name: username
-    #       in: query
-    #       required: true
-    #       description: Username of the user to update
-    #       schema:
-    #         type: string
-    #   requestBody:
-    #     content:
-    #       application/json:
-    #         schema:
-    #           $ref: '#/components/schemas/User'
-    #     required: true
-    #   responses:
-    #     '200':
-    #       description: User information updated successfully
-    #       content:
-    #         application/json:
-    #           schema:
-    #             $ref: '#/components/schemas/User'
-    #     '404':
-    #       description: User not found
-
-    # delete: # DELETE method for deleting a user
-    #   tags:
-    #     - Modul Login
-    #   summary: Delete user
-    #   description: Delete user by username
-    #   operationId: deleteUser
-    #   parameters:
-    #     - name: username
-    #       in: query
-    #       required: true
-    #       description: Username of the user to delete
-    #       schema:
-    #         type: string
-    #   responses:
-    #     '204':
-    #       description: User deleted successfully
-    #     '404':
-    #       description: User not found
-
   /form-risalah:
     post:
       tags:
@@ -145,71 +97,6 @@ paths:
                 $ref: '#/components/schemas/FormRisalah'
         '405':
           description: Invalid input
-
-    # get: # GET method for retrieving form risalah data
-    #   tags:
-    #     - Modul Buat Risalah
-    #   summary: Get form risalah information
-    #   description: Retrieve form risalah information
-    #   operationId: getFormRisalah
-    #   responses:
-    #     '200':
-    #       description: Form risalah information retrieved successfully
-    #       content:
-    #         application/json:
-    #           schema:
-    #             $ref: '#/components/schemas/FormRisalah'
-    #     '404':
-    #       description: Form risalah not found
-
-    # put: # PUT method for updating form risalah data
-    #   tags:
-    #     - Modul Buat Risalah
-    #   summary: Update form risalah
-    #   description: Update form risalah by ID
-    #   operationId: updateFormRisalah
-    #   parameters:
-    #     - name: id
-    #       in: query
-    #       required: true
-    #       description: ID of the form risalah to update
-    #       schema:
-    #         type: integer
-    #   requestBody:
-    #     content:
-    #       application/json:
-    #         schema:
-    #           $ref: '#/components/schemas/FormRisalah'
-    #     required: true
-    #   responses:
-    #     '200':
-    #       description: Form risalah updated successfully
-    #       content:
-    #         application/json:
-    #           schema:
-    #             $ref: '#/components/schemas/FormRisalah'
-    #     '404':
-    #       description: Form risalah not found
-
-    # delete: # DELETE method for deleting a form risalah
-    #   tags:
-    #     - Modul Buat Risalah
-    #   summary: Delete form risalah
-    #   description: Delete form risalah by ID
-    #   operationId: deleteFormRisalah
-    #   parameters:
-    #     - name: id
-    #       in: query
-    #       required: true
-    #       description: ID of the form risalah to delete
-    #       schema:
-    #         type: integer
-    #   responses:
-    #     '204':
-    #       description: Form risalah deleted successfully
-    #     '404':
-    #       description: Form risalah not found
-
   /tracker:
     post:
       tags:
@@ -238,77 +125,6 @@ paths:
         '405':
           description: Invalid input
 
-    # get: # GET method for retrieving tracker risalah data
-    #   tags:
-    #     - Modul Buat Risalah
-    #   summary: Get tracker risalah information
-    #   description: Retrieve tracker risalah information by ID
-    #   operationId: getTrackerRisalah
-    #   parameters:
-    #     - name: id
-    #       in: query
-    #       required: true
-    #       description: ID of the tracker risalah to retrieve
-    #       schema:
-    #         type: integer
-    #   responses:
-    #     '200':
-    #       description: Tracker risalah information retrieved successfully
-    #       content:
-    #         application/json:
-    #           schema:
-    #             $ref: '#/components/schemas/TrackerRisalah'
-    #     '404':
-    #       description: Tracker risalah not found
-
-    # put: # PUT method for updating tracker risalah data
-    #   tags:
-    #     - Modul Buat Risalah
-    #   summary: Update tracker risalah
-    #   description: Update tracker risalah by ID
-    #   operationId: updateTrackerRisalah
-    #   parameters:
-    #     - name: id
-    #       in: query
-    #       required: true
-    #       description: ID of the tracker risalah to update
-    #       schema:
-    #         type: integer
-    #   requestBody:
-    #     content:
-    #       application/json:
-    #         schema:
-    #           $ref: '#/components/schemas/TrackerRisalah'
-    #     required: true
-    #   responses:
-    #     '200':
-    #       description: Tracker risalah updated successfully
-    #       content:
-    #         application/json:
-    #           schema:
-    #             $ref: '#/components/schemas/TrackerRisalah'
-    #     '404':
-    #       description: Tracker risalah not found
-
-    # delete: # DELETE method for deleting a tracker risalah
-    #   tags:
-    #     - Modul Buat Risalah
-    #   summary: Delete tracker risalah
-    #   description: Delete tracker risalah by ID
-    #   operationId: deleteTrackerRisalah
-    #   parameters:
-    #     - name: id
-    #       in: query
-    #       required: true
-    #       description: ID of the tracker risalah to delete
-    #       schema:
-    #         type: integer
-    #   responses:
-    #     '204':
-    #       description: Tracker risalah deleted successfully
-    #     '404':
-    #       description: Tracker risalah not found
-
   /dokumen_relasi:
     post:
       tags:
@@ -336,77 +152,6 @@ paths:
                 $ref: '#/components/schemas/DokumenRelasi'
         '405':
           description: Invalid input
-
-    # get: # GET method for retrieving dokumen relasi data
-    #   tags:
-    #     - Modul Buat Risalah
-    #   summary: Get dokumen relasi information
-    #   description: Retrieve dokumen relasi information by ID
-    #   operationId: getDokumenRelasi
-    #   parameters:
-    #     - name: id
-    #       in: query
-    #       required: true
-    #       description: ID of the dokumen relasi to retrieve
-    #       schema:
-    #         type: integer
-    #   responses:
-    #     '200':
-    #       description: Dokumen relasi information retrieved successfully
-    #       content:
-    #         application/json:
-    #           schema:
-    #             $ref: '#/components/schemas/DokumenRelasi'
-    #     '404':
-    #       description: Dokumen relasi not found
-
-    # put: # PUT method for updating dokumen relasi data
-    #   tags:
-    #     - Modul Buat Risalah
-    #   summary: Update dokumen relasi
-    #   description: Update dokumen relasi by ID
-    #   operationId: updateDokumenRelasi
-    #   parameters:
-    #     - name: id
-    #       in: query
-    #       required: true
-    #       description: ID of the dokumen relasi to update
-    #       schema:
-    #         type: integer
-    #   requestBody:
-    #     content:
-    #       application/json:
-    #         schema:
-    #           $ref: '#/components/schemas/DokumenRelasi'
-    #     required: true
-    #   responses:
-    #     '200':
-    #       description: Dokumen relasi updated successfully
-    #       content:
-    #         application/json:
-    #           schema:
-    #             $ref: '#/components/schemas/DokumenRelasi'
-    #     '404':
-    #       description: Dokumen relasi not found
-
-    # delete: # DELETE method for deleting a dokumen relasi
-    #   tags:
-    #     - Modul Buat Risalah
-    #   summary: Delete dokumen relasi
-    #   description: Delete dokumen relasi by ID
-    #   operationId: deleteDokumenRelasi
-    #   parameters:
-    #     - name: id
-    #       in: query
-    #       required: true
-    #       description: ID of the dokumen relasi to delete
-    #       schema:
-    #         type: integer
-    #   responses:
-    #     '204':
-    #       description: Dokumen relasi deleted successfully
-    #     '404':
-    #       description: Dokumen relasi not found
 
   /risalah:
     post:
@@ -536,41 +281,42 @@ paths:
         '404':
           description: Risalah tidak ditemukan
 
-  /place:
+  /add_place:
     post:
       tags:
         - Modul Tempat
       summary: menambahkan tempat
-      description: menambahkan tempat untuk risalah
-      operationId: place
+      description: menambahkan data tempat di halaman master tempat
+      operationId: AddPlace
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Place'
+              $ref: '#/components/schemas/GetPlacebyID'
           application/xml:
             schema:
-              $ref: '#/components/schemas/Place'
+              $ref: '#/components/schemas/GetPlacebyID'
         required: true
       responses:
         '200':
-          description: Place Added Successful
+          description: Data tempat berhasil ditambahkan
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Place'          
+                $ref: '#/components/schemas/GetPlacebyID'          
             application/xml:
               schema:
-                $ref: '#/components/schemas/Place'
+                $ref: '#/components/schemas/GetPlacebyID'
         '405':
           description: Invalid input
 
+  /get_place?id_place:
     get: # GET method for retrieving place data
       tags:
         - Modul Tempat
-      summary: Get place information
-      description: Retrieve place information by ID
-      operationId: getPlace
+      summary: Get place based on ID
+      description: http://localhost:3000/_QUERIES/places/get_place?id_place=value
+      operationId: getPlaceByID
       parameters:
         - name: id
           in: query
@@ -584,15 +330,33 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Place'
+                $ref: '#/components/schemas/GetPlacebyID'
+        '404':
+          description: Place not found
+          
+  /get_places:
+    get: # GET method for retrieving place data
+      tags:
+        - Modul Tempat
+      summary: Get all data place 
+      description: http://localhost:3000/_QUERIES/places/get_places?_page=value&_page_size=value
+      operationId: getAllPlace
+      responses:
+        '200':
+          description: Place information retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPlace'
         '404':
           description: Place not found
 
+  /patch_place:
     put: # PUT method for updating place data
       tags:
         - Modul Tempat
-      summary: Update place
-      description: Update place by ID
+      summary: Update place by ID
+      description: http://localhost:3000/_QUERIES/places/patch_place?id_place=value&nama=value&status=value&modified_by=value
       operationId: updatePlace
       parameters:
         - name: id
@@ -605,7 +369,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Place'
+              $ref: '#/components/schemas/GetPlacebyID'
         required: true
       responses:
         '200':
@@ -613,7 +377,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Place'
+                $ref: '#/components/schemas/GetPlacebyID'
         '404':
           description: Place not found
 
@@ -1044,13 +808,14 @@ components:
           type: string
           description: password yang diambil dari master user
           example: raihan12345
-
     User:
       type: object
       properties:
-        # id:
-        #   type: integer
-        nama_lengkap:
+        id:
+          type: integer
+          description: id pengguna
+          example: 1
+        name:
           type: string
           description: nama lengkap pengguna
           example: Raihan Dwi Win Cahya
@@ -1066,10 +831,6 @@ components:
           type: string
           description: password user
           example: raihan123
-        konfirmasi_password:
-          type: string
-          description: konfirmasi password ulang
-          example: raihan123
         role: 
           type: string
           description: status role user
@@ -1078,7 +839,30 @@ components:
           type: string
           description: status user 
           example: aktif
-
+        created_by:
+          type: integer
+          description: id user yang melakukan penambahan
+          example: 3
+        modified_by:
+          type: integer
+          description: id user yang melakukan perubahan
+          example: 5
+        created_date:
+          type: integer
+          description: tanggal melakukan penambahan
+          example: 2023-11-13 13.00
+        modified_date:
+          type: integer
+          description: tanggal melakukan perubahan
+          example: 2023-11-17 15.00
+        token:
+          type: integer
+          description: token pengguna
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySW5mbyI6eyJpZCI6NSwibWV0YWRhdGEiOm51bGwsIm5hbWUiOiJhbm5pc2EiLCJ1c2VybmFtZSI6ImFubmlzYSJ9LCJleHAiOjE3MDE2NzY4OTUsIm5iZiI6MTcwMTY1NTI5NX0.5Iodn_tEteR1AHiHmmaqJc0QXnRxunjIpRa3qs7lAY0
+        tipe: 
+          type: string
+          description: tipe pengguna
+          example: internal
     FormRisalah:
       type: object
       properties:
@@ -1162,25 +946,94 @@ components:
         dokumen_relasi:
           $ref: '#/components/schemas/DokumenRelasi'
 
-    Place:
+    GetPlacebyID:
       type: object
       properties:
-        # id:
-        #   type: integer
-        tempat:
+        id_place:
+          type: integer
+          description: id tempat
+          example: 1
+        nama:
           type: string
           description: nama tempat yang akan digunakan
           example: ruang lambelu
         status:
           type: string
-          description: status ruangan / tempat
+          description: status ruangan aktif / tidak aktif
           example: aktif
-
+        created_by:
+          type: integer
+          description: id user yang melakukan penambahan
+          example: 1
+        modified_by:
+          type: integer
+          description: id user yang melakukan perubahan
+          example: null
+        created_date:
+          type: integer
+          description: tanggal melakukan penambahan
+          example: 2023-11-13 13.00
+        modified_date:
+          type: integer
+          description: tanggal melakukan perubahan
+          example: null
+    PlaceItems:
+      type: object
+      properties:
+        id_place:
+          type: integer
+        nama:
+          type: string
+        status:
+          type: string
+        created_by:
+          type: integer
+        modified_by:
+          type: integer
+        created_date:
+          type: integer
+        modified_date:
+          type: integer
+    GetPlace:
+      type: array
+      items: 
+        $ref: '#/components/schemas/PlaceItems'
+      example:
+        - id_place: 1
+          nama: ruang lambelu
+          status: aktif
+          created_by: 1
+          modified_by: null
+          created_date: 2023-11-13 13.00
+          modified_date: null
+        - id_place: 2
+          nama: ruang kelud
+          status: aktif
+          created_by: 1
+          modified_by: 3
+          created_date: 2023-11-13 13.00
+          modified_date: 2023-11-15 14.00
+        - id_place: 3
+          nama: ruang kelaud
+          status: aktif
+          created_by: 1
+          modified_by: 3
+          created_date: 2023-12-13 13.00
+          modified_date: 2023-12-14 14.00
+        - id_place: 4
+          nama: ruang tambora
+          status: aktif
+          created_by: 3
+          modified_by: 3
+          created_date: 2023-11-13 13.00
+          modified_date: 2023-11-13 14.00
     Template:
       type: object
       properties:
-        # id:
-        #   type: integer
+        id_template:
+          type: integer
+          description: id template
+          example: 1
         nama_template:
           type: string
           description: nama template yang akan digunakan
@@ -1193,7 +1046,22 @@ components:
           type: string
           description: status template
           example: aktif
-          
+        created_by:
+          type: integer
+          description: id user yang melakukan penambahan
+          example: 3
+        modified_by:
+          type: integer
+          description: id user yang melakukan perubahan
+          example: 5
+        created_date:
+          type: integer
+          description: tanggal melakukan penambahan
+          example: 2023-11-13 13.00
+        modified_date:
+          type: integer
+          description: tanggal melakukan perubahan
+          example: 2023-11-17 15.00
     Profile:
       type: object
       properties: 
