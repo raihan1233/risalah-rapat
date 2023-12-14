@@ -1,0 +1,1041 @@
+<script lang="ts">
+	import * as Tabs from '$lib/components/ui/tabs';
+	import * as Card from '$lib/components/ui/card';
+	import { Button } from '$lib/components/ui/button';
+	import {
+		PlusCircle,
+		ArrowUpCircle,
+		ArrowDownCircle,
+		Trash2,
+		Save,
+		FileOutput,
+		Send
+	} from 'lucide-svelte';
+	import {
+		Table,
+		TableBody,
+		TableBodyCell,
+		TableBodyRow,
+		TableHead,
+		TableHeadCell
+	} from 'flowbite-svelte';
+	import Select from 'svelte-select';
+	import { onMount } from 'svelte';
+	import flatpickr from 'flatpickr';
+	import 'flatpickr/dist/flatpickr.css';
+	import 'flatpickr/dist/themes/light.css';
+	import Swal from 'sweetalert2';
+	import BatalButton from './batal-button.svelte';
+	import { Input } from '$lib/components/ui/input';
+	import { Label } from '$lib/components/ui/label';
+	import { BASE_URL_PRESTD, BASE_URL_EXPRESS } from '../../../../utils/network-data';
+	import Cookies from 'js-cookie';
+
+	export let data;
+
+	const userData = data.userData;
+
+	const session = Cookies.get('session');
+
+	async function fetchWithToken(url, options = {}) {
+		return fetch(url, {
+			...options,
+			headers: {
+				...options.headers,
+				Authorization: `Bearer ${session}`
+			}
+		});
+	}
+
+	const sendData = () => {
+		Swal.fire({
+			icon: 'success',
+			title: 'Data berhasil dikirim',
+			showConfirmButton: false,
+			timer: 1500
+		});
+	};
+
+	const saveDraft = () => {
+		saveCheckerOrder();
+		saveFormRisalah();
+	};
+
+	const tempData = [
+		{
+			nomor_urut: 1,
+			nama_user: {
+				value: userData.id,
+				label: userData.name
+			},
+			jabatan: userData.jabatan,
+			role: 'Drafter',
+			id_user: userData.id
+		}
+	];
+
+	let tableData = [];
+
+	// Add the default values from the 'data' array to the first row
+	const defaultValues = tempData[0];
+	const firstRow = { nomor_urut: 1, ...defaultValues };
+	tableData.push(firstRow);
+
+	let listData = [];
+	$: listDataTempJSON = JSON.stringify(listData, null, 2);
+
+	const saveFormRisalah = async () => {
+		try {
+			const formData = new FormData();
+			formData.append('perihal', saveData.perihal);
+			formData.append(
+				'periode',
+				JSON.stringify(saveData.periode.split(' to ').map((time) => `"${time}"`))
+			);
+
+			formData.append('agenda', JSON.stringify(agendas.map(item => item.value)));
+			formData.append('id_place', saveData.tempat.value);
+			formData.append('id_template', selectedTemplateOption.value);
+			formData.append('upload_template', saveData.update_temp);
+			formData.append('created_by', userData.id);
+			formData.append('modified_by', userData.id);
+			formData.append('trackers', JSON.stringify(listData));
+			
+			// formData.append('relation_documents', files);
+			// Append each file to the FormData
+			if (files) {
+				for (let i = 0; i < files.length; i++) {
+					formData.append('relation_documents', files[i]);
+				}
+			}
+			console.log('form data: ', formData);
+			
+			console.log('listData: ', JSON.stringify(listData));
+
+			for (const pair of formData.entries()) {
+				console.log(pair[0] + ' - ' + pair[1]);
+			}
+
+			const response = await fetch(`${BASE_URL_EXPRESS}/_QUERIES/risalah/add_risalah`, {
+				method: 'POST',
+				body: formData
+			});
+
+			if (response.ok) {
+				Swal.fire({
+					icon: 'success',
+					title: 'Draft berhasil disimpan',
+					showConfirmButton: false,
+					timer: 1500
+				});
+			}
+		} catch (error) {
+			console.error('An error occured: ', error);
+		}
+	};
+
+	let filteredTableData = [];
+
+	// $: listDataTemp = JSON.stringify(listData);
+
+	const saveCheckerOrder = () => {
+		// let listData = [];
+
+		for (const row of filteredTableData) {
+			const rowData = {
+				nomor_urut: row.nomor_urut,
+				nama_user: row.nama_user.label,
+				jabatan: row.jabatan || row.nama_user.jabatan,
+				role: row.role.value,
+				id_user: row.nama_user.value
+				// Add other properties from row if needed
+			};
+
+			listData.push(rowData);
+		}
+
+		console.log('Trackers listData: ', listDataTempJSON);
+	};
+
+	function openPDF() {
+		let urlPDF =
+			'https://drive.google.com/file/d/1XijaMzRhbKSiO1zP-803j1Urc4PDgqVy/view?usp=drive_link';
+		window.open(urlPDF, '_blank');
+	}
+
+	let agendas = [{ value: '' }];
+
+	function addAgendaRow() {
+		agendas = [...agendas, { value: '' }];
+	}
+
+	function removeAgendaRow(index) {
+		agendas = agendas.filter((_, i) => i !== index);
+	}
+
+	let saveData = {
+		perihal: '',
+		periode: '',
+		tempat: '',
+		template: null,
+		download: '',
+		update_temp: null,
+		agenda: []
+	};
+
+	console.log('saveData', saveData);
+	
+
+	const handleFileInputChange = (event) => {
+		const file = event.target.files[0];
+		if (file) {
+			saveData.update_temp = file;
+		}
+	};
+
+	let row = {
+		jabatan: '',
+		nama_user: null
+	};
+
+	async function generatePDF() {
+		try {
+			const flatpickrResult = saveData.periode;
+			const [startDate, startTime, endDate, endTime] = flatpickrResult
+				.match(/(\d{4}-\d{2}-\d{2}) (\d{2}:\d{2}) to (\d{4}-\d{2}-\d{2}) (\d{2}:\d{2})/)
+				.slice(1);
+
+			const formattedStartDate = new Date(startDate).toLocaleDateString('id-ID', {
+				weekday: 'long',
+				day: 'numeric',
+				month: 'long',
+				year: 'numeric'
+			});
+
+			const formattedStartTime = new Date(`2000-01-01 ${startTime}`).toLocaleTimeString('en-US', {
+				hour: 'numeric',
+				minute: 'numeric'
+			});
+
+			const formattedEndTime = new Date(`2000-01-01 ${endTime}`).toLocaleTimeString('en-US', {
+				hour: 'numeric',
+				minute: 'numeric'
+			});
+
+			// Ensure saveData.agenda is an array
+const agendaList = Array.isArray(agendas)
+    ? agendas
+        .map((item) => item.value.trim()) // Extract value and trim each item
+        .filter(Boolean) // Remove empty items
+        .map((item) => `• ${item}`)
+    : [];
+
+
+			// Declare wordToPDF object
+			const wordToPDF = {
+				hari: formattedStartDate.split(',')[0], // Extract the day
+				tanggal: formattedStartDate.split(',')[1].trim(), // Extract the date and trim any leading space
+				waktu: `${formattedStartTime} - ${formattedEndTime}`,
+				tempat: 'Ruang Lambelu',
+				agenda: agendaList,
+				approverUsers: [
+					{ name: 'John', role: 'anggota', tanda_tangan: './logo.png' },
+					{
+						name: 'Alice',
+						role: 'approver',
+						tanda_tangan:
+							'https://cloud.pelni.co.id/apps/files_sharing/publicpreview/bDETYcBsZCHGBbf?file=/Pelni%20Logo%20Baru%20Tagline%20Fullcolor.png&fileId=4740672&x=1366&y=768&a=true'
+					}
+				]
+			};
+			console.log('Agenda List:', agendaList); // Log to console for verification
+
+			// Filter approver users
+			const approverUsers = wordToPDF.approverUsers.filter(
+				(nama_user) => nama_user.role === 'approver'
+			);
+
+			const wordToPDFFiltered = {
+				hari: formattedStartDate.split(',')[0], // Extract the day
+				tanggal: formattedStartDate.split(',')[1].trim(), // Extract the date and trim any leading space
+				waktu: `${formattedStartTime} - ${formattedEndTime}`,
+				tempat: saveData.tempat,
+				agenda: agendaList,
+				approverUsers: approverUsers
+			};
+
+			const response = await fetch('http://localhost:3010/generatePDF', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ wordToPDF: wordToPDFFiltered })
+			});
+
+			const result = await response.json();
+
+			if (result.success) {
+				alert('PDF generated successfully!');
+				// window.open(result.pdfPath, '_blank')
+			} else {
+				alert('Error generating PDF. Please check the console for details.');
+				console.error(result.message);
+			}
+		} catch (error) {
+			alert('An unexpected error occurred. Please check the console for details.');
+			console.error('frontend error', error);
+		}
+	}
+
+	let templatesOptions = [];
+	let selectedTemplateOption;
+
+	const fetchTemplate = async () => {
+		try {
+			const response = await fetchWithToken(
+				`${BASE_URL_PRESTD}/_QUERIES/templates/get_active_templates`
+			); // Replace with your API endpoint
+			if (response.ok) {
+				const activeTemplates = await response.json();
+				templatesOptions = activeTemplates.map((item) => ({
+					value: item.id_template,
+					label: item.nama_template,
+					file: item.file
+				}));
+			} else {
+				console.error('Failed to fetch data from the API');
+			}
+		} catch (error) {
+			console.error('Error fetching data:', error);
+		}
+	};
+
+	let selectedTemplate = null;
+
+	$: selectedTemplate = templatesOptions.find(
+		(template) => template.value === selectedTemplateOption
+	);
+
+	const downloadTemplate = () => {
+		if (selectedTemplate) {
+			const downloadLink = document.createElement('a');
+			downloadLink.href = `${BASE_URL_EXPRESS}/_QUERIES/templates/get_template/${selectedTemplate.file}`;
+			downloadLink.download = selectedTemplate.file;
+
+			document.body.appendChild(downloadLink);
+			downloadLink.click();
+
+			// Remove the link from the body
+			document.body.removeChild(downloadLink);
+		}
+	};
+
+	let placesOptions = [];
+	// let selectedPlaceOption;
+	const fetchTempat = async () => {
+		try {
+			const response = await fetchWithToken(`${BASE_URL_PRESTD}/_QUERIES/places/get_active_places`); // Replace with your API endpoint
+			if (response.ok) {
+				const activePlaces = await response.json();
+				placesOptions = activePlaces.map((item) => ({
+					value: item.id_place,
+					label: item.nama
+				}));
+			} else {
+				console.error('Failed to fetch data from the API');
+			}
+		} catch (error) {
+			console.error('Error fetching data:', error);
+		}
+	};
+
+	let usersOptions;
+	$: usersOptions = [];
+	let selectedInternalUserOption;
+	// let selectedValues = [];
+	const fetchUsers = async () => {
+		try {
+			const response = await fetchWithToken(`${BASE_URL_PRESTD}/_QUERIES/users/get_active_users`); // Replace with your API endpoint
+			if (response.ok) {
+				const activeUsers = await response.json();
+				usersOptions = activeUsers.map((item) => ({
+					value: item.id,
+					label: item.name,
+					jabatan: item.jabatan
+				}));
+			} else {
+				console.error('Failed to fetch data from the API');
+			}
+		} catch (error) {
+			console.error('Error fetching data:', error);
+		}
+	};
+
+	let jabatanValue = '';
+	$: {
+		if (selectedInternalUserOption) {
+			jabatanValue = selectedInternalUserOption.jabatan;
+		}
+	}
+
+	const updateDownloadLink = () => {
+		const selectedOption = templatesOptions.find((option) => option.title === saveData.template);
+		saveData.download = selectedOption ? selectedOption.title : '';
+		console.log(saveData.download);
+	};
+
+	// Update the download link whenever the template value changes
+	$: {
+		saveData.template = selectedTemplateOption;
+		row.jabatan = selectedRoleOption;
+		updateDownloadLink();
+	}
+
+	let periodeTemp;
+	$: periodeTemp = saveData.periode;
+
+	const tsrangeValue = JSON.stringify(saveData.periode.split(' to ').map((time) => `${time}`));
+	console.log(tsrangeValue);
+
+	let addRelationDocument = false;
+	function toggleInputVisibility() {
+		addRelationDocument = !addRelationDocument;
+	}
+
+	const addRisalah = async () => {
+		try {
+			const response = await fetchWithToken(`${BASE_URL_EXPRESS}/_QUERIES/risalah/add_risalah`, {
+				method: 'POST',
+				body: JSON.stringify(risalahData)
+			});
+			if (response.ok) {
+				const responseJson = await response.json();
+				// console.log(responseJson);
+			} else {
+				console.error('Failed to fetch data from the API');
+			}
+		} catch (error) {
+			console.error('Error fetching data:', error);
+		}
+	};
+
+	onMount(() => {
+		flatpickr('#periode', {
+			mode: 'range',
+			allowInput: true,
+			clickOpens: true,
+			time_24hr: true,
+			enableTime: true,
+			dateFormat: 'Y-m-d H:i',
+			theme: 'light'
+		});
+
+		fetchTempat();
+		fetchTemplate();
+		fetchUsers();
+	});
+
+	// data table
+	const selectRoleOptions = ['Drafter', 'Checker', 'Approver', 'Tembusan'];
+	let selectedRoleOption = null;
+	// $: selectedRoleOption = row.jabatan;
+
+	const removeRow = (index) => {
+		tableData.splice(index, 1);
+		updateButtonVisibility();
+	};
+
+	const addRow = () => {
+		const nextNo = tableData.length + 1;
+		const newRow = {
+			nomor_urut: nextNo,
+			nama_user: '',
+			jabatan: '',
+			role: '',
+			id_user: null
+		};
+		tableData = [...tableData, newRow];
+		updateButtonVisibility();
+	};
+
+	const moveRowUp = (index) => {
+		if (index > 1) {
+			// Cek apakah baris saat ini memiliki nilai
+			if (tableData[index].nama_user) {
+				// Lakukan pemindahan baris ke atas
+				const currentRow = tableData[index];
+				const previousRow = tableData[index - 1];
+				tableData[index] = previousRow;
+				tableData[index - 1] = currentRow;
+
+				// Update No Urut values based on the final order
+				tableData.forEach((row, i) => {
+					row.nomor_urut = i + 1;
+				});
+			}
+		}
+
+		updateButtonVisibility();
+	};
+
+	const moveRowDown = (index) => {
+		if (index < tableData.length - 1) {
+			// Cek apakah baris saat ini memiliki nilai
+			if (tableData[index].nama_user) {
+				// Lakukan pemindahan baris ke bawah
+				const currentRow = tableData[index];
+				const nextRow = tableData[index + 1];
+				tableData[index] = nextRow;
+				tableData[index + 1] = currentRow;
+
+				// Update No Urut values based on the final order
+				tableData.forEach((row, i) => {
+					row.nomor_urut = i + 1;
+				});
+			}
+		}
+
+		updateButtonVisibility();
+	};
+
+	const getAksiOptions = (index) => {
+		if (index === 0) {
+			return [''];
+		} else if (index === tableData.length - 1) {
+			return ['Delete', 'Up'];
+		} else if (index === 1) {
+			return ['Delete', 'Down'];
+		} else {
+			return ['Delete', 'Up', 'Down'];
+		}
+	};
+
+	const updateButtonVisibility = () => {
+		tableData = tableData.map((row, index) => ({
+			...row,
+			Aksi: getAksiOptions(index)
+		}));
+	};
+	updateButtonVisibility();
+
+	let searchTerm = '';
+
+	// Function to filter the table data based on search term
+	$: filteredTableData = tableData.filter((row) => {
+		const lowerSearchTerm = searchTerm.toLowerCase();
+		return Object.values(row).some(
+			(value) => typeof value === 'string' && value.toLowerCase().includes(lowerSearchTerm)
+		);
+	});
+
+	// dokumen relasi
+
+	let files: FileList;
+
+	// relasi data table
+
+	let relasiData = [];
+	let localRelasiData = relasiData;
+
+	$: {
+		localRelasiData = relasiData;
+	}
+
+	let searchRelasi = '';
+	$: filteredRelasi = relasiData.filter((item) => {
+		const lowerSearchTerm = searchRelasi.toLowerCase();
+		return Object.values(item).some(
+			(value) => typeof value === 'string' && value.toLowerCase().includes(lowerSearchTerm)
+		);
+	});
+
+	// add relasi dokumen
+	let isDialogOpen = false;
+
+	let inputRelasiData = {
+		file: null,
+		name: ''
+	};
+
+	async function fetchRelasiData() {
+		try {
+			const formData = new FormData();
+			formData.append('attachment', inputRelasiData.file);
+			formData.append('attachmentName', inputRelasiData.name);
+
+			const response = await fetch('http://localhost:3000/relation-documents', {
+				method: 'POST',
+				body: formData
+			});
+
+			if (response.ok) {
+				const newData = await response.json(); // Assuming the API responds with the newly added user data
+				// log(newData);
+				Swal.fire({
+					icon: 'success',
+					title: 'Data berhasil ditambahkan',
+					showConfirmButton: false,
+					timer: 1500
+				}).then(() => {
+					// Close the dialog by setting isDialogOpen to false
+					isDialogOpen = false;
+				});
+
+				// dispatch('dataSaved', newData);
+			} else {
+				Swal.fire({
+					icon: 'error',
+					title: 'Terjadi kesalahan saat menambahkan data'
+				});
+			}
+		} catch (error) {
+			console.error('Error:', error);
+			Swal.fire({
+				icon: 'error',
+				title: 'Terjadi kesalahan saat menambahkan data'
+			});
+		}
+	}
+
+	// Update your saveData function to call fetchData
+	const saveRelasiData = () => {
+		if (inputRelasiData.file && inputRelasiData.name) {
+			fetchRelasiData();
+		}
+	};
+
+	let floatingConfig = {
+		strategy: 'fixed'
+	};
+
+	function removeFile(fileToRemove: File) {
+		const dt = new DataTransfer();
+		if (files) {
+			for (let i = 0; i < files.length; i++) {
+				const file = files[i];
+
+				if (file.name !== fileToRemove.name) dt.items.add(file);
+			}
+		}
+		files = dt.files;
+	}
+
+	$: if (files) {
+		// Note that `files` is of type `FileList`, not an Array:
+		// https://developer.mozilla.org/en-US/docs/Web/API/FileList
+		console.log(files);
+
+		for (const file of files) {
+			console.log(`${file.name}: ${file.size} bytes`);
+		}
+	}
+</script>
+
+<div class="py-10 space-y-8">
+	<Card.Root>
+		<Card.Header>
+			<h2 class="text-3xl font-bold tracking-tight">Buat Risalah</h2>
+		</Card.Header>
+		<!-- form rapat starts -->
+		<Card.Content>
+			<form enctype="multipart/form-data">
+				<div class="space-y-12">
+					<div class="border-b border-gray-900/10 pb-12">
+						<div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+							<div class="col-span-full">
+								<label for="perihal" class="block text-sm font-medium leading-6 text-gray-900"
+									>Perihal</label
+								>
+								<div class="mt-2">
+									<input
+										bind:value={saveData.perihal}
+										placeholder="Perihal pemindahan jadwal rapat"
+										type="text"
+										name="perihal"
+										id="perihal"
+										class="block w-full rounded-md px-3 py-3 border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+									/>
+								</div>
+							</div>
+
+							<div class="col-span-full">
+								<label for="periode" class="block text-sm font-medium leading-6 text-gray-900"
+									>Periode Rapat</label
+								>
+								<div class="mt-2">
+									<input
+										id="periode"
+										placeholder="Masukkan periode waktu"
+										bind:value={saveData.periode}
+										type="date"
+										name="periode"
+										class="block w-full rounded-md px-3 py-3 border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+									/>
+								</div>
+							</div>
+
+							<div class="col-span-full">
+								<label for="pilih-tempat" class="block text-sm font-medium leading-6 text-gray-900"
+									>Pilih Tempat</label
+								>
+								<div class="mt-2">
+									<Select
+										class="block w-full rounded-md px-3 py-3 border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+										inputAttributes={{ name: 'places' }}
+										items={placesOptions}
+										showChevron
+										bind:value={saveData.tempat}
+									/>
+								</div>
+							</div>
+
+							<div class="col-span-full">
+								<label
+									for="pilih-template"
+									class="block text-sm font-medium leading-6 text-gray-900">Pilih Template</label
+								>
+								<div class="mt-2">
+									<Select
+										class="block w-full rounded-md px-3 py-3 border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+										inputAttributes={{ name: 'templates' }}
+										items={templatesOptions}
+										showChevron
+										bind:value={selectedTemplateOption}
+									/>
+								</div>
+							</div>
+
+							<div class="col-span-full">
+								<label for="agenda" class="block text-sm font-medium leading-6 text-gray-900"
+									>Agenda</label
+								>
+								<div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+									<div class="col-span-full mb-2 md:mb-0 md:mr-2">
+										{#each agendas as { value }, index}
+											<div class="mb-2 flex items-center" key={index}>
+												<input
+													placeholder="Masukkan agenda"
+													bind:value={agendas[index].value}
+													class="block flex-grow rounded-md px-3 py-3 border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+													type="text"
+												/>
+												{#if index === 0}
+													<Button
+														type="button"
+														on:click={addAgendaRow}
+														class="ml-2 bg-gray-800 hover:bg-gray-900"
+													>
+														<PlusCircle class="w-13 h-13" />
+													</Button>
+												{:else}
+													<Button
+														type="button"
+														on:click={() => removeAgendaRow(index)}
+														class="ml-2 bg-red-500 hover:bg-red-700"
+													>
+														<Trash2 class="w-6 h-6" />
+													</Button>
+												{/if}
+											</div>
+										{/each}
+									</div>
+								</div>
+							</div>
+
+							<div class="col-span-full">
+								<label for="download" class="block text-sm font-medium leading-6 text-gray-900"
+									>Download</label
+								>
+								<div class="mt-2">
+									<a
+										class="underline underline-offset-4"
+										href={`${BASE_URL_EXPRESS}/_QUERIES/templates/get_template/${selectedTemplateOption?.file}`}
+										download><p>{selectedTemplateOption?.file || 'No template selected'}</p></a
+									>
+								</div>
+							</div>
+
+							<div class="col-span-full">
+								<label
+									for="upload_template"
+									class="block text-sm font-medium leading-6 text-gray-900">Upload Template</label
+								>
+								<div class="mt-2">
+									<input
+										type="file"
+										name="upload_template"
+										id="upload_template"
+										class="block w-full rounded-md px-3 py-3 border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+										on:change={handleFileInputChange}
+									/>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+		</Card.Content>
+		<!-- form rapat ends -->
+	</Card.Root>
+
+	<Card.Root>
+		<!-- tabs starts -->
+		<div class="space-y-4 pt-4">
+			<Card.Content>
+				<Tabs.Root value="Checker">
+					<Tabs.List class="grid w-full grid-cols-2 bg-gray-800 text-white">
+						<Tabs.Trigger value="Checker">Checker</Tabs.Trigger>
+						<Tabs.Trigger value="Dokumen Relasi">Dokumen Relasi</Tabs.Trigger>
+					</Tabs.List>
+
+					<!-- tabs checker starts -->
+					<Tabs.Content value="Checker">
+						<Card.Root>
+							<Card.Header>
+								<Card.Title>Checker</Card.Title>
+							</Card.Header>
+							<Card.Content class="space-y-2">
+								<div class="space-y-4">
+									<!-- <div class="sm:flex sm:justify-end">
+										<TableSearch
+											placeholder="Cari di sini"
+											hoverable={true}
+											bind:inputValue={searchTerm}
+											classInput="mb-4 px-8 py-2 rounded-md border border-gray-300 w-full sm:max-w-xs"
+											classSvgDiv="p-2"
+											divClass="shadow-none relative"
+										/>
+									</div> -->
+
+									<Table shadow>
+										<TableHead class="text-sm">
+											<TableHeadCell class="!p-4" />
+											<TableHeadCell class="!p-4">No Urut</TableHeadCell>
+											<TableHeadCell class="!p-4">User</TableHeadCell>
+											<TableHeadCell class="!p-4">Nama Jabatan</TableHeadCell>
+											<TableHeadCell class="!p-4">Role</TableHeadCell>
+											<TableHeadCell class="!p-4">Aksi</TableHeadCell>
+										</TableHead>
+										<TableBody>
+											{#each tableData as row, index (row.nomor_urut)}
+												<TableBodyRow>
+													<TableBodyCell class="!p-4">
+														<Button on:click={addRow} variant="outline">
+															<PlusCircle class="w-5 h-5" />
+														</Button>
+													</TableBodyCell>
+													<TableBodyCell class="!p-4">{row.nomor_urut}</TableBodyCell>
+													<TableBodyCell class="!p-4">
+														<Select
+															class="rounded-md p-1.5 border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 m-1.5"
+															inputAttributes={{ name: 'users' }}
+															items={usersOptions}
+															bind:value={row.nama_user}
+															showChevron
+															containerStyles="width: 200px !important;"
+															{floatingConfig}
+															--list-position="fixed"
+															disabled={index === 0}
+														/>
+													</TableBodyCell>
+													<TableBodyCell class="!p-4">
+														<input
+															type="text"
+															class={`p-2 border-0 rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6 m-1.5 ${
+																index === 0
+																	? 'bg-gray-950 text-gray-975 cursor-not-allowed'
+																	: 'text-gray-900'
+															}`}
+															value={row.jabatan || row.nama_user?.jabatan || ''}
+															readonly
+														/>
+													</TableBodyCell>
+													<TableBodyCell class="!p-4">
+														<Select
+															class="p-1.5 text-gray-900 border-0 rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6 m-1.5"
+															inputAttributes={{ name: 'role' }}
+															items={selectRoleOptions}
+															bind:value={row.role}
+															showChevron
+															containerStyles="width: 200px !important;"
+															{floatingConfig}
+															--list-position="fixed"
+															disabled={index === 0}
+														/>
+													</TableBodyCell>
+													<TableBodyCell class="!p-4 space-x-2">
+														{#each row.Aksi as aksiOption}
+															{#if aksiOption === 'Delete'}
+																<Button
+																	class="bg-red-500 hover:bg-red-700 text-white"
+																	variant="default"
+																	on:click={() => removeRow(index)}
+																>
+																	<Trash2 class="w-4 h-4 mr-2" />
+																	Delete
+																</Button>
+															{/if}
+															{#if aksiOption === 'Up'}
+																<Button
+																	class="bg-emerald-500 hover:bg-emerald-700 text-white"
+																	variant="default"
+																	on:click={() => moveRowUp(index)}
+																>
+																	<ArrowUpCircle class="w-4 h-4 mr-2" />
+																	Up
+																</Button>
+															{/if}
+															{#if aksiOption === 'Down'}
+																<Button
+																	class="bg-sky-500 hover:bg-sky-700 text-white"
+																	variant="default"
+																	on:click={() => moveRowDown(index)}
+																>
+																	<ArrowDownCircle class="w-4 h-4 mr-2" />
+																	Down
+																</Button>
+															{/if}
+														{/each}
+													</TableBodyCell>
+												</TableBodyRow>
+											{/each}
+										</TableBody>
+									</Table>
+								</div>
+							</Card.Content>
+						</Card.Root>
+					</Tabs.Content>
+					<!-- tabs checker ends -->
+
+					<!-- tabs doc relasi starts -->
+					<Tabs.Content value="Dokumen Relasi">
+						<Card.Root>
+							<Card.Header>
+								<Card.Title>Dokumen Relasi</Card.Title>
+							</Card.Header>
+							<Card.Content class="space-y-2">
+								<div class="space-y-4">
+									<Button
+										variant="default"
+										class="bg-sky-500 hover:bg-sky-700 text-white"
+										on:click={toggleInputVisibility}
+									>
+										<PlusCircle class="w-5 h-5 mr-2" />
+										Tambah
+									</Button>
+									{#if addRelationDocument}
+										<div class="col-span-full mt-2 space-y-2">
+											<Label
+												for="relation_documents"
+												class="block text-sm font-medium leading-6 text-gray-900"
+												>Unggah Lampiran</Label
+											>
+											<input
+												id="relation_documents"
+												type="file"
+												multiple
+												class="cursor-pointer block w-full rounded-md px-3 py-3 border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+												name="relation_documents"
+												bind:files
+											/>
+										</div>
+									{/if}
+
+									<!-- <Dialog.Root bind:open={isDialogOpen}>
+										<Dialog.Trigger
+											class={buttonVariants({
+												variant: 'default',
+												className: 'bg-sky-500 hover:bg-sky-700 text-white'
+											})}
+										>
+											<PlusCircle class="w-5 h-5 mr-2" />
+											Tambah
+										</Dialog.Trigger>
+										<Dialog.Content class="sm:max-w-[425px]">
+											<Dialog.Header>
+												<Dialog.Title>Tambah Dokumen Relasi</Dialog.Title>
+											</Dialog.Header>
+											<Separator />
+											<div class="py-4 space-y-4">
+												<div class="grid w-full max-w-sm items-center gap-x-1.5 space-y-4">
+													<Label for="relation_documents">Unggah Lampiran</Label>
+													<Input
+														id="relation_documents"
+														type="file"
+														multiple
+														class="cursor-pointer"
+														name="relation_documents"
+														bind:files
+													/>
+												</div>
+
+									</div>
+											<Dialog.Footer>
+												<Button type="submit" class="w-full" on:click={addRisalah}>Simpan</Button>
+											</Dialog.Footer>
+										</Dialog.Content>
+									</Dialog.Root> -->
+
+									<Table shadow>
+										<TableHead class="text-sm">
+											<TableHeadCell class="!p-4">Dokumen Relasi</TableHeadCell>
+											<TableHeadCell class="!p-4">Aksi</TableHeadCell>
+										</TableHead>
+										<TableBody>
+											{#if files}
+												{#each Array.from(files) as row, index (row.name)}
+													<TableBodyRow>
+														<TableBodyCell class="!p-4">{row.name}</TableBodyCell>
+														<TableBodyCell class="!p-4 space-x-2">
+															<Button
+																class="bg-red-500 hover:bg-red-700 text-white"
+																variant="default"
+																on:click={() => removeFile(row)}
+															>
+																<Trash2 class="w-4 h-4 mr-2" />
+																Delete
+															</Button>
+
+															<!-- <a
+															href={`${BASE_URL_EXPRESS}/_QUERIES/relation-documents/get_relation_document/${row.file}`}
+															download
+														>
+															<Button class="bg-sky-500 hover:bg-sky-700">
+																<Download class="h-4 w-4 mr-2" />Download
+															</Button>
+														</a> -->
+														</TableBodyCell>
+													</TableBodyRow>
+												{/each}
+											{/if}
+										</TableBody>
+									</Table>
+								</div>
+							</Card.Content>
+						</Card.Root>
+					</Tabs.Content>
+					<!-- tabs doc relasi ends -->
+				</Tabs.Root>
+			</Card.Content>
+		</div>
+		<!-- tabs ends -->
+	</Card.Root>
+
+	<!-- button action starts -->
+	<div class="sm:flex-row gap-4 flex flex-col">
+		<Button class="bg-sky-500 hover:bg-sky-700" on:click={saveDraft}>
+			<Save class="mr-2 h-4 w-4" />
+			Simpan Draft
+		</Button>
+		<Button class="bg-cyan-500 hover:bg-cyan-700" on:click={generatePDF}>
+			<FileOutput class="mr-2 h-4 w-4" />
+			Lihat PDF
+		</Button>
+		<Button class="bg-emerald-500 hover:bg-emerald-700" on:click={sendData}>
+			<Send class="mr-2 h-4 w-4" />
+			Kirim
+		</Button>
+		<BatalButton />
+	</div>
+	<!-- button action ends -->
+</div>
