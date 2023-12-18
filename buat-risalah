@@ -82,7 +82,6 @@
 	tableData.push(firstRow);
 
 	let listData = [];
-	$: listDataTempJSON = JSON.stringify(listData, null, 2);
 
 	const saveFormRisalah = async () => {
 		try {
@@ -93,14 +92,14 @@
 				JSON.stringify(saveData.periode.split(' to ').map((time) => `"${time}"`))
 			);
 
-			formData.append('agenda', JSON.stringify(agendas.map(item => item.value)));
+			formData.append('agenda', JSON.stringify(agendas.map((item) => item.value)));
 			formData.append('id_place', saveData.tempat.value);
 			formData.append('id_template', selectedTemplateOption.value);
 			formData.append('upload_template', saveData.update_temp);
 			formData.append('created_by', userData.id);
 			formData.append('modified_by', userData.id);
 			formData.append('trackers', JSON.stringify(listData));
-			
+
 			// formData.append('relation_documents', files);
 			// Append each file to the FormData
 			if (files) {
@@ -109,7 +108,7 @@
 				}
 			}
 			console.log('form data: ', formData);
-			
+
 			console.log('listData: ', JSON.stringify(listData));
 
 			for (const pair of formData.entries()) {
@@ -136,11 +135,7 @@
 
 	let filteredTableData = [];
 
-	// $: listDataTemp = JSON.stringify(listData);
-
 	const saveCheckerOrder = () => {
-		// let listData = [];
-
 		for (const row of filteredTableData) {
 			const rowData = {
 				nomor_urut: row.nomor_urut,
@@ -153,8 +148,6 @@
 
 			listData.push(rowData);
 		}
-
-		console.log('Trackers listData: ', listDataTempJSON);
 	};
 
 	function openPDF() {
@@ -165,13 +158,13 @@
 
 	let agendas = [{ value: '' }];
 
-	function addAgendaRow() {
+	const addAgendaRow = () => {
 		agendas = [...agendas, { value: '' }];
-	}
+	};
 
-	function removeAgendaRow(index) {
+	const removeAgendaRow = (index) => {
 		agendas = agendas.filter((_, i) => i !== index);
-	}
+	};
 
 	let saveData = {
 		perihal: '',
@@ -182,9 +175,6 @@
 		update_temp: null,
 		agenda: []
 	};
-
-	console.log('saveData', saveData);
-	
 
 	const handleFileInputChange = (event) => {
 		const file = event.target.files[0];
@@ -223,43 +213,43 @@
 			});
 
 			// Ensure saveData.agenda is an array
-const agendaList = Array.isArray(agendas)
-    ? agendas
-        .map((item) => item.value.trim()) // Extract value and trim each item
-        .filter(Boolean) // Remove empty items
-        .map((item) => `• ${item}`)
-    : [];
+			const agendaList = Array.isArray(agendas)
+				? agendas
+						.map((item) => item.value.trim()) // Extract value and trim each item
+						.filter(Boolean) // Remove empty items
+						.map((item) => `• ${item}`)
+				: [];
 
+			// Extract the name from the selected tempat
+			const tempatName = saveData.tempat && saveData.tempat.label ? saveData.tempat.label : '';
 
+			// Filter approver users
+			const approverUsers = listData
+			.filter((row) => row.role.toLowerCase() === 'approver')	
+			.map((row) => ({
+				name: row.nama_user,
+				role: row.role,
+				tanda_tangan: `https://portal.pelni.co.id/phpqrcode/?data=APPROVE%BY%${
+					row.nama_user
+				}%Tanggal:${new Date().toISOString().split('T')[0]}`
+			}));
 			// Declare wordToPDF object
 			const wordToPDF = {
 				hari: formattedStartDate.split(',')[0], // Extract the day
 				tanggal: formattedStartDate.split(',')[1].trim(), // Extract the date and trim any leading space
 				waktu: `${formattedStartTime} - ${formattedEndTime}`,
-				tempat: 'Ruang Lambelu',
+				tempat: tempatName,
 				agenda: agendaList,
-				approverUsers: [
-					{ name: 'John', role: 'anggota', tanda_tangan: './logo.png' },
-					{
-						name: 'Alice',
-						role: 'approver',
-						tanda_tangan:
-							'https://cloud.pelni.co.id/apps/files_sharing/publicpreview/bDETYcBsZCHGBbf?file=/Pelni%20Logo%20Baru%20Tagline%20Fullcolor.png&fileId=4740672&x=1366&y=768&a=true'
-					}
-				]
+				approverUsers: approverUsers
 			};
 			console.log('Agenda List:', agendaList); // Log to console for verification
-
-			// Filter approver users
-			const approverUsers = wordToPDF.approverUsers.filter(
-				(nama_user) => nama_user.role === 'approver'
-			);
+			console.log(listData);
 
 			const wordToPDFFiltered = {
 				hari: formattedStartDate.split(',')[0], // Extract the day
 				tanggal: formattedStartDate.split(',')[1].trim(), // Extract the date and trim any leading space
 				waktu: `${formattedStartTime} - ${formattedEndTime}`,
-				tempat: saveData.tempat,
+				tempat: saveData.tempat.label,
 				agenda: agendaList,
 				approverUsers: approverUsers
 			};
@@ -341,6 +331,7 @@ const agendaList = Array.isArray(agendas)
 					value: item.id_place,
 					label: item.nama
 				}));
+				console.log(placesOptions);
 			} else {
 				console.error('Failed to fetch data from the API');
 			}
@@ -796,17 +787,6 @@ const agendaList = Array.isArray(agendas)
 							</Card.Header>
 							<Card.Content class="space-y-2">
 								<div class="space-y-4">
-									<!-- <div class="sm:flex sm:justify-end">
-										<TableSearch
-											placeholder="Cari di sini"
-											hoverable={true}
-											bind:inputValue={searchTerm}
-											classInput="mb-4 px-8 py-2 rounded-md border border-gray-300 w-full sm:max-w-xs"
-											classSvgDiv="p-2"
-											divClass="shadow-none relative"
-										/>
-									</div> -->
-
 									<Table shadow>
 										<TableHead class="text-sm">
 											<TableHeadCell class="!p-4" />
